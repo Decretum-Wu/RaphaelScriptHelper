@@ -1,0 +1,8 @@
+__pycache__/*
+# 忽略 logs 目录下的所有文件，但保留 logs 目录
+cache/*
+!cache/.gitkeep
+AdbWinApi.dll
+AdbWinUsbApi.dll
+adb.exe
+screen.png

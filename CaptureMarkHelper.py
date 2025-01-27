@@ -8,7 +8,7 @@ import ADBHelper
 # 修改以下参数来运行
 
 # 原图缩放比例，用于展示在窗口里
-scale = 0.5
+scale = 0.4
 
 # 截图保存路径，以/结束
 save_file_path = "./img/"
@@ -17,10 +17,10 @@ save_file_path = "./img/"
 pos_img_dict = "./testDict.py"
 
 # 动作类型 1=截图  2=标点  3=标线（取起终点组成向量） 4=标记区域
-action = 4
+action = 1
 
 # 图片来源替换输入你的did
-ADBHelper.screenCapture("did", "screen.png")
+ADBHelper.screenCapture("emulator-5554", "screen.png")
 img_file = "./screen.png"
 
 
