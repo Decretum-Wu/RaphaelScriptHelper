@@ -15,5 +15,5 @@ touchPosRange = 8
 touchDelayRange = 30
 
 #滑屏所需时长范围[slideMinVer,slideMaxVer]，单位毫秒 (滑屏操作不能太快，建议最小值设置在500ms以上)
-slideMinVer = 500
-slideMaxVer = 3000
+slideMinVer = 200
+slideMaxVer = 500

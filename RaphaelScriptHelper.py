@@ -1,8 +1,11 @@
 import ImageProc, ADBHelper, random, time, cv2
 import settings as st
+import pygetwindow as gw
+import pyautogui
 
 deviceType = 1
 deviceID = ""
+# windowID = ""
 
 def random_delay():
     t = random.uniform(st.randomDelayMin, st.randomDelayMax)
@@ -65,7 +68,8 @@ def find_pic(target, returnCenter = False):
 def find_pic_all(target):
     ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")
     time.sleep(0.1)
-    leftTopPos = ImageProc.locate_all(st.cache_path + "screenCap.png", target, st.accuracy)
+    # locate_all
+    leftTopPos = ImageProc.locate_all_center(st.cache_path + "screenCap.png", target, st.accuracy)
     return leftTopPos
 
 # 寻找目标区块并在其范围内随机点击
@@ -94,3 +98,17 @@ def find_pic_slide(target,pos):
     centerPos = ImageProc.centerOfTouchArea(img.shape,leftTopPos)
     slide((centerPos, pos))
     return True
+
+def init_window_save(windowID):
+    # 查找并激活目标窗口
+    windows = gw.getWindowsWithTitle(windowID)
+    if windows:
+        window = windows[0]
+        window.activate()
+        time.sleep(0.5)  # 等待窗口激活
+    else:
+        print("未找到指定的窗口: {0}".format(windowID))
+
+def bs_press(bsKeyStr):
+    pyautogui.hotkey('ctrl', 'shift', bsKeyStr)
+    time.sleep(0.5)
