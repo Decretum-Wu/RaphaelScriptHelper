@@ -36,7 +36,7 @@ def reset_sub_device():
 
     # 验证进入页面
     while True:
-        time.sleep(0.5)  # 等待窗口激活
+        # time.sleep(0.5)  # 等待窗口激活
         if(gamer.verify_pic(rd.cloud_button)):
             time.sleep(3)  # 等待云端数据可选
             gamer.find_pic_touch(rd.cloud_button)
@@ -95,15 +95,6 @@ def resume_main_device(waitSeconds = 3):
             break
         if(gamer.find_pic_touch(rd.start_game)):
             continue
-
-def select_box():
-    time.sleep(2)
-    # 首先选中箱子
-    if not gamer.verify_pic(rd.box_2):
-        gamer.find_pic_touch(rd.box_1)
-        time.sleep(1)
-
-
 
 # [脚本从这里开始运行]
 reset_sub_device()
@@ -168,5 +159,3 @@ while True:
         resume_main_device(0.5)
         # 重置错误次数
         errorCount = 0
-
-# TODO main_device其他操作
