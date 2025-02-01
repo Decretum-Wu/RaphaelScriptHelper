@@ -19,6 +19,8 @@ def delay(t):
 def random_pos(pos):
     x, y = pos
     rand = random.randint(1, 10000)
+    # TODO debug, 增加3点击偏移
+    # x = x + 3
     if rand % 2 == 0:
         x = x + random.randint(0, st.touchPosRange)
     else:
@@ -72,6 +74,14 @@ def find_pic_all(target):
     leftTopPos = ImageProc.locate_all_center(st.cache_path + "screenCap.png", target, st.accuracy)
     return leftTopPos
 
+# 判断图片是否存在
+def verify_pic(target):
+    ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")
+    time.sleep(0.1)
+    leftTopPos = ImageProc.locate(st.cache_path + "screenCap.png", target, st.accuracy)
+    if (leftTopPos): return True
+    else: return False
+
 # 寻找目标区块并在其范围内随机点击
 def find_pic_touch(target):
     leftTopPos = find_pic(target)
@@ -82,7 +92,8 @@ def find_pic_touch(target):
     img = cv2.imread(target)
     tlx, tly = leftTopPos
     h_src, w_src, tongdao = img.shape
-    x = random.randint(tlx, tlx + w_src)
+    # 模拟点击 debug, 3水平偏移
+    x = random.randint(tlx + 3, tlx + w_src)
     y = random.randint(tly, tly + h_src)
     touch((x, y))
     return True
@@ -106,8 +117,10 @@ def init_window_save(windowID):
         window = windows[0]
         window.activate()
         time.sleep(0.5)  # 等待窗口激活
+        return True
     else:
         print("未找到指定的窗口: {0}".format(windowID))
+        return False
 
 def bs_press(bsKeyStr):
     pyautogui.hotkey('ctrl', 'shift', bsKeyStr)
