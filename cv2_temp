@@ -1,0 +1,62 @@
+import cv2
+import numpy as np
+from concurrent.futures import ThreadPoolExecutor
+
+def process_wanted(source_cv2, wanted, accuracy):
+    """
+    单独处理一张 wanted 图片，在 source_cv2 图片中查找匹配位置，
+    返回所有匹配区域中心点的列表。
+    """
+    sub_loc_pos = []
+    wanted_cv2 = cv2.imread(wanted)
+    if wanted_cv2 is None:
+        print(f"警告：无法加载目标图片：{wanted}")
+        return sub_loc_pos
+
+    # 模板匹配
+    result = cv2.matchTemplate(source_cv2, wanted_cv2, cv2.TM_CCOEFF_NORMED)
+    location = np.where(result >= accuracy)
+
+    # 记录上一个点的坐标，用于过滤相近重复点
+    ex, ey = 0, 0
+    for pt in zip(*location[::-1]):  # 生成 (x, y) 坐标对
+        x, y = pt[0], pt[1]
+        if abs(x - ex) + abs(y - ey) < 15:
+            continue
+        ex, ey = x, y
+        center = centerOfTouchArea(wanted_cv2.shape, (int(x), int(y)))
+        sub_loc_pos.append(center)
+
+    return sub_loc_pos
+
+def locate_all_center_parallel(source, wanted_list, accuracy=0.90, max_workers=4):
+    """
+    并行对多个 wanted 图片进行匹配处理
+    :param source: 源图片路径
+    :param wanted_list: 包含多个目标图片路径的列表
+    :param accuracy: 模板匹配的精度阈值
+    :param max_workers: 并行线程数量（或进程数）
+    :return: 嵌套列表，每个子列表包含对应 wanted 图片在 source 中匹配到的中心点坐标
+    """
+    # 读取源图片
+    screen_cv2 = cv2.imread(source)
+    if screen_cv2 is None:
+        raise ValueError(f"无法加载源图片：{source}")
+
+    # 使用线程池并行处理多个 wanted 图片
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        # executor.map 会保持输入顺序，返回的结果顺序与 wanted_list 顺序一致
+        results_nested = list(executor.map(lambda w: process_wanted(screen_cv2, w, accuracy), wanted_list))
+    return results_nested
+
+# 示例调用
+if __name__ == '__main__':
+    source_img = "source.png"
+    wanted_imgs = ["wanted1.png", "wanted2.png", "wanted3.png"]
+    # 并行处理并获取结果
+    all_centers = locate_all_center_parallel(source_img, wanted_imgs, accuracy=0.90, max_workers=4)
+    for idx, centers in enumerate(all_centers):
+        print(f"目标图片 {wanted_imgs[idx]} 匹配到的中心点：{centers}")
+
+# 横向总共7格，136，起点64
+# 竖向9格， 136，起点508

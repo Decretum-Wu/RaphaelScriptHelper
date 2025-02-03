@@ -1,5 +1,5 @@
 #图片匹配置信度，0-1之间，默认0.93，如果匹配出错误目标则提高置信度，如果要模糊匹配或高置信度无法匹配则降低置信度
-accuracy = 0.75
+accuracy = 0.70
 
 #缓存文件存放地址，以/结尾
 cache_path = './cache/'
@@ -12,8 +12,13 @@ randomDelayMax = 5
 touchPosRange = 1
 
 #点击延迟范围，[0,x]
-touchDelayRange = 20
+touchDelayRange = 10
 
 #滑屏所需时长范围[slideMinVer,slideMaxVer]，单位毫秒 (滑屏操作不能太快，建议最小值设置在500ms以上)
 slideMinVer = 200
-slideMaxVer = 500
+slideMaxVer = 300
+
+empty_color_1 = (241, 184, 142)
+empty_color_2 = (237, 179, 135)
+empty_colors = [empty_color_1, empty_color_2]
+

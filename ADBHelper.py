@@ -1,4 +1,4 @@
-import os, time
+import os, time, subprocess
 
 # 获取设备列表，每一个为deviceID
 def getDevicesList():
@@ -46,3 +46,6 @@ def longTouch(deviceID, pos, time):
     x, y = pos
     a = "adb -s " + deviceID + " shell input swipe {0} {1} {2} {3} {4}".format(x, y, x, y, time)
     os.system(a)
+
+def keyEvent(deviceId, eventId):
+    subprocess.run(['adb', '-s', deviceId, 'shell', 'input', 'keyevent', eventId])

@@ -21,9 +21,10 @@ deviceID2 = "emulator-5574"
 # 完整刷新流程
 def reset_sub_device():
     gamer.deviceID = deviceID2
-    if (not gamer.init_window_save(windowID2)): raise Exception(f'切换页面失败, 未能定位到窗口: {windowID2}')
-    # bs_press h-断网 1-返回主页
-    gamer.bs_press('1')
+    # if (not gamer.init_window_save(windowID2)): raise Exception(f'切换页面失败, 未能定位到窗口: {windowID2}')
+    # # bs_press h-断网 1-返回主页
+    # gamer.bs_press('1')
+    gamer.home()
     time.sleep(0.5)
     gamer.find_pic_touch(rd.start_game)
     
@@ -55,12 +56,11 @@ def reset_sub_device():
             continue
 
     # 备用机返回主页
-    gamer.bs_press('1')
+    gamer.home()
 
 def save_main_device():
     gamer.deviceID = deviceID
-    if (not gamer.init_window_save(windowID)): raise Exception(f'切换页面失败, 未能定位到窗口: {windowID}')
-    gamer.bs_press('1')
+    gamer.home()
     time.sleep(3)  # 等待窗口激活
     gamer.find_pic_touch(rd.start_game)
     time.sleep(2)  # 等待窗口激活
@@ -72,11 +72,10 @@ def save_main_device():
 def resume_main_device(waitSeconds = 3):
     # 新的启动流程流程
     gamer.deviceID = deviceID
-    if (not gamer.init_window_save(windowID)): raise Exception(f'切换页面失败, 未能定位到窗口: {windowID}')
-
-    gamer.bs_press('1')
-    time.sleep(waitSeconds)  # 等待窗口激活
+    gamer.home()
+    time.sleep(1)  # 等待窗口激活
     gamer.find_pic_touch(rd.start_game)
+    time.sleep(waitSeconds)  # 等待窗口激活
     while True:
         # time.sleep(0.5)  # 等待窗口激活
         if(gamer.verify_pic(rd.cloud_button)):
@@ -91,7 +90,7 @@ def resume_main_device(waitSeconds = 3):
         # TODO 云端数据切换
         if(gamer.find_pic_touch(rd.into_board)): 
             print("在设备{0}中，点击进入棋盘".format(gamer.deviceID))
-            time.sleep(2.5)
+            time.sleep(5)
             break
         if(gamer.find_pic_touch(rd.start_game)):
             continue
@@ -100,8 +99,11 @@ def resume_main_device(waitSeconds = 3):
 reset_sub_device()
 resume_main_device()
 
+# 防止体力瓶初值错误
+time.sleep(2.5)
 count = len(gamer.find_pic_all(rd.power_4))
 countNow = count
+print("在设备{0}中，初始4级体力瓶个数: {1}".format(gamer.deviceID, countNow))
 
 # 获取箱子初始数量
 point = (0,0)
@@ -119,9 +121,9 @@ while True:
     # 更新箱子列表
     boxList = gamer.find_pic_all(rd.box_1)
     if len(boxList) < boxCount:
-        boxCount = len(boxList)
         if len(boxList) > 0:
             point = boxList[0]
+            boxCount = len(boxList)
         else:
             errorCount += 1
             print("在设备{0}中，体力箱为0，重新判断")
@@ -153,7 +155,7 @@ while True:
         save_main_device()
     else :
         # 舍弃现有结果
-        gamer.bs_press('1')
+        gamer.home()
         # 次设备重置结果
         reset_sub_device()
         resume_main_device(0.5)

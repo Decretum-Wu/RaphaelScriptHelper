@@ -52,6 +52,15 @@ def slide(vector):
     randTime = random.randint(st.slideMinVer, st.slideMaxVer)
     print("【模拟滑屏】使用 {0} 毫秒从坐标 {1} 滑动到坐标 {2}".format(randTime, _startPos, _stopPos))
     ADBHelper.slide(deviceID, _startPos, _stopPos, randTime)
+    return stopPos
+
+def slide(startPos, stopPos):
+    _startPos = random_pos(startPos)
+    _stopPos = random_pos(stopPos)
+    randTime = random.randint(st.slideMinVer, st.slideMaxVer)
+    print("【模拟滑屏】使用 {0} 毫秒从坐标 {1} 滑动到坐标 {2}".format(randTime, _startPos, _stopPos))
+    ADBHelper.slide(deviceID, _startPos, _stopPos, randTime)
+    return stopPos
 
 # 截屏，识图，返回坐标
 def find_pic(target, returnCenter = False):
@@ -74,6 +83,26 @@ def find_pic_all(target):
     leftTopPos = ImageProc.locate_all_center(st.cache_path + "screenCap.png", target, st.accuracy)
     return leftTopPos
 
+# 截屏，识图，返回所有坐标
+def find_pic_all_list(*args):
+    ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")
+    time.sleep(0.1)
+    # locate_all
+    if len(args) == 1:
+        leftTopPos = ImageProc.locate_all_center_list(st.cache_path + "screenCap.png", args[0], st.accuracy)
+    elif len(args) == 2:
+        leftTopPos = ImageProc.locate_all_center_list(st.cache_path + "screenCap.png", args[0], args[1])
+    else:
+        print(f"Multiple arguments: {args}")
+    leftTopPos = ImageProc.locate_all_center_list(st.cache_path + "screenCap.png", args[0], st.accuracy)
+    return leftTopPos
+
+def find_all_empty(pointList):
+    ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")
+    time.sleep(0.1)
+    resultPointList = ImageProc.find_matching_coordinates(st.cache_path + "screenCap.png", pointList, st.empty_colors)
+    return resultPointList
+
 # 判断图片是否存在
 def verify_pic(target):
     ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")
@@ -95,6 +124,23 @@ def find_pic_touch(target):
     # 模拟点击 debug, 3水平偏移
     x = random.randint(tlx + 3, tlx + w_src)
     y = random.randint(tly, tly + h_src)
+    touch((x, y))
+    return True
+
+def find_pic_double_touch(target):
+    leftTopPos = find_pic(target)
+    if leftTopPos is None:
+        print("【识图】识别 {0} 失败".format(target))
+        return False
+    print("【识图】识别 {0} 成功，图块左上角坐标 {1}".format(target, leftTopPos))
+    img = cv2.imread(target)
+    tlx, tly = leftTopPos
+    h_src, w_src, tongdao = img.shape
+    # 模拟点击 debug, 3水平偏移
+    x = random.randint(tlx + 3, tlx + w_src)
+    y = random.randint(tly, tly + h_src)
+    touch((x, y))
+    delay(0.1)
     touch((x, y))
     return True
 
@@ -122,6 +168,10 @@ def init_window_save(windowID):
         print("未找到指定的窗口: {0}".format(windowID))
         return False
 
+def home():
+    ADBHelper.keyEvent(deviceID, '3')
+
 def bs_press(bsKeyStr):
     pyautogui.hotkey('ctrl', 'shift', bsKeyStr)
     time.sleep(0.5)
+
