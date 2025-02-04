@@ -27,7 +27,7 @@ def locate_all(source, wanted, accuracy=0.90):
         x = pt[0]
         y = pt[1]
 
-        if (x - ex) + (y - ey) < 15:  # 去掉邻近重复的点
+        if abs(x - ex) + abs(y - ey) < 30:  # 去掉邻近重复的点
             continue
         ex, ey = x, y
 
@@ -50,7 +50,7 @@ def locate_all_center(source, wanted, accuracy=0.90):
         x = pt[0]
         y = pt[1]
 
-        if (x - ex) + (y - ey) < 15:  # 去掉邻近重复的点
+        if abs(x - ex) + abs(y - ey) < 30:  # 去掉邻近重复的点
             continue
         ex, ey = x, y
 
@@ -108,7 +108,7 @@ def locate_all_center_list(source, wanted_list, accuracy=0.90):
             x, y = pt[0], pt[1]
 
             # 若当前点与上一个记录点过于接近（距离和小于 15），则跳过
-            if abs(x - ex) + abs(y - ey) < 15:
+            if abs(x - ex) + abs(y - ey) < 30:
                 continue
 
             ex, ey = x, y

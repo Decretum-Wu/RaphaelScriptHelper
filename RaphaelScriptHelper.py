@@ -45,14 +45,14 @@ def touch(pos):
         ADBHelper.longTouch(deviceID, _pos, randTime)
 
 # 智能模拟滑屏，给定起始点和终点的二元组，模拟一次随机智能滑屏
-def slide(vector):
-    startPos, stopPos = vector
-    _startPos = random_pos(startPos)
-    _stopPos = random_pos(stopPos)
-    randTime = random.randint(st.slideMinVer, st.slideMaxVer)
-    print("【模拟滑屏】使用 {0} 毫秒从坐标 {1} 滑动到坐标 {2}".format(randTime, _startPos, _stopPos))
-    ADBHelper.slide(deviceID, _startPos, _stopPos, randTime)
-    return stopPos
+# def slide(vector):
+#     startPos, stopPos = vector
+#     _startPos = random_pos(startPos)
+#     _stopPos = random_pos(stopPos)
+#     randTime = random.randint(st.slideMinVer, st.slideMaxVer)
+#     print("【模拟滑屏】使用 {0} 毫秒从坐标 {1} 滑动到坐标 {2}".format(randTime, _startPos, _stopPos))
+#     ADBHelper.slide(deviceID, _startPos, _stopPos, randTime)
+#     return stopPos
 
 def slide(startPos, stopPos):
     _startPos = random_pos(startPos)
@@ -81,6 +81,12 @@ def find_pic_all(target):
     time.sleep(0.1)
     # locate_all
     leftTopPos = ImageProc.locate_all_center(st.cache_path + "screenCap.png", target, st.accuracy)
+    return leftTopPos
+
+# 截屏，识图，返回所有坐标
+def debug_find_pic_all(target):
+    # locate_all
+    leftTopPos = ImageProc.locate_all_center(st.cache_path + "screenCapTest.png", target, 0.7)
     return leftTopPos
 
 # 截屏，识图，返回所有坐标
@@ -174,4 +180,26 @@ def home():
 def bs_press(bsKeyStr):
     pyautogui.hotkey('ctrl', 'shift', bsKeyStr)
     time.sleep(0.5)
+
+def bs_manager_click(windowID, pos):
+    windows = gw.getWindowsWithTitle(windowID)
+    x, y = pos
+    if windows:
+        window = windows[0]
+        # 激活窗口
+        try: 
+            window.activate()
+        except Exception:
+            # 忽略所有异常
+            print("忽略所有异常")
+            pass
+        # 首个按钮 150%中 (900, 225), (900, 330), 确认键为 (900, 600)
+        button_x = window.left + x
+        button_y = window.top + y
+        # 移动鼠标并点击按钮
+        time.sleep(0.5)
+        pyautogui.click(button_x, button_y)
+        print("按钮点击成功！")
+    else:
+        print("未找到窗口，请检查窗口标题。")
 

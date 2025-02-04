@@ -19,6 +19,7 @@ deviceID2 = "emulator-5574"
 
 gamer.deviceID = deviceID
 # gamer.home()
-powerList = gamer.find_pic_all(rd.orange_4_a)
+powerList = gamer.debug_find_pic_all(rd.power_4)
 countNow = len(powerList)
 print("在设备{0}中，获取目标个数: {1}".format(gamer.deviceID, countNow))
+
