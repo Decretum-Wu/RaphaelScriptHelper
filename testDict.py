@@ -73,3 +73,7 @@ daily_close = (965, 385)
 daily_info = "./img/daily_info.png"
 event_get_1 = "./img/event_get_1.png"
 first_screen_close_1 = (965, 278)
+card_1 = "./img/card_1.png"
+stone_4 = "./img/stone_4.png"
+out_of_power_2 = "./img/out_of_power_2.png"
+out_of_power_2_button = (982, 200)

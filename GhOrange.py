@@ -24,6 +24,7 @@ windowID2 = "BlueStacks App Player 2"
 windowID3 = "BlueStacks Multi"
 # 首个按钮 150%中 (900, 225), (900, 330), 确认键为 (900, 600)
 deviceID = "emulator-5554"
+# deviceID = "emulator-5584"
 deviceID2 = "emulator-5574"
 
 gamer.deviceID = deviceID
@@ -48,6 +49,14 @@ targetListCoin = [
     rd.icon_2,
     rd.icon_3,
     rd.icon_4
+]
+targetListOrange = [
+    rd.orange_1_n,
+    rd.orange_2_n,
+    rd.orange_3_n,
+    rd.orange_4_n,
+    rd.orange_5_n,
+    rd.orange_6_n
 ]
 # gamer.home()
 # powerList = gamer.find_pic_all(rd.orange_4_a)
@@ -94,12 +103,14 @@ def process_existed_orange():
         print("在设备{0}中，获取滑动次数: {1}".format(gamer.deviceID, slideCount))
 
 def process_existed(targetList):
-    gamer.delay(1)
-    powerCol = gamer.find_pic_all_list(targetList)
-    powerCol = ghh.get_collection_unique_grid_positions(powerCol)
-    print("在设备{0}中，获取目标个数: {1}".format(gamer.deviceID, powerCol))
-    slideCount = ghh.process_collection(powerCol, gamer.slide)
-    print("在设备{0}中，获取滑动次数: {1}".format(gamer.deviceID, slideCount))
+    slideCount = 1
+    while slideCount > 0:
+        gamer.delay(1)
+        powerCol = gamer.find_pic_all_list(targetList)
+        powerCol = ghh.get_collection_unique_grid_positions(powerCol)
+        print("在设备{0}中，获取目标个数: {1}".format(gamer.deviceID, powerCol))
+        slideCount = ghh.process_collection(powerCol, gamer.slide)
+        print("在设备{0}中，获取滑动次数: {1}".format(gamer.deviceID, slideCount))
 
 def verify_empty():
     time.sleep(1)
@@ -161,6 +172,7 @@ def filter_beike(count = 7):
 
 def clean_up(type):
     if type == 1:
+        morning_clean()
         process_existed(targetListCoin)
         gamer.delay(1)
         gamer.find_pic_double_touch(rd.icon_5)
@@ -177,6 +189,8 @@ def clean_up(type):
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s: %(message)s')
+
+
 
 # 简单功能测试
 # temp = gamer.find_pic_all_list([rd.bubble_beike_4])
@@ -226,14 +240,19 @@ def round_all():
     logging.info(msh.send_simple_push("1","提示：完成一轮执行"))
     logging.info("完成执行")
 
+def morning_clean():
+    if gamer.verify_pic(rd.daily_info):
+        gamer.touch(rd.daily_close)
+
+# round_all()
 # 设置定时任务
-schedule.every().hour.at(":00").do(round_all)  # 每小时 0 分钟
-schedule.every().hour.at(":20").do(round_all)  # 每小时 20 分钟
-schedule.every().hour.at(":40").do(round_all)  # 每小时 40 分钟
+# schedule.every().hour.at(":10").do(round_all)  # 每小时 0 分钟
+# schedule.every().hour.at(":30").do(round_all)  # 每小时 20 分钟
+# schedule.every().hour.at(":50").do(round_all)  # 每小时 40 分钟
 
-print("定时任务已启动，等待运行...")
+# print("定时任务已启动，等待运行...")
 
-# 保持程序运行
-while True:
-    schedule.run_pending()  # 运行待执行的任务
-    time.sleep(5)  # 每5秒检查一次
+# # 保持程序运行
+# while True:
+#     schedule.run_pending()  # 运行待执行的任务
+#     time.sleep(5)  # 每5秒检查一次

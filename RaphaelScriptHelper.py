@@ -197,7 +197,7 @@ def bs_manager_click(windowID, pos):
         button_x = window.left + x
         button_y = window.top + y
         # 移动鼠标并点击按钮
-        time.sleep(0.5)
+        time.sleep(1)
         pyautogui.click(button_x, button_y)
         print("按钮点击成功！")
     else:

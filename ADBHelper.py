@@ -49,3 +49,10 @@ def longTouch(deviceID, pos, time):
 
 def keyEvent(deviceId, eventId):
     subprocess.run(['adb', '-s', deviceId, 'shell', 'input', 'keyevent', eventId])
+
+def connent(deviceId):
+    subprocess.run(['adb', 'connect', deviceId])
+
+def connent2(deviceId):
+    a = "adb connnect " + deviceId
+    os.system(a)
