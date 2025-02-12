@@ -23,3 +23,5 @@ empty_color_1 = (241, 184, 142)
 empty_color_2 = (237, 179, 135)
 empty_colors = [empty_color_1, empty_color_2]
 
+empty_block = (132,576)
+

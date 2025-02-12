@@ -27,7 +27,7 @@ deviceID = "emulator-5554"
 deviceID2 = "emulator-5574"
 deviceID = "emulator-5584"
 deviceID2 = "127.0.0.1:5595"
-manager_pos_1 = (900, 225)
+manager_pos_1 = (900, 220)
 manager_pos_2 = (900, 330)
 manager_pos_submit = (900, 600)
 # gamer.deviceID = "emulator-5554"
@@ -44,7 +44,7 @@ def restart_all():
     gamer.bs_manager_click(windowID3, manager_pos_1)
     gamer.delay(5)
     gamer.bs_manager_click(windowID3, manager_pos_2)
-    gamer.delay(60)
+    gamer.delay(40)
     ADBHelper.connent(deviceID2)
     gamer.delay(5)
 
@@ -128,32 +128,35 @@ def resume_main_device(waitSeconds = 3):
         if(gamer.find_pic_touch(rd.start_game)):
             continue
 
+def count_resource(target):
+    time.sleep(2.5)
+    count = len(gamer.find_pic_all(target))
+    if count == 0:
+        time.sleep(5)
+        count = len(gamer.find_pic_all(target))
+    return count
+
 # [脚本从这里开始运行]
 ADBHelper.connent(deviceID2)
 time.sleep(3)  # 等待窗口激活
 reset_sub_device()
 resume_main_device()
+errorCount = 0
+roundCount = 0
+point = (0,0)
 
-# 防止体力瓶初值错误
-time.sleep(2.5)
-count = len(gamer.find_pic_all(rd.power_4))
-if count == 0:
-    time.sleep(5)
-    count = len(gamer.find_pic_all(rd.power_4))
+# 1 防止体力瓶初值错误
+count = count_resource(rd.power_4)
 countNow = count
 print("在设备{0}中，初始4级体力瓶个数: {1}".format(gamer.deviceID, countNow))
 
 # 获取箱子初始数量
-point = (0,0)
 boxList = gamer.find_pic_all(rd.box_1)
 boxCount = len(boxList)
 if len(boxList) > 0:
     point = boxList[0]
 else:
     raise Exception(f'箱子列表为空')
-errorCount = 0
-
-roundCount = 0
 
 while True:
     # 更新箱子列表
@@ -170,7 +173,7 @@ while True:
                 # raise Exception(f'箱子列表为空')
             continue
 
-    # (分支，刮刮卡)    
+    # # (分支，刮刮卡)    
     # time.sleep(3)
     # cardList = gamer.find_pic_all(rd.card_1)
     # if len(cardList) > 0:
@@ -190,7 +193,7 @@ while True:
     gamer.touch(point)
 
 
-    # # 刷新卡
+    # 刷新卡
     # roundCount += 1
     # if roundCount % 5 == 0:
     #     logging.info(msh.send_simple_push("在第{0}次执行中，获取列表: {1}".format(roundCount, cardList),"提示：完成一轮刷新"))
@@ -222,7 +225,7 @@ while True:
         count = len(gamer.find_pic_all(rd.power_4))
         print("在设备{0}中，合成后4级体力瓶个数: {1}".format(gamer.deviceID, count))
         save_main_device()
-        logging.info(msh.send_simple_push("1","提示：获得一个四级瓶"))
+        logging.info(msh.send_simple_push("四级瓶位置：{0}".format(powerList),"提示：获得一个四级瓶"))
         logging.info("获得一个四级瓶")
     else :
         # 舍弃现有结果
@@ -234,9 +237,9 @@ while True:
         # 次设备重置结果
         reset_sub_device()
         resume_main_device(0.5)
-        # if roundCount % 15 == 0:
-        #     gho.filter_orange()
-        #     save_main_device()
+        if roundCount % 15 == 0:
+            gho.filter_orange()
+            save_main_device()
         # 重置错误次数
         errorCount = 0
 logging.info(msh.send_simple_push("箱子列表为空","提示：完成一轮执行"))

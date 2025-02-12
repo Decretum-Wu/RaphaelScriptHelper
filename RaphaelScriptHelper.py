@@ -2,9 +2,15 @@ import ImageProc, ADBHelper, random, time, cv2
 import settings as st
 import pygetwindow as gw
 import pyautogui
+import shutil
+from datetime import datetime
+import concurrent.futures
+import time
 
 deviceType = 1
+timeout = 8
 deviceID = ""
+pyautogui.FAILSAFE = False
 # windowID = ""
 
 def random_delay():
@@ -81,7 +87,18 @@ def find_pic_all(target):
     time.sleep(0.1)
     # locate_all
     leftTopPos = ImageProc.locate_all_center(st.cache_path + "screenCap.png", target, st.accuracy)
-    return leftTopPos
+    return sorted(leftTopPos)
+
+def find_pic_all_stable(target):
+    time.sleep(1.5)
+    resourceList = find_pic_all(target)
+    if len(resourceList) == 0:
+        time.sleep(2)
+        resourceList = find_pic_all(target)
+    if len(resourceList) == 0:
+        time.sleep(3)
+        resourceList = find_pic_all(target)
+    return resourceList
 
 # 截屏，识图，返回所有坐标
 def debug_find_pic_all(target):
@@ -191,15 +208,47 @@ def bs_manager_click(windowID, pos):
             window.activate()
         except Exception:
             # 忽略所有异常
-            print("忽略所有异常")
+            print("忽略所有异常1")
+            # 激活窗口
+            try: 
+                time.sleep(2)
+                window.activate()
+            except Exception:
+                # 忽略所有异常
+                print("忽略所有异常2")
+                pass
             pass
         # 首个按钮 150%中 (900, 225), (900, 330), 确认键为 (900, 600)
         button_x = window.left + x
         button_y = window.top + y
         # 移动鼠标并点击按钮
-        time.sleep(1)
+        time.sleep(1.5)
         pyautogui.click(button_x, button_y)
         print("按钮点击成功！")
     else:
         print("未找到窗口，请检查窗口标题。")
 
+def clean_touch(point, times = 1):
+    time.sleep(0.5)
+    ADBHelper.touch(deviceID, st.empty_block)
+    time.sleep(0.5)
+    for i in range(times):
+        touch(point)
+        time.sleep(0.5)
+
+def collect_log_image():
+    # 获取当前的日期和时间
+    now = datetime.now()
+    # 将日期和时间格式化为字符串，例如：20231005_153045
+    filename = now.strftime("%Y%m%d_%H%M%S")
+    ADBHelper.screenCapture(deviceID, st.cache_path + f"log_{filename}.png")
+    shutil(st.cache_path + "screenCap.png", st.cache_path + f"log_{filename}.png")
+
+# try_screen_capture() as ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")
+# def try_screen_capture():
+#     with concurrent.futures.ThreadPoolExecutor() as executor:
+#         # 提交任务
+#         future = executor.submit(ADBHelper.screenCapture, deviceID, st.cache_path + "screenCap.png")
+#         # 等待任务完成，设置超时时间
+#         result = future.result(timeout=timeout)
+#         return result

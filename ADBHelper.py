@@ -1,4 +1,8 @@
 import os, time, subprocess
+import concurrent.futures
+import functools
+import inspect
+import sys
 
 # 获取设备列表，每一个为deviceID
 def getDevicesList():
@@ -53,6 +57,40 @@ def keyEvent(deviceId, eventId):
 def connent(deviceId):
     subprocess.run(['adb', 'connect', deviceId])
 
-def connent2(deviceId):
-    a = "adb connnect " + deviceId
-    os.system(a)
+def testTimeOut():
+    time.sleep(5)
+
+# 超时装饰器
+def timeout(seconds):
+    """为函数添加超时检测的装饰器"""
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            # 使用 ThreadPoolExecutor 运行函数
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(func, *args, **kwargs)
+                try:
+                    # 设置超时时间
+                    result = future.result(timeout=seconds)
+                    return result
+                except concurrent.futures.TimeoutError:
+                    # 超时处理
+                    print(f"函数 {func.__name__} 运行超时（{seconds} 秒）")
+                    future.cancel()  # 取消任务
+                    raise  # 抛出超时异常
+        return wrapper
+    return decorator
+
+# 为模块中的所有函数应用超时装饰器
+def apply_timeout_to_all_functions(module, timeout_seconds):
+    """为模块中的所有函数应用超时装饰器"""
+    for name, obj in inspect.getmembers(module):
+        if inspect.isfunction(obj):  # 检查是否为函数
+            setattr(module, name, timeout(timeout_seconds)(obj))  # 应用装饰器
+
+# 测试
+# if __name__ == "__main__":
+# 获取当前模块
+current_module = sys.modules[__name__]
+# 为所有函数应用超时装饰器（超时时间设置为 10 秒）
+apply_timeout_to_all_functions(current_module, timeout_seconds=12)

@@ -19,10 +19,10 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "Python Debugger: Start execute",
+            "name": "Python Debugger: debug",
             "type": "debugpy",
             "request": "launch",
-            "program": "./Gh_default.py",
+            "program": "./debug.py",
             "console": "integratedTerminal"
         }
     ]

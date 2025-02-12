@@ -113,3 +113,34 @@ def process_collection(collection, merge_func):
 
 def find_item_counts(targetPic):
     return len(get_collection_unique_grid_positions(gamer.find_pic_all_list([targetPic]))[0])
+
+def find_board_items(targetPic):
+    return get_collection_unique_grid_positions(gamer.find_pic_all_list([targetPic]))[0]
+
+def stable_find_board_items(targetPic, retryCount = 1):
+    # gamer.delay(1.5)
+    resourceList = []
+    for i in range(retryCount):
+        resourceList = find_board_items(targetPic)
+        # gamer.delay(1)
+        if len(resourceList) > 0:
+            break
+    return resourceList
+
+def combine_lists_to_dict(keyList, valueList):
+    # 检查两个列表长度是否一致
+    if len(keyList) != len(valueList):
+        raise ValueError("两个列表长度不同，无法合并为键值对")
+    # 使用 zip 合并为字典
+    return dict(zip(keyList, valueList))
+
+def click_order(targetPic):
+    tempList = gamer.find_pic_all_list([targetPic])[0]
+    if len(tempList) > 0:
+        point = tempList[0]
+        x, y = point
+        gamer.touch((x,y - 70))
+        print(f"成功点击{targetPic}")
+    else:
+        print(f"未能点击{targetPic}")
+    
