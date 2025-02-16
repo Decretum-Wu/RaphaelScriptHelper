@@ -42,10 +42,10 @@ roundCount = 1
 refreshCount = 1
 tagCount = 0
 point = settings.event_first_block
-settings.accuracy = 0.8
+settings.accuracy = 0.75
 stayFlag = False
-retryNum = 9
-retryNumMin = 3
+retryNum = 3
+retryNumMin = 2
 minAccuracy = 0.40
 # startAtOrange = False
 # startAtOrange = True
@@ -137,11 +137,13 @@ def process_existed(targetList, cacheFlag = False):
             print("在设备{0}中，获取滑动次数: {1}".format(gamer.deviceID, slideCount))
 
 def clean_event():
+    gamer.screenCap()
     process_existed(targetListGift, True)
     gamer.screenCap()
     process_existed(targetListBear, True)
     process_existed(targetListCoin, True)
     process_existed(targetListPower, True)
+    gamer.find_pic_double_touch(rd.coin_new_5)
 
 def into_game(verifyIntoFlag = False):
     continueFlag = True
