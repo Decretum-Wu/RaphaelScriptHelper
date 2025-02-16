@@ -7,6 +7,9 @@ import time
 import ADBHelper
 import logging
 import GhHelper as ghh
+import ImageProc
+import GhOrange as gho
+import GhEventHelper as gheh
 from enum import Enum
 
 class Direction(Enum):
@@ -20,6 +23,8 @@ windowID2 = "BlueStacks App Player 2"
 windowID3 = "BlueStacks Multi"
 deviceID = "emulator-5554"
 deviceID2 = "emulator-5574"
+# deviceID = "127.0.0.1:5625"
+# deviceID2 = "127.0.0.1:5625"
 # deviceID = "emulator-5584"
 # deviceID2 = "127.0.0.1:5595"
 manager_pos_1 = (900, 225)
@@ -36,6 +41,47 @@ gamer.deviceID = deviceID
 # powerList = gamer.debug_find_pic_all(rd.power_4)
 # countNow = len(powerList)
 # print("在设备{0}中，获取目标个数: {1}".format(gamer.deviceID, countNow))
+
+targetListCoin = [
+    rd.coin_0,
+    rd.coin_new_1,
+    rd.coin_new_2,
+    rd.coin_new_3,
+    rd.coin_new_4
+]
+
+targetListGift = [
+    rd.event_gift_1_new,
+    rd.event_gift_2,
+    rd.event_gift_3,
+    rd.event_gift_4,
+    rd.event_gift_5,
+    rd.event_gift_6,
+    rd.event_gift_7,
+    rd.event_gift_8
+]
+
+targetListPower = [
+    rd.power_1_new,
+    rd.power_2_new,
+    rd.power_3,
+    rd.power_4
+]
+
+targetListBear = [
+    rd.event_bear_2,
+    rd.event_bear_3,
+    rd.event_bear_4,
+]
+
+targetListOrange = [
+    rd.orange_1_a,
+    rd.orange_2_a,
+    rd.orange_3_a,
+    rd.orange_4_a,
+    rd.orange_5_a,
+    rd.orange_6_a
+]
 
 def restart_all():
     gamer.bs_manager_click(windowID3, manager_pos_1)
@@ -129,4 +175,28 @@ def simple_merge(target):
 
 # gamer.bs_manager_click(windowID3, manager_pos_1)
 
-ghh.click_order(rd.order_orange)
+# ghh.click_order(rd.order_orange)
+
+# temp = ImageProc.get_color(rd.empty_brown_1,(64,64))
+# print("在设备{0}中，获取目标个数: {1}".format(gamer.deviceID, powerCol[0]))
+# temp = gamer.find_all_empty(ghh.get_all_center())
+
+# temp = 0
+# while not gho.leave_incident_with_normal_flag():
+#     temp += 1
+
+# temp = gho.verify_empty()
+# temp = len(gheh.get_all_center())
+
+# powerCol = gamer.find_pic_all_list(targetListBear)
+# powerCol = gheh.get_collection_unique_grid_positions(powerCol)
+
+treeCol = gamer.find_pic_all_list([
+            rd.orange_tree_new
+        ])
+treeCol = ghh.get_collection_unique_grid_positions(treeCol)
+
+# powerCol = gamer.find_pic_all_list(targetListOrange)
+print("在设备{0}中，获取橘子树总数: {1}".format(gamer.deviceID, len(treeCol[0])))
+# print("temp:{0}".format(powerCol))
+

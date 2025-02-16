@@ -1,6 +1,9 @@
 #图片匹配置信度，0-1之间，默认0.93，如果匹配出错误目标则提高置信度，如果要模糊匹配或高置信度无法匹配则降低置信度
-accuracy = 0.70
+# accuracy = 0.70
+accuracy = 0.65
 #0.7一般为经验值
+#0.6在活动面板中导致了错误
+# 0.8用于event
 
 #缓存文件存放地址，以/结尾
 cache_path = './cache/'
@@ -19,9 +22,16 @@ touchDelayRange = 10
 slideMinVer = 200
 slideMaxVer = 300
 
-empty_color_1 = (241, 184, 142)
-empty_color_2 = (237, 179, 135)
+# blue
+# empty_color_1 = (241, 184, 142)
+# empty_color_2 = (237, 179, 135)
+
+empty_color_1 = (67, 135, 202)
+empty_color_2 = (55, 123, 191)
 empty_colors = [empty_color_1, empty_color_2]
 
+# empty_color_green = (185, 183, 88)
+# empty_colors = [empty_color_green]
 empty_block = (132,576)
+event_first_block = (204,736)
 

@@ -134,6 +134,13 @@ def verify_pic(target):
     if (leftTopPos): return True
     else: return False
 
+def verify_pic_strict(target):
+    ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")
+    time.sleep(0.1)
+    leftTopPos = ImageProc.locate(st.cache_path + "screenCap.png", target, 0.9999)
+    if (leftTopPos): return True
+    else: return False
+
 # 寻找目标区块并在其范围内随机点击
 def find_pic_touch(target):
     leftTopPos = find_pic(target)
@@ -193,6 +200,9 @@ def init_window_save(windowID):
 
 def home():
     ADBHelper.keyEvent(deviceID, '3')
+
+def back():
+    ADBHelper.keyEvent(deviceID, 'KEYCODE_BACK')
 
 def bs_press(bsKeyStr):
     pyautogui.hotkey('ctrl', 'shift', bsKeyStr)

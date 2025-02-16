@@ -7,7 +7,7 @@ import time
 import GhHelper as ghh
 import pygetwindow as gw
 import schedule
-from datetime import datetime
+import datetime
 import ImageProc
 import logging
 import messageHelper as msh
@@ -26,7 +26,7 @@ windowID3 = "BlueStacks Multi"
 deviceID = "emulator-5554"
 # deviceID = "emulator-5584"
 usePower = False
-# usePower = True
+usePower = True
 
 gamer.deviceID = deviceID
 targetListBeike = [
@@ -38,10 +38,12 @@ targetListBeike = [
     rd.beike_7,
     rd.beike_8,
     rd.beike_9,
-    # rd.beike_10
+    rd.beike_10
 ]
 
 targetListPower = [
+    rd.power_1_new,
+    rd.power_2_new,
     rd.power_3,
     rd.power_4
 ]
@@ -51,23 +53,46 @@ targetListStone = [
     rd.stone_3
 ]
 
+targetListBlue = [
+    rd.blue_resource_1,
+    rd.blue_resource_2,
+    rd.blue_resource_3,
+]
+
 targetListFloat = [
     rd.float_2,
     rd.float_3
 ]
+# targetListCoin = [
+#     rd.icon_1,
+#     rd.icon_2,
+#     rd.icon_3,
+#     rd.icon_4
+# ]
+
 targetListCoin = [
-    rd.icon_1,
-    rd.icon_2,
-    rd.icon_3,
-    rd.icon_4
+    rd.coin_new_1,
+    rd.coin_new_2,
+    rd.coin_new_3,
+    rd.coin_new_4
 ]
+
+# targetListOrange = [
+#     rd.orange_1_n,
+#     rd.orange_2_n,
+#     rd.orange_3_n,
+#     rd.orange_4_n,
+#     rd.orange_5_n,
+#     rd.orange_6_n
+# ]
+
 targetListOrange = [
-    rd.orange_1_n,
-    rd.orange_2_n,
-    rd.orange_3_n,
-    rd.orange_4_n,
-    rd.orange_5_n,
-    rd.orange_6_n
+    rd.orange_1_a,
+    rd.orange_2_a,
+    rd.orange_3_a,
+    rd.orange_4_a,
+    rd.orange_5_a,
+    rd.orange_6_a
 ]
 # gamer.home()
 # powerList = gamer.find_pic_all(rd.orange_4_a)
@@ -100,14 +125,7 @@ def process_existed_orange():
     slideCount = 1
     while slideCount > 0:
         gamer.delay(1)
-        powerCol = gamer.find_pic_all_list([
-            rd.orange_1_n,
-            rd.orange_2_n,
-            rd.orange_3_n,
-            rd.orange_4_n,
-            rd.orange_5_n,
-            rd.orange_6_n
-        ])
+        powerCol = gamer.find_pic_all_list(targetListOrange)
         powerCol = ghh.get_collection_unique_grid_positions(powerCol)
         print("在设备{0}中，获取目标个数: {1}".format(gamer.deviceID, powerCol))
         slideCount = ghh.process_collection(powerCol, gamer.slide)
@@ -142,10 +160,13 @@ def verify_empty():
 
 # 此处为收橘子完整逻辑
 def filter_orange():
-    treeCol = gamer.find_pic_all_list([
-            rd.orange_tree_todo
+    countTree = 0
+    while countTree < 9:
+        treeCol = gamer.find_pic_all_list([
+            rd.orange_tree_new
         ])
-    treeCol = ghh.get_collection_unique_grid_positions(treeCol)
+        treeCol = ghh.get_collection_unique_grid_positions(treeCol)
+        countTree = len(treeCol[0])
     print("在设备{0}中，获取橘子树总数: {1}".format(gamer.deviceID, len(treeCol[0])))
     count = 0
     for tree in treeCol[0]:
@@ -162,14 +183,21 @@ def filter_orange():
             # if(len(gamer.find_all_empty(ghh.get_all_center())) > 0):
             #     print("点击后依旧有空间，继续新一轮点击")
             #     break
+            # 测试，防止被打断
+            solve_breaker()
             process_existed_orange()
+            if usePower:
+                if not verify_empty():
+                    logging.info(msh.send_simple_push("进入页面时","提示：棋盘已满，进入前完全清理"))
+                    clean_up(3)
+                    # ghh.click_order(rd.order_orange)
         count += 1
-        if count%8 == 0:
+        if count%4 == 0:
             clean_up(1)
     process_existed_orange()
-    clean_up(1)
+    clean_up(2)
 
-def filter_beike(count = 7):
+def filter_beike(count = 6):
     for i in range(1, count):
         gamer.touch(ghh.get_center((1,5)))
     process_existed(targetListBeike)
@@ -186,20 +214,25 @@ def clean_up(type):
     if type == 1:
         morning_clean()
         process_existed(targetListCoin)
-        process_existed(targetListPower)
-        process_existed(targetListStone)
-        gamer.find_pic_double_touch(rd.stone_4)
+        #temp
+        # process_existed(targetListPower)
+        # process_existed(targetListStone)
+        # gamer.find_pic_double_touch(rd.stone_4)
+
+        # process_existed(targetListBlue)
         gamer.delay(1)
     elif type == 2: 
         clean_up(1)
         # process_existed(targetListFloat)
         gamer.delay(1)
-        gamer.find_pic_double_touch(rd.icon_5)
+        gamer.find_pic_double_touch(rd.coin_new_5)
+        gamer.find_pic_double_touch(rd.coin_new_4)
         # gamer.find_pic_double_touch(rd.float_4)
     else:
         clean_up(2)
-        gamer.find_pic_double_touch(rd.icon_4)
-        gamer.find_pic_double_touch(rd.icon_3)
+        # gamer.find_pic_double_touch(rd.icon_4)
+        gamer.find_pic_double_touch(rd.coin_new_3)
+        gamer.find_pic_double_touch(rd.coin_new_2)
         # gamer.find_pic_double_touch(rd.float_3)
 
 logging.basicConfig(level=logging.INFO,
@@ -231,45 +264,28 @@ logging.basicConfig(level=logging.INFO,
 
 def round_all():
     if usePower:
-        if verify_empty():
-            clean_up(2)
-        else:
+        # if verify_empty():
+        #     clean_up(2)
+        # else:
+        if not verify_empty():
             logging.info(msh.send_simple_push("进入页面时","提示：棋盘已满，进入前完全清理"))
             clean_up(3)
+            # ghh.click_order(rd.order_orange)
     filter_orange()
     if usePower:
-        ghh.click_order(rd.order_orange)
         for i in range(1,20):
             filter_beike()
-            if(gamer.verify_pic(rd.out_of_power_1)):
-                gamer.touch(rd.close_button)
-                gamer.delay(3)
-                if(gamer.verify_pic(rd.out_of_power_1)):
-                    logging.error("未能正确离开无体力状态")
-                    msh.send_simple_push("1","错误：未能离开无体力状态")
-                    continue
-                logging.info("正确离开无体力状态")
-                # msh.send_simple_push("1","提示：正确离开无体力状态")
+            # if gamer.verify_pic(rd.back_from_board):
+            if solve_breaker():
                 process_existed(targetListBeike)
-                clean_up(2)
                 break
-            if(gamer.verify_pic(rd.out_of_power_2)):
-                gamer.touch(rd.out_of_power_2_button)
-                gamer.delay(3)
-                if(gamer.verify_pic(rd.out_of_power_2)):
-                    logging.error("未能正确离开无体力状态")
-                    msh.send_simple_push("1","错误：未能离开无体力状态")
-                    continue
-                logging.info("正确离开无体力状态")
-                # msh.send_simple_push("1","提示：正确离开无体力状态")
-                process_existed(targetListBeike)
-                clean_up(2)
-                break
+            process_existed(targetListBeike)
             if verify_empty():
                 clean_up(2)
             else:
                 logging.info(msh.send_simple_push("1","提示：棋盘已满，完成后完全清理"))
                 clean_up(3)
+                # ghh.click_order(rd.order_orange)
     gamer.home()
     gamer.delay(5)  # 等待窗口激活
     gamer.find_pic_touch(rd.start_game)
@@ -280,7 +296,58 @@ def morning_clean():
     if gamer.verify_pic(rd.daily_info):
         gamer.touch(rd.daily_close)
 
+def draft():
+    if(gamer.verify_pic(rd.out_of_power_1)):
+        gamer.touch(rd.close_button)
+        gamer.delay(3)
+        if(gamer.verify_pic(rd.out_of_power_1)):
+            logging.error("未能正确离开无体力状态")
+            msh.send_simple_push("1","错误：未能离开无体力状态")
+            # continue
+        logging.info("正确离开无体力状态")
+        # msh.send_simple_push("1","提示：正确离开无体力状态")
+        process_existed(targetListBeike)
+        clean_up(2)
+        # break
+    if(gamer.verify_pic(rd.out_of_power_2)):
+        gamer.touch(rd.out_of_power_2_button)
+        gamer.delay(3)
+        if(gamer.verify_pic(rd.out_of_power_2)):
+            logging.error("未能正确离开无体力状态")
+            msh.send_simple_push("1","错误：未能离开无体力状态")
+            # continue
+        logging.info("正确离开无体力状态")
+        # msh.send_simple_push("1","提示：正确离开无体力状态")
+        process_existed(targetListBeike)
+        clean_up(2)
+        # break
 
+def leave_incident_with_normal_flag():
+    if gamer.verify_pic_strict(rd.back_from_board):
+        return True
+    elif gamer.find_pic_touch(rd.into_board):
+        gamer.delay(6)
+        return False
+    else:
+        gamer.back()
+        gamer.delay(3)
+        return False
+def solve_breaker():
+    count = 0
+    while not leave_incident_with_normal_flag():
+        count += 1
+        if count == 10:
+            # 尝试解决1
+            gamer.touch((931, 1864))
+            msh.send_simple_push("解决次数大于10","提示：尝试点击解决阻塞问题")
+        if count > 20:
+            msh.send_simple_push("错误出现20次","错误：未能离开无体力状态")
+            raise Exception(f'错误：未能解决卡顿')
+    if count > 0:
+        msh.send_simple_push("解决次数大于0","提示：解决一次阻塞问题")
+        return True
+    else: return False
+    
 # 测试
 if __name__ == "__main__":
     round_all()
@@ -294,4 +361,8 @@ if __name__ == "__main__":
     # 保持程序运行
     while True:
         schedule.run_pending()  # 运行待执行的任务
+        if datetime.datetime.now().time() > datetime.time(7, 55): 
+            gamer.collect_log_image()
+            gamer.home()
+            break
         time.sleep(5)  # 每5秒检查一次
