@@ -119,21 +119,29 @@ targetListBear = [
     rd.event_bear_4,
 ]
 
-def process_existed(targetList):
+def process_existed(targetList, cacheFlag = False):
     slideCount = 1
-    while slideCount > 0:
-        gamer.delay(1)
-        powerCol = gamer.find_pic_all_list(targetList)
+    if cacheFlag:
+        powerCol = gamer.find_pic_all_list_cache(targetList)
         powerCol = gheh.get_collection_unique_grid_positions(powerCol)
         print("在设备{0}中，获取目标个数: {1}".format(gamer.deviceID, powerCol))
         slideCount = gheh.process_collection(powerCol, gamer.slide)
         print("在设备{0}中，获取滑动次数: {1}".format(gamer.deviceID, slideCount))
+    else:
+        while slideCount > 0:
+            # gamer.delay(1)
+            powerCol = gamer.find_pic_all_list(targetList)
+            powerCol = gheh.get_collection_unique_grid_positions(powerCol)
+            print("在设备{0}中，获取目标个数: {1}".format(gamer.deviceID, powerCol))
+            slideCount = gheh.process_collection(powerCol, gamer.slide)
+            print("在设备{0}中，获取滑动次数: {1}".format(gamer.deviceID, slideCount))
 
 def clean_event():
-    process_existed(targetListBear)
-    process_existed(targetListGift)
-    process_existed(targetListCoin)
-    process_existed(targetListPower)
+    process_existed(targetListGift, True)
+    gamer.screenCap()
+    process_existed(targetListBear, True)
+    process_existed(targetListCoin, True)
+    process_existed(targetListPower, True)
 
 def into_game(verifyIntoFlag = False):
     continueFlag = True
@@ -256,6 +264,9 @@ def restart_all():
     ADBHelper.connent(deviceID)
     ADBHelper.connent(deviceID2)
     gamer.delay(5)
+    if len(ADBHelper.getDevicesList()) < 2:
+        logging.info(msh.send_simple_push("目标列表为空","提示：重启出现问题，未能恢复"))
+        raise Exception(f'重启失败')
 # def restart_all():
 #     raise Exception(f'切换页面失败')
     
@@ -323,6 +334,22 @@ def simple_merge(target):
         # 实时日志
         logging.debug(f"Merged ({a}, {b}) for target {target}")
 
+def quick_merge(current_list):
+    # 跳过无效列表记录
+    if len(current_list) < 3:
+        status = "empty" if not current_list else "just 2-element"
+        logging.info(f"simple_merge ({status}) skipped")
+
+    merged_results = []
+    # 持续处理直到剩余元素不足两个
+    while len(current_list) >= 3:
+        # 总是取出前两个元素
+        a = current_list.pop(0)
+        b = current_list.pop(0)
+        merged_results.append(gamer.slide(a, b))
+        # 实时日志
+        logging.debug(f"Merged ({a}, {b}) for target {current_list}")
+
 def reset_game_with_error_restart():
     """循环中的逻辑"""
     max_retries = 3  # 最大重试次数
@@ -368,10 +395,6 @@ if __name__ == "__main__":
             #     gamer.collect_log_image()
             #     gamer.home()
             #     break
-
-            if len(ADBHelper.getDevicesList()) < 2:
-                logging.info(msh.send_simple_push("目标列表为空","提示：重启出现问题，未能恢复"))
-                break
 
             if refreshCount % 15 == 0:
                 # gho.filter_orange()
@@ -419,11 +442,12 @@ if __name__ == "__main__":
                 count = countNow
                 # 成功，若需要则合成，并更新count
                 if (currentTarget["mergeRequired"]):
-                    simple_merge(currentTarget["targetItem"])
+                    # simple_merge(currentTarget["targetItem"])
+                    quick_merge(tempList)
                     # gho.clean_up(1)
                     clean_event()
-                gamer.delay(2)
-                count = len(gheh.find_board_items(currentTarget["targetItem"]))
+                # gamer.delay(2)
+                count = len(gheh.stable_find_board_items(currentTarget["targetItem"], retryNumMin, 0.65))
                 # 后续处理
                 save_current_device()
                 stayFlag = True

@@ -120,6 +120,20 @@ def find_pic_all_list(*args):
     leftTopPos = ImageProc.locate_all_center_list(st.cache_path + "screenCap.png", args[0], st.accuracy)
     return leftTopPos
 
+# 截屏，识图，返回所有坐标
+def find_pic_all_list_cache(*args):
+    # ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")
+    # time.sleep(0.1)
+    # locate_all
+    if len(args) == 1:
+        leftTopPos = ImageProc.locate_all_center_list(st.cache_path + "screenCap.png", args[0], st.accuracy)
+    elif len(args) == 2:
+        leftTopPos = ImageProc.locate_all_center_list(st.cache_path + "screenCap.png", args[0], args[1])
+    else:
+        print(f"Multiple arguments: {args}")
+    leftTopPos = ImageProc.locate_all_center_list(st.cache_path + "screenCap.png", args[0], st.accuracy)
+    return leftTopPos
+
 def find_all_empty(pointList):
     ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")
     time.sleep(0.1)
@@ -253,6 +267,10 @@ def collect_log_image():
     filename = now.strftime("%Y%m%d_%H%M%S")
     ADBHelper.screenCapture(deviceID, st.cache_path + f"log_{filename}.png")
     shutil(st.cache_path + "screenCap.png", st.cache_path + f"log_{filename}.png")
+
+def screenCap():
+    ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")
+    time.sleep(0.1)
 
 # try_screen_capture() as ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")
 # def try_screen_capture():
