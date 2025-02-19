@@ -266,7 +266,7 @@ def collect_log_image():
     # 将日期和时间格式化为字符串，例如：20231005_153045
     filename = now.strftime("%Y%m%d_%H%M%S")
     ADBHelper.screenCapture(deviceID, st.cache_path + f"log_{filename}.png")
-    shutil(st.cache_path + "screenCap.png", st.cache_path + f"log_{filename}.png")
+    shutil.copy(st.cache_path + "screenCap.png", st.cache_path + f"log_{filename}.png")
 
 def screenCap():
     ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")

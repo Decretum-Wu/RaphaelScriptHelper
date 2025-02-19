@@ -45,6 +45,19 @@ def get_unique_grid_positions(coords_list):
     # 将集合转为有序列表（按行号、列号升序排列）
     return sorted(unique_positions, key=lambda x: (x[0], x[1]))
 
+def read_list_to_unique_grid_positions(read_list):
+    # 定义集合存储唯一的有效棋盘位置
+    unique_positions = set()
+    
+    for grid_pos in read_list:
+        grid_center_pos = get_center(grid_pos)
+        if grid_center_pos is not None:  # 过滤无效坐标
+            # 将位置转换为元组并存入集合（自动去重）
+            unique_positions.add(grid_center_pos)
+    
+    # 将集合转为有序列表（按行号、列号升序排列）
+    return sorted(unique_positions, key=lambda x: (x[0], x[1]))
+
 def get_unique_grid_positions_read(coords_list):
     # 定义集合存储唯一的有效棋盘位置
     unique_positions = set()

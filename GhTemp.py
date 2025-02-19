@@ -63,12 +63,12 @@ minAccuracy = 0.40
 # targetItem = rd.power_3
 # mergeRequired = True
 
-gho.usePower = False
+gho.useCoin = False
 # startAtOrange = 0
 refreshCount = 1
 # card_1 = 2
 # daily_box_3 = 4
-targetStartNum = 4
+targetStartNum = 3
 targetList = [
     {"resourceItem": rd.license_box_1, "targetItem": rd.stone_3, "mergeRequired": True},
     {"resourceItem": rd.license_box_2_1, "targetItem": rd.stone_3, "mergeRequired": True},

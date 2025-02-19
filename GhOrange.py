@@ -11,6 +11,7 @@ import datetime
 import ImageProc
 import logging
 import messageHelper as msh
+import GhTemp
 from enum import Enum
 
 class Direction(Enum):
@@ -25,8 +26,12 @@ windowID3 = "BlueStacks Multi"
 # 首个按钮 150%中 (900, 225), (900, 330), 确认键为 (900, 600)
 deviceID = "emulator-5554"
 # deviceID = "emulator-5584"
+useCoin = False
+useCoin = True
 usePower = False
 usePower = True
+
+targetListOrangeTree = rd.orange_tree_list1
 
 gamer.deviceID = deviceID
 targetListBeike = [
@@ -86,13 +91,22 @@ targetListCoin = [
 #     rd.orange_6_n
 # ]
 
+# targetListOrange = [
+#     rd.orange_1_a,
+#     rd.orange_2_a,
+#     rd.orange_3_a,
+#     rd.orange_4_a,
+#     rd.orange_5_a,
+#     rd.orange_6_a
+# ]
+
 targetListOrange = [
-    rd.orange_1_a,
-    rd.orange_2_a,
-    rd.orange_3_a,
-    rd.orange_4_a,
-    rd.orange_5_a,
-    rd.orange_6_a
+    rd.orange_1_stable,
+    rd.orange_2_stable,
+    rd.orange_3_stable,
+    rd.orange_4_stable,
+    rd.orange_5_stable,
+    rd.orange_6_stable
 ]
 # gamer.home()
 # powerList = gamer.find_pic_all(rd.orange_4_a)
@@ -160,16 +174,16 @@ def verify_empty():
 
 # 此处为收橘子完整逻辑
 def filter_orange():
-    countTree = 0
-    while countTree < 9:
-        treeCol = gamer.find_pic_all_list([
-            rd.orange_tree_new
-        ])
-        treeCol = ghh.get_collection_unique_grid_positions(treeCol)
-        countTree = len(treeCol[0])
-    print("在设备{0}中，获取橘子树总数: {1}".format(gamer.deviceID, len(treeCol[0])))
+    # countTree = 0
+    # while countTree < 9:
+    #     treeCol = gamer.find_pic_all_list([
+    #         rd.orange_tree_new
+    #     ])
+    #     treeCol = ghh.get_collection_unique_grid_positions(treeCol)
+    #     countTree = len(treeCol[0])
+    # print("在设备{0}中，获取橘子树总数: {1}".format(gamer.deviceID, len(treeCol[0])))
     count = 0
-    for tree in treeCol[0]:
+    for tree in targetListOrangeTree:
         while True:
             gamer.touch(tree)
             if(gamer.verify_pic(rd.general_current_loading)):
@@ -186,7 +200,7 @@ def filter_orange():
             # 测试，防止被打断
             solve_breaker()
             process_existed_orange()
-            if usePower:
+            if useCoin:
                 if not verify_empty():
                     logging.info(msh.send_simple_push("进入页面时","提示：棋盘已满，进入前完全清理"))
                     clean_up(3)
@@ -233,6 +247,7 @@ def clean_up(type):
         # gamer.find_pic_double_touch(rd.icon_4)
         gamer.find_pic_double_touch(rd.coin_new_3)
         gamer.find_pic_double_touch(rd.coin_new_2)
+        gamer.find_pic_double_touch(rd.coin_new_1)
         # gamer.find_pic_double_touch(rd.float_3)
 
 logging.basicConfig(level=logging.INFO,
@@ -263,16 +278,19 @@ logging.basicConfig(level=logging.INFO,
 
 
 def round_all():
-    if usePower:
+    if useCoin:
         # if verify_empty():
         #     clean_up(2)
         # else:
+        gamer.home()
+        time.sleep(3)
+        GhTemp.into_game(True)
         if not verify_empty():
             logging.info(msh.send_simple_push("进入页面时","提示：棋盘已满，进入前完全清理"))
             clean_up(3)
             # ghh.click_order(rd.order_orange)
     filter_orange()
-    if usePower:
+    if useCoin and usePower:
         for i in range(1,20):
             filter_beike()
             # if gamer.verify_pic(rd.back_from_board):
@@ -350,11 +368,12 @@ def solve_breaker():
     
 # 测试
 if __name__ == "__main__":
+    settings.accuracy = 0.75
     round_all()
     # 设置定时任务
-    schedule.every().hour.at(":12").do(round_all)  # 每小时 0 分钟
-    schedule.every().hour.at(":32").do(round_all)  # 每小时 20 分钟
-    schedule.every().hour.at(":52").do(round_all)  # 每小时 40 分钟
+    # schedule.every().hour.at(":05").do(round_all)  # 每小时 0 分钟
+    schedule.every().hour.at(":15").do(round_all)  # 每小时 20 分钟
+    schedule.every().hour.at(":45").do(round_all)  # 每小时 40 分钟
 
     print("定时任务已启动，等待运行...")
 
@@ -363,6 +382,9 @@ if __name__ == "__main__":
         schedule.run_pending()  # 运行待执行的任务
         if datetime.datetime.now().time() > datetime.time(7, 55): 
             gamer.collect_log_image()
+            time.sleep(3)
             gamer.home()
+            time.sleep(3)
+            gamer.collect_log_image()
             break
         time.sleep(5)  # 每5秒检查一次

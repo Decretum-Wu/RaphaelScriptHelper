@@ -66,13 +66,13 @@ minAccuracy = 0.40
 # targetItem = rd.power_3
 # mergeRequired = True
 
-gho.usePower = False
+gho.useCoin = False
 # startAtOrange = 0
 refreshCount = 1
 # card_1 = 2
 # daily_box_3 = 4
 targetStartNum = 0
-totalCount = 110
+totalCount = 11
 # targetList = [
 #     {"resourceItem": rd.license_box_1, "targetItem": rd.stone_3, "mergeRequired": True},
 #     {"resourceItem": rd.license_box_2_1, "targetItem": rd.stone_3, "mergeRequired": True},
@@ -419,6 +419,10 @@ if __name__ == "__main__":
                 # 双击一次
                 # gamer.clean_touch(point, 2)
                 gamer.touch(point)
+
+                if tagCount > 70:
+                    logging.info(f"轮数{tagCount}较多，提前清理")
+                    clean_event()
 
                 # 获取目前数量
                 time.sleep(3)

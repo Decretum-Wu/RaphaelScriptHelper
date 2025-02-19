@@ -34,6 +34,11 @@ retryNum = 5
 doneFlag = False
 cardMaxX = 180
 cardMaxY = 70
+
+settings.accuracy = 0.75
+#正确率0.55时，bubble难以判断
+#正确率0.6时，为最佳经验值
+
 #cardMinX = 0
 
 gamer.deviceID = deviceID
@@ -81,6 +86,15 @@ targetListOrange = [
     rd.orange_4_a,
     rd.orange_5_a,
     rd.orange_6_a
+]
+
+targetListOrange = [
+    rd.orange_1_stable,
+    rd.orange_2_stable,
+    rd.orange_3_stable,
+    rd.orange_4_stable,
+    rd.orange_5_stable,
+    rd.orange_6_stable
 ]
 
 def restart_all():
@@ -167,6 +181,15 @@ def simple_merge(target):
 #     print(f"提示：未能获取新卡")
 #     # break and resume
 
+# def get_all_center():
+#     resultList = []
+#     for col in range(7,8):
+#         for row in range(7,9):
+#             x = 64 + (col - 1) * 136 + 68  # 计算x坐标：起点64 + (列数-1)*格子宽度 + 半宽
+#             y = 508 + (row - 1) * 136 + 68  # 计算y坐标：起点508 + (行数-1)*格子高度 + 半高
+#             resultList.append((x,y))
+#     return resultList
+
 # 新调试：
 # try:
 #     gamer.collect_log_image()
@@ -191,12 +214,24 @@ def simple_merge(target):
 # powerCol = gamer.find_pic_all_list(targetListBear)
 # powerCol = gheh.get_collection_unique_grid_positions(powerCol)
 
-treeCol = gamer.find_pic_all_list([
-            rd.orange_tree_new
-        ])
-treeCol = ghh.get_collection_unique_grid_positions(treeCol)
+# 橘子树
 
-# powerCol = gamer.find_pic_all_list(targetListOrange)
-print("在设备{0}中，获取橘子树总数: {1}".format(gamer.deviceID, len(treeCol[0])))
-# print("temp:{0}".format(powerCol))
+# treeCol = gamer.find_pic_all_list_cache([
+#             rd.orange_tree_new
+#         ])
+# treeCol = ghh.get_collection_unique_grid_positions(treeCol)
+# print("在设备{0}中，获取橘子树总数: {1}".format(gamer.deviceID, len(treeCol[0])))
 
+# powerCol = ghh.get_collection_unique_grid_positions_read(gamer.find_pic_all_list_cache(targetListOrange))
+# # powerCol = gamer.find_pic_all_list(targetListOrange)
+# powerCol = ghh.read_list_to_unique_grid_positions()
+
+# 固定列表橘子树
+# for tree in rd.orange_tree_list1:
+#     gamer.touch(tree)
+#     gamer.delay(1)
+
+# gamer.collect_log_image()
+
+# print("temp:{0}".format(get_all_center()))
+# [(268, 576), (268, 712), (268, 848), (268, 984), (268, 1120), (268, 1256), (268, 1392), (268, 1528), (948, 1392), (948, 1528)]
