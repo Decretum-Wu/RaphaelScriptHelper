@@ -6,6 +6,7 @@ import shutil
 from datetime import datetime
 import concurrent.futures
 import time
+import subprocess
 
 deviceType = 1
 timeout = 8
@@ -265,12 +266,52 @@ def collect_log_image():
     now = datetime.now()
     # 将日期和时间格式化为字符串，例如：20231005_153045
     filename = now.strftime("%Y%m%d_%H%M%S")
-    ADBHelper.screenCapture(deviceID, st.cache_path + f"log_{filename}.png")
+    # ADBHelper.screenCapture(deviceID, st.cache_path + f"log_{filename}.png")
     shutil.copy(st.cache_path + "screenCap.png", st.cache_path + f"log_{filename}.png")
 
 def screenCap():
     ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")
     time.sleep(0.1)
+
+def stop_process_by_window_title(window_title):
+    # PowerShell命令模板
+    ps_command = '''
+    Get-Process | Where-Object {{ $_.MainWindowTitle -eq "{0}" }} | Stop-Process -Force
+    '''.format(window_title)
+
+    # 使用subprocess运行PowerShell命令
+    result = subprocess.run(["powershell", "-Command", ps_command], capture_output=True, text=True)
+
+    # 输出结果
+    if result.returncode == 0:
+        print(f"成功终止窗口标题为 '{window_title}' 的进程。")
+    else:
+        print(f"未能终止窗口标题为 '{window_title}' 的进程。错误信息：")
+        print(result.stderr)
+
+def run_bluestacks_instance(instance_name):
+    # 定义BlueStacks的可执行文件路径
+    bluestacks_path = st.player_path
+
+    # 构造完整的命令
+    # 直接使用exe地址会导致命令阻塞，窗口若不关闭则result不返回
+    # command = f'& "{bluestacks_path}" --instance {instance_name}'
+    command = f'Start-Process -FilePath "{bluestacks_path}" -ArgumentList "--instance", "{instance_name}"'
+    
+
+    try:
+        # 使用subprocess运行命令
+        result = subprocess.run(["powershell", "-Command", command], capture_output=True, text=True)
+
+        # 检查命令是否成功执行
+        if result.returncode == 0:
+            print(f"成功启动BlueStacks实例: {instance_name}")
+            print("输出:", result.stdout)
+        else:
+            print(f"启动BlueStacks实例失败: {instance_name}")
+            print("错误信息:", result.stderr)
+    except Exception as e:
+        print(f"运行命令时发生异常: {e}")
 
 # try_screen_capture() as ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")
 # def try_screen_capture():

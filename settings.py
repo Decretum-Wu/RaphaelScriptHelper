@@ -1,6 +1,14 @@
+import testDict as rd
+deviceList = [
+    {"deviceId": 'emulator-5554', "window_title": 'BlueStacks App Main', "instance_title": 'Pie64'},
+    {"deviceId": '127.0.0.1:5635', "window_title": 'BlueStacks App Save2', "instance_title": 'Pie64_8'},
+]
+
+
+
 #图片匹配置信度，0-1之间，默认0.93，如果匹配出错误目标则提高置信度，如果要模糊匹配或高置信度无法匹配则降低置信度
 # accuracy = 0.70
-accuracy = 0.60
+accuracy = 0.75
 #正确率0.55时，bubble难以判断
 #正确率0.6时，为橘子最佳经验值(有对勾干扰)
 #正确率0.75时，可排除bubble
@@ -8,6 +16,7 @@ accuracy = 0.60
 
 #缓存文件存放地址，以/结尾
 cache_path = './cache/'
+player_path = "C:/Program Files/BlueStacks_nxt/HD-Player.exe"
 
 #随机延时范围[randomDelayMin,randomDelayMax]，单位秒
 randomDelayMin = 1
@@ -35,4 +44,11 @@ empty_colors = [empty_color_1, empty_color_2]
 # empty_colors = [empty_color_green]
 empty_block = (132,576)
 event_first_block = (204,736)
+
+intoGameList = [
+    rd.start_game,
+    rd.cloud_button,
+    rd.into_board,
+    rd.back_from_board
+    ]
 

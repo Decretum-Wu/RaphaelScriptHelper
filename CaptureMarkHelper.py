@@ -20,8 +20,8 @@ pos_img_dict = "./testDict.py"
 action = 1
 
 # 图片来源替换输入你的did
-ADBHelper.screenCapture("127.0.0.1:5625", "screen.png")
-# ADBHelper.screenCapture("emulator-5554", "screen.png")
+# ADBHelper.screenCapture("127.0.0.1:5625", "screen.png")
+ADBHelper.screenCapture("emulator-5554", "screen.png")
 img_file = "./screen.png"
 
 

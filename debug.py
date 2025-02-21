@@ -10,6 +10,7 @@ import GhHelper as ghh
 import ImageProc
 import GhOrange as gho
 import GhEventHelper as gheh
+import subprocess
 from enum import Enum
 
 class Direction(Enum):
@@ -25,7 +26,7 @@ deviceID = "emulator-5554"
 deviceID2 = "emulator-5574"
 # deviceID = "127.0.0.1:5625"
 # deviceID2 = "127.0.0.1:5625"
-# deviceID = "emulator-5584"
+deviceID = "emulator-5584"
 # deviceID2 = "127.0.0.1:5595"
 manager_pos_1 = (900, 225)
 manager_pos_2 = (900, 330)
@@ -140,6 +141,23 @@ def simple_merge(target):
         # 实时日志
         logging.debug(f"Merged ({a}, {b}) for target {target}")
 
+# def stop_process_by_window_title(window_title):
+#     # PowerShell命令模板
+#     ps_command = '''
+#     Get-Process | Where-Object {{ $_.MainWindowTitle -eq "{0}" }} | Stop-Process -Force
+#     '''.format(window_title)
+
+#     # 使用subprocess运行PowerShell命令
+#     result = subprocess.run(["powershell", "-Command", ps_command], capture_output=True, text=True)
+
+#     # 输出结果
+#     if result.returncode == 0:
+#         print(f"成功终止窗口标题为 '{window_title}' 的进程。")
+#     else:
+#         print(f"未能终止窗口标题为 '{window_title}' 的进程。错误信息：")
+#         print(result.stderr)
+
+
 # # 刷卡包调试
 # while not gamer.find_pic_touch(rd.card_4_bag):
 #     #done
@@ -227,7 +245,7 @@ def simple_merge(target):
 # powerCol = ghh.read_list_to_unique_grid_positions()
 
 # 固定列表橘子树
-# for tree in rd.orange_tree_list1:
+# for tree in rd.orange_tree_list2:
 #     gamer.touch(tree)
 #     gamer.delay(1)
 
@@ -235,3 +253,25 @@ def simple_merge(target):
 
 # print("temp:{0}".format(get_all_center()))
 # [(268, 576), (268, 712), (268, 848), (268, 984), (268, 1120), (268, 1256), (268, 1392), (268, 1528), (948, 1392), (948, 1528)]
+
+targetList = [
+    {"deviceId": 'emulator-5554', "window_title": 'BlueStacks App Main', "instance_title": 'Pie64'},
+    {"deviceId": '127.0.0.1:5635', "window_title": 'BlueStacks App Save2', "instance_title": 'Pie64_8'},
+    {"deviceId": '127.0.0.1:5585', "window_title": 'BlueStacks App Sub Main', "instance_title": 'Pie64_3'},
+    {"deviceId": '127.0.0.1:5615', "window_title": 'BlueStacks App Sub Save', "instance_title": 'Pie64_6'},
+]
+
+deviceID = "emulator-5554"
+deviceID2 = "127.0.0.1:5625"
+
+# deviceID = "127.0.0.1:5585"
+# deviceID2 = "127.0.0.1:5615"
+# 示例调用
+window_title = "BlueStacks App Save2"  # 替换为传入的参数
+instance_title = "Nougat64_4"
+i = 0
+gamer.stop_process_by_window_title(targetList[i]["window_title"])
+time.sleep(10)
+gamer.run_bluestacks_instance(targetList[i]["instance_title"])
+time.sleep(30)
+

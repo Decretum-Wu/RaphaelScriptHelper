@@ -13,30 +13,11 @@ import ADBHelper
 import concurrent.futures
 from enum import Enum
 
-class Direction(Enum):
-    UP = 0
-    DOWN = 1
-    LEFT = 2
-    RIGHT = 3
-
-intoGameList = [
-    rd.start_game,
-    rd.cloud_button,
-    rd.into_board,
-    rd.back_from_board
-    ]
-windowID3 = "BlueStacks Multi"
-deviceID = "emulator-5554"
-deviceID2 = "127.0.0.1:5635"
-# deviceID = "emulator-5584"
-# deviceID = "127.0.0.1:5585"
-# deviceID2 = "127.0.0.1:5615"
+intoGameList = settings.intoGameList
 managerPos1 = (900, 220)
 managerPos2 = (900, 330)
 managerPosSubmit = (900, 600)
-gamer.deviceID = deviceID
-errorCount = 0
-roundCount = 1
+gamer.deviceID = settings.deviceList[0]["deviceId"]
 refreshCount = 1
 tagCount = 0
 point = (0,0)
@@ -44,19 +25,13 @@ stayFlag = False
 retryNum = 9
 retryNumMin = 3
 minAccuracy = 0.40
-# startAtOrange = False
-# startAtOrange = True
-
-# resourceItem = rd.daily_box_3
-# targetItem = rd.power_3
-# mergeRequired = True
 
 gho.useCoin = False
 # startAtOrange = 0
-refreshCount = 1
+refreshCount = 0
 # card_1 = 2
 # daily_box_3 = 4
-targetStartNum = 4
+targetStartNum = 3
 # targetList = [
 #     {"resourceItem": rd.license_box_1, "targetItem": rd.stone_3, "mergeRequired": True},
 #     {"resourceItem": rd.license_box_2_1, "targetItem": rd.stone_3, "mergeRequired": True},
@@ -166,36 +141,22 @@ def into_game(verifyIntoFlag = False):
                 raise Exception(f'错误：卡顿未能解决，尝试重启，retryCount 为{retryCount}')
 
 def switch_device():
-    if(gamer.deviceID == deviceID2): gamer.deviceID = deviceID
-    else: gamer.deviceID = deviceID2
+    if(gamer.deviceID == settings.deviceList[1]["deviceId"]): gamer.deviceID = settings.deviceList[0]["deviceId"]
+    else: gamer.deviceID = settings.deviceList[1]["deviceId"]
     logging.info(f"切换至设备{gamer.deviceID}")
 def restart_all():
     # 重置跳过变量，重启后必须重新进入游戏
     global stayFlag
     stayFlag = False
     # 首次点击容易失败，重复点击更安全
-    gamer.bs_manager_click(windowID3, managerPos1)
-    gamer.delay(2)
-    gamer.bs_manager_click(windowID3, managerPos1)
-    gamer.delay(1)
-    gamer.bs_manager_click(windowID3, managerPosSubmit)
-    gamer.delay(1)
-    gamer.bs_manager_click(windowID3, managerPosSubmit)
-    gamer.delay(1)
-    gamer.bs_manager_click(windowID3, managerPos2)
-    gamer.delay(1)
-    gamer.bs_manager_click(windowID3, managerPos2)
-    gamer.delay(1)
-    gamer.bs_manager_click(windowID3, managerPosSubmit)
-    gamer.delay(1)
-    gamer.bs_manager_click(windowID3, managerPosSubmit)
+    gamer.stop_process_by_window_title(settings.deviceList[0]["window_title"])
+    gamer.stop_process_by_window_title(settings.deviceList[1]["window_title"])
     gamer.delay(25)
-    gamer.bs_manager_click(windowID3, managerPos1)
-    gamer.delay(5)
-    gamer.bs_manager_click(windowID3, managerPos2)
-    gamer.delay(40)
-    ADBHelper.connent(deviceID)
-    ADBHelper.connent(deviceID2)
+    gamer.run_bluestacks_instance(settings.deviceList[0]["instance_title"])
+    gamer.run_bluestacks_instance(settings.deviceList[1]["instance_title"])
+    gamer.delay(35)
+    ADBHelper.connent(settings.deviceList[0]["deviceId"])
+    ADBHelper.connent(settings.deviceList[1]["deviceId"])
     gamer.delay(5)
 # def restart_all():
 #     raise Exception(f'切换页面失败')
@@ -203,7 +164,7 @@ def restart_all():
 
 # 完整刷新流程
 def reset_sub_device():
-    gamer.deviceID = deviceID2
+    gamer.deviceID = settings.deviceList[1]["deviceId"]
     # if (not gamer.init_window_save(windowID2)): raise Exception(f'切换页面失败, 未能定位到窗口: {windowID2}')
     # # bs_press h-断网 1-返回主页
     # gamer.bs_press('1')
@@ -215,7 +176,7 @@ def reset_sub_device():
     gamer.home()
 
 def save_main_device():
-    gamer.deviceID = deviceID
+    gamer.deviceID = settings.deviceList[0]["deviceId"]
     gamer.home()
     time.sleep(3)  # 等待窗口激活
     gamer.find_pic_touch(rd.start_game)
@@ -229,7 +190,7 @@ def save_current_device():
 
 def resume_main_device(waitSeconds = 3):
     # 新的启动流程流程
-    gamer.deviceID = deviceID
+    gamer.deviceID = settings.deviceList[0]["deviceId"]
     gamer.home()
     time.sleep(1)  # 等待窗口激活
     into_game(True)
@@ -295,8 +256,8 @@ def get_general_items(refreshCount, targetStartNum):
     tagCount = 0
     roundCount = 1
     errorCount = 0
-    ADBHelper.connent(deviceID)
-    ADBHelper.connent(deviceID2)
+    ADBHelper.connent(settings.deviceList[0]["deviceId"])
+    ADBHelper.connent(settings.deviceList[1]["deviceId"])
     if gho.verify_empty():
         logging.info("测试：目前有空位")
     while True:

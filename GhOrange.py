@@ -32,6 +32,7 @@ usePower = False
 usePower = True
 
 targetListOrangeTree = rd.orange_tree_list1
+# targetListOrangeTree = rd.orange_tree_list2
 
 gamer.deviceID = deviceID
 targetListBeike = [
@@ -368,7 +369,10 @@ def solve_breaker():
     
 # 测试
 if __name__ == "__main__":
-    settings.accuracy = 0.75
+    # settings.accuracy = 0.75
+    # 对多贝壳订单临时改进
+    settings.accuracy = 0.70
+    # process_existed(targetListBeike)
     round_all()
     # 设置定时任务
     # schedule.every().hour.at(":05").do(round_all)  # 每小时 0 分钟
