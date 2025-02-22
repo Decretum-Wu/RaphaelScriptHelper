@@ -43,7 +43,7 @@ point = (0,0)
 stayFlag = False
 retryNum = 9
 retryNumMin = 3
-minAccuracy = 0.40
+minAccuracy = 0.55
 # startAtOrange = False
 # startAtOrange = True
 
@@ -56,7 +56,7 @@ gho.useCoin = False
 refreshCount = 1
 # card_1 = 2
 # daily_box_3 = 4
-targetStartNum = 4
+targetStartNum = 3
 # targetList = [
 #     {"resourceItem": rd.license_box_1, "targetItem": rd.stone_3, "mergeRequired": True},
 #     {"resourceItem": rd.license_box_2_1, "targetItem": rd.stone_3, "mergeRequired": True},

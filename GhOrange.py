@@ -19,7 +19,8 @@ class Direction(Enum):
     DOWN = 1
     LEFT = 2
     RIGHT = 3
-
+# beikeAcc = 0.65
+beikeAcc = 0.60
 windowID = "BlueStacks App Main"
 windowID2 = "BlueStacks App Player 2"
 windowID3 = "BlueStacks Multi"
@@ -146,11 +147,11 @@ def process_existed_orange():
         slideCount = ghh.process_collection(powerCol, gamer.slide)
         print("在设备{0}中，获取滑动次数: {1}".format(gamer.deviceID, slideCount))
 
-def process_existed(targetList):
+def process_existed(targetList, accuracy = settings.accuracy):
     slideCount = 1
     while slideCount > 0:
         gamer.delay(1)
-        powerCol = gamer.find_pic_all_list(targetList)
+        powerCol = gamer.find_pic_all_list(targetList, accuracy)
         powerCol = ghh.get_collection_unique_grid_positions(powerCol)
         print("在设备{0}中，获取目标个数: {1}".format(gamer.deviceID, powerCol))
         slideCount = ghh.process_collection(powerCol, gamer.slide)
@@ -337,7 +338,7 @@ def draft():
             # continue
         logging.info("正确离开无体力状态")
         # msh.send_simple_push("1","提示：正确离开无体力状态")
-        process_existed(targetListBeike)
+        process_existed(targetListBeike, beikeAcc)
         clean_up(2)
         # break
 
