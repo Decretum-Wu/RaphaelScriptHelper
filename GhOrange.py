@@ -211,7 +211,7 @@ def filter_orange():
         if count%4 == 0:
             clean_up(1)
     process_existed_orange()
-    clean_up(2)
+    # clean_up(2)
 
 def filter_beike(count = 6):
     for i in range(1, count):
