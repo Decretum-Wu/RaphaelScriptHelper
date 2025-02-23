@@ -70,16 +70,19 @@ def slide(startPos, stopPos):
     return stopPos
 
 # 截屏，识图，返回坐标
-def find_pic(target, returnCenter = False):
+def find_pic(target, returnCenter = False, accuracy = st.accuracy):
     ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")
     time.sleep(0.1)
     if returnCenter == True:
-        leftTopPos = ImageProc.locate(st.cache_path + "screenCap.png", target, st.accuracy)
+        leftTopPos = ImageProc.locate(st.cache_path + "screenCap.png", target, accuracy)
+        if leftTopPos is None:
+            print("【识图】识别 {0} 失败".format(target))
+            return None
         img = cv2.imread(target)
         centerPos = ImageProc.centerOfTouchArea(img.shape, leftTopPos)
         return centerPos
     else:
-        leftTopPos = ImageProc.locate(st.cache_path + "screenCap.png", target, st.accuracy)
+        leftTopPos = ImageProc.locate(st.cache_path + "screenCap.png", target, accuracy)
         return leftTopPos
 
 # 截屏，识图，返回所有坐标
@@ -172,18 +175,14 @@ def find_pic_touch(target):
     touch((x, y))
     return True
 
-def find_pic_double_touch(target):
-    leftTopPos = find_pic(target)
+def find_pic_double_touch(target, accuracy = st.accuracy):
+    leftTopPos = find_pic(target, True, accuracy)
     if leftTopPos is None:
         print("【识图】识别 {0} 失败".format(target))
         return False
     print("【识图】识别 {0} 成功，图块左上角坐标 {1}".format(target, leftTopPos))
     img = cv2.imread(target)
-    tlx, tly = leftTopPos
-    h_src, w_src, tongdao = img.shape
-    # 模拟点击 debug, 3水平偏移
-    x = random.randint(tlx + 3, tlx + w_src)
-    y = random.randint(tly, tly + h_src)
+    x, y = leftTopPos
     touch((x, y))
     delay(0.1)
     touch((x, y))
