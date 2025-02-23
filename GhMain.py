@@ -276,16 +276,16 @@ def get_general_items(refreshCount, targetStartNum):
                 gho.round_all()
                 # save_current_device()
                 #收橘子可能导致count不正确
-                count = len(ghh.stable_find_board_items(currentTarget["targetItem"], retryNumMin))
+                count = len(ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNumMin))
 
             # 1 初始目标物数量
             if roundCount == 1:
-                tempList = ghh.stable_find_board_items(currentTarget["targetItem"], retryNum)
+                tempList = ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNum)
                 logging.info(msh.send_simple_push("在第{0}次执行中，获取列表: {1}".format(roundCount, tempList),f"提示：开始第{roundCount}次执行"))
                 count = len(tempList)
             
             # 2 通用逻辑, 更新目标列表
-            point = find_first_resource_point(currentTarget["resourceItem"])
+            point = find_first_resource_point(currentTarget.get("resourceItem"))
             if not point: 
                 logging.info(msh.send_simple_push("目标列表为空","提示：目标列表为空"))
                 logging.info("提示：目标列表为空")
@@ -302,12 +302,12 @@ def get_general_items(refreshCount, targetStartNum):
                     # 更换目标
                     currentTarget = targetList[targetStartNum]
                     logging.info(msh.send_simple_push("目标列表数量","提示：更换目标列表，尝试重新进入棋盘".format(roundCount)))
-                    count = len(ghh.stable_find_board_items(currentTarget["targetItem"], retryNum))
+                    count = len(ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNum))
                     continue
                 else:
                     break
             elif roundCount % 10 == 1:
-                logging.info(msh.send_simple_push("目标列表数量","提示：运行第{1}轮开始，总数量{0}".format(count_resource(currentTarget["resourceItem"]), roundCount)))
+                logging.info(msh.send_simple_push("目标列表数量","提示：运行第{1}轮开始，总数量{0}".format(count_resource(currentTarget.get("resourceItem")), roundCount)))
 
             # 3 操作获取新元素[重要]，操作时若报错，则使用另一个记录
             try:
@@ -316,8 +316,8 @@ def get_general_items(refreshCount, targetStartNum):
 
                 # 获取目前数量
                 time.sleep(1)
-                # tempList = ghh.find_board_items(currentTarget["targetItem"])
-                tempList = ghh.stable_find_board_items(currentTarget["targetItem"], retryNumMin)
+                # tempList = ghh.find_board_items(currentTarget.get("targetItem"))
+                tempList = ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNumMin)
                 roundCount += 1
                 countNow = len(tempList)
                 if roundCount % 5 == 0:
@@ -337,17 +337,17 @@ def get_general_items(refreshCount, targetStartNum):
             if countNow > count:
                 count = countNow
                 # 成功，若需要则合成，并更新count
-                if (currentTarget["mergeRequired"]):
-                    simple_merge(currentTarget["targetItem"])
-                if currentTarget["consumeItem"]:
-                    gamer.find_pic_double_touch(currentTarget["consumeItem"])
+                if (currentTarget.get("mergeRequired")):
+                    simple_merge(currentTarget.get("targetItem"))
+                if currentTarget.get("consumeItem"):
+                    gamer.find_pic_double_touch(currentTarget.get("consumeItem"))
                 gamer.delay(2)
-                count = len(ghh.find_board_items(currentTarget["targetItem"]))
+                count = len(ghh.find_board_items(currentTarget.get("targetItem")))
                 # 后续处理
                 save_current_device()
                 stayFlag = True
                 tagCount += 1
-                logging.info(msh.send_simple_push("源目标物{1}位置：{0}".format(tempList, currentTarget["targetItem"]),f"提示：获得一个目标物,累计{tagCount}个"))
+                logging.info(msh.send_simple_push("源目标物{1}位置：{0}".format(tempList, currentTarget.get("targetItem")),f"提示：获得一个目标物,累计{tagCount}个"))
                 logging.info("目标物位置：{0}".format(tempList))
             else:
                 # switch current deviceId to the next

@@ -374,7 +374,7 @@ if __name__ == "__main__":
     # 对多贝壳订单临时改进
     settings.accuracy = 0.70
     # process_existed(targetListBeike)
-    round_all()
+    # round_all()
     # 设置定时任务
     # schedule.every().hour.at(":05").do(round_all)  # 每小时 0 分钟
     schedule.every().hour.at(":15").do(round_all)  # 每小时 20 分钟

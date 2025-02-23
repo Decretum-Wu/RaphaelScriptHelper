@@ -53,10 +53,10 @@ minAccuracy = 0.55
 
 gho.useCoin = False
 # startAtOrange = 0
-refreshCount = 1
+refreshCount = 0
 # card_1 = 2
 # daily_box_3 = 4
-targetStartNum = 3
+targetStartNum = 6
 # targetList = [
 #     {"resourceItem": rd.license_box_1, "targetItem": rd.stone_3, "mergeRequired": True},
 #     {"resourceItem": rd.license_box_2_1, "targetItem": rd.stone_3, "mergeRequired": True},
@@ -317,16 +317,16 @@ def get_general_items(refreshCount, targetStartNum):
                 gho.round_all()
                 # save_current_device()
                 #收橘子可能导致count不正确
-                count = len(ghh.stable_find_board_items(currentTarget["targetItem"], retryNumMin, minAccuracy))
+                count = len(ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNumMin, minAccuracy))
 
             # 1 初始目标物数量
             if roundCount == 1:
-                tempList = ghh.stable_find_board_items(currentTarget["targetItem"], retryNum, minAccuracy)
+                tempList = ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNum, minAccuracy)
                 logging.info(msh.send_simple_push("在第{0}次执行中，获取列表: {1}".format(roundCount, tempList),f"提示：开始第{roundCount}次执行"))
                 count = len(tempList)
             
             # 2 通用逻辑, 更新目标列表
-            point = find_first_resource_point(currentTarget["resourceItem"])
+            point = find_first_resource_point(currentTarget.get("resourceItem"))
             if not point: 
                 logging.info(msh.send_simple_push("目标列表为空","提示：目标列表为空"))
                 logging.info("提示：目标列表为空")
@@ -343,12 +343,12 @@ def get_general_items(refreshCount, targetStartNum):
                     # 更换目标
                     currentTarget = targetList[targetStartNum]
                     logging.info(msh.send_simple_push("目标列表数量","提示：更换目标列表，尝试重新进入棋盘".format(roundCount)))
-                    count = len(ghh.stable_find_board_items(currentTarget["targetItem"], retryNum, minAccuracy))
+                    count = len(ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNum, minAccuracy))
                     continue
                 else:
                     break
             elif roundCount % 10 == 1:
-                logging.info(msh.send_simple_push("目标列表数量","提示：运行第{1}轮开始，总数量{0}".format(count_resource(currentTarget["resourceItem"]), roundCount)))
+                logging.info(msh.send_simple_push("目标列表数量","提示：运行第{1}轮开始，总数量{0}".format(count_resource(currentTarget.get("resourceItem")), roundCount)))
 
             # 3 操作获取新元素[重要]，操作时若报错，则使用另一个记录
             try:
@@ -357,8 +357,8 @@ def get_general_items(refreshCount, targetStartNum):
 
                 # 获取目前数量
                 time.sleep(1)
-                # tempList = ghh.find_board_items(currentTarget["targetItem"])
-                tempList = ghh.stable_find_board_items(currentTarget["targetItem"], retryNumMin, minAccuracy)
+                # tempList = ghh.find_board_items(currentTarget.get("targetItem"))
+                tempList = ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNumMin, minAccuracy)
                 roundCount += 1
                 countNow = len(tempList)
                 if roundCount % 5 == 0:
@@ -378,12 +378,12 @@ def get_general_items(refreshCount, targetStartNum):
             if countNow > count:
                 count = countNow
                 # 成功，若需要则合成，并更新count
-                if (currentTarget["mergeRequired"]):
-                    simple_merge(currentTarget["targetItem"])
-                if currentTarget["consumeItem"]:
-                    gamer.find_pic_double_touch(currentTarget["consumeItem"], minAccuracy)
+                if (currentTarget.get("mergeRequired")):
+                    simple_merge(currentTarget.get("targetItem"))
+                if currentTarget.get("consumeItem"):
+                    gamer.find_pic_double_touch(currentTarget.get("consumeItem"), minAccuracy)
                 gamer.delay(2)
-                count = len(ghh.find_board_items(currentTarget["targetItem"]))
+                count = len(ghh.find_board_items(currentTarget.get("targetItem")))
                 # 后续处理
                 save_current_device()
                 stayFlag = True
@@ -402,6 +402,8 @@ def get_general_items(refreshCount, targetStartNum):
                 errorCount = 0
         # except concurrent.futures.TimeoutError as e:
         except Exception as e:
+            logging.error(f"错误内容:{e}")
+            msh.send_simple_push(f"错误内容:{e}",f"提示：执行{roundCount}次跳出,捕捉错误")
             errorCount += 1
             if errorCount < 3:
                 msh.send_simple_push(f"开始重启,错误次数{errorCount}",f"提示：执行{roundCount}次卡死，开始重启")
