@@ -189,36 +189,21 @@ def switch_device():
     if(gamer.deviceID == deviceID2): gamer.deviceID = deviceID
     else: gamer.deviceID = deviceID2
     logging.info(f"切换至设备{gamer.deviceID}")
+
 def restart_all():
     # 重置跳过变量，重启后必须重新进入游戏
     global stayFlag
     stayFlag = False
     # 首次点击容易失败，重复点击更安全
-    gamer.bs_manager_click(windowID3, managerPos1)
-    gamer.delay(2)
-    gamer.bs_manager_click(windowID3, managerPos1)
-    gamer.delay(1)
-    gamer.bs_manager_click(windowID3, managerPosSubmit)
-    gamer.delay(1)
-    gamer.bs_manager_click(windowID3, managerPosSubmit)
-    gamer.delay(1)
-    gamer.bs_manager_click(windowID3, managerPos2)
-    gamer.delay(1)
-    gamer.bs_manager_click(windowID3, managerPos2)
-    gamer.delay(1)
-    gamer.bs_manager_click(windowID3, managerPosSubmit)
-    gamer.delay(1)
-    gamer.bs_manager_click(windowID3, managerPosSubmit)
-    gamer.delay(25)
-    gamer.bs_manager_click(windowID3, managerPos1)
+    gamer.stop_process_by_window_title(settings.deviceList[0]["window_title"])
+    gamer.stop_process_by_window_title(settings.deviceList[1]["window_title"])
+    gamer.delay(10)
+    gamer.run_bluestacks_instance(settings.deviceList[0]["instance_title"])
+    gamer.run_bluestacks_instance(settings.deviceList[1]["instance_title"])
+    gamer.delay(35)
+    ADBHelper.connent(settings.deviceList[0]["deviceId"])
+    ADBHelper.connent(settings.deviceList[1]["deviceId"])
     gamer.delay(5)
-    gamer.bs_manager_click(windowID3, managerPos2)
-    gamer.delay(40)
-    ADBHelper.connent(deviceID)
-    ADBHelper.connent(deviceID2)
-    gamer.delay(5)
-# def restart_all():
-#     raise Exception(f'切换页面失败')
     
 
 # 完整刷新流程

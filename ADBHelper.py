@@ -57,6 +57,22 @@ def keyEvent(deviceId, eventId):
 def connent(deviceId):
     subprocess.run(['adb', 'connect', deviceId])
 
+def stop_process(exe_title):
+    # PowerShell命令模板
+    ps_command = '''
+    Get-Process {0} | Stop-Process -Force
+    '''.format(exe_title)
+
+    # 使用subprocess运行PowerShell命令
+    result = subprocess.run(["powershell", "-Command", ps_command], capture_output=True, text=True)
+
+    # 输出结果
+    if result.returncode == 0:
+        print(f"成功终止进程名为 '{exe_title}' 的进程。")
+    else:
+        print(f"未能终止进程名为 '{exe_title}' 的进程。错误信息：")
+        print(result.stderr)
+
 def testTimeOut():
     time.sleep(5)
 
@@ -76,7 +92,9 @@ def timeout(seconds):
                 except concurrent.futures.TimeoutError:
                     # 超时处理
                     print(f"函数 {func.__name__} 运行超时（{seconds} 秒）")
-                    future.cancel()  # 取消任务
+                    # future.cancel()  # 取消任务
+                    # 测试 直接终止adb进程
+                    stop_process('adb')
                     raise  # 抛出超时异常
         return wrapper
     return decorator
@@ -93,4 +111,4 @@ def apply_timeout_to_all_functions(module, timeout_seconds):
 # 获取当前模块
 current_module = sys.modules[__name__]
 # 为所有函数应用超时装饰器（超时时间设置为 10 秒）
-apply_timeout_to_all_functions(current_module, timeout_seconds=12)
+apply_timeout_to_all_functions(current_module, timeout_seconds=10)
