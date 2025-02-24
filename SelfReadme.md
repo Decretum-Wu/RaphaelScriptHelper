@@ -46,4 +46,9 @@ PyAutoGUI fail-safe triggered from mouse moving to a corner of the screen. To di
 
 早八点时：弹出六点金币活动，无法用退出按钮绕过
 需要已经开始，或已经完成之
+===========
+每日宝箱的刷取需要更严格的产物鉴定：
 
+===========
+
+useCoin需要打开 以处理多余硬币

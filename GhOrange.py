@@ -164,6 +164,38 @@ def verify_empty():
     else:
         return False
 
+def verify_clean():
+    count = len(gamer.find_all_empty(ghh.get_all_center()))
+    if not count > 0:
+        clean_up(1)
+        count = len(gamer.find_all_empty(ghh.get_all_center()))
+        logging.info(msh.send_simple_push(f"检测到棋盘满,剩余空格数{count}",f"提示：一级清理,剩余空格数{count}"))
+    if not count > 0:
+        if useCoin:
+            clean_up(2)
+            count = len(gamer.find_all_empty(ghh.get_all_center()))
+            logging.info(msh.send_simple_push(f"检测到棋盘满,剩余空格数{count}",f"提示：二级清理,剩余空格数{count}"))
+        else:
+            logging.info(msh.send_simple_push(f"检测到棋盘满,剩余空格数{count}",f"提示：二级清理,不能使用金币，暂停"))
+    if not count > 0:
+        if useCoin:
+            clean_up(3)
+            count = len(gamer.find_all_empty(ghh.get_all_center()))
+            logging.info(msh.send_simple_push(f"检测到棋盘满,剩余空格数{count}",f"提示：三级清理,剩余空格数{count}"))
+        else:
+            logging.info(msh.send_simple_push(f"检测到棋盘满,剩余空格数{count}",f"提示：三级清理,不能使用金币，暂停"))
+
+def verify_exit():
+    return False
+    # if datetime.datetime.now().time() > datetime.time(7, 55): 
+    #     gamer.collect_log_image()
+    #     time.sleep(3)
+    #     gamer.home()
+    #     time.sleep(3)
+    #     gamer.collect_log_image()
+    #     return True
+    # else:
+    #     return False
 
 # temp = ImageProc.get_color(rd.empty_blue_2,(64,64))
 # print("在设备{0}中，获取目标个数: {1}".format(gamer.deviceID, powerCol[0]))
@@ -202,16 +234,16 @@ def filter_orange():
             # 测试，防止被打断
             solve_breaker()
             process_existed_orange()
-            if useCoin:
-                if not verify_empty():
-                    logging.info(msh.send_simple_push("进入页面时","提示：棋盘已满，进入前完全清理"))
-                    clean_up(3)
+            verify_clean()
+            # if useCoin:
+            #     if not verify_empty():
+            #         logging.info(msh.send_simple_push("进入页面时","提示：棋盘已满，进入前完全清理"))
+            #         clean_up(3)
                     # ghh.click_order(rd.order_orange)
         count += 1
         if count%4 == 0:
             clean_up(1)
     process_existed_orange()
-    clean_up(2)
 
 def filter_beike(count = 6):
     for i in range(1, count):
@@ -231,7 +263,7 @@ def clean_up(type):
         morning_clean()
         process_existed(targetListCoin)
         #temp
-        # process_existed(targetListPower)
+        process_existed(targetListPower)
         # process_existed(targetListStone)
         # gamer.find_pic_double_touch(rd.stone_4)
 

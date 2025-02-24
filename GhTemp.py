@@ -10,7 +10,7 @@ import logging
 import messageHelper as msh
 import GhOrange as gho
 import ADBHelper
-import concurrent.futures
+import datetime
 from enum import Enum
 
 class Direction(Enum):
@@ -44,19 +44,23 @@ stayFlag = False
 retryNum = 9
 retryNumMin = 3
 minAccuracy = 0.55
+targetMinAccuracy = 0.75
 # startAtOrange = False
 # startAtOrange = True
 
 # resourceItem = rd.daily_box_3
 # targetItem = rd.power_3
 # mergeRequired = True
-
-gho.useCoin = False
+# 重要
+gho.useCoin = True
+gho.usePower = False
+# gho.useCoin = True
+# gho.usePower = True
 # startAtOrange = 0
 refreshCount = 0
 # card_1 = 2
 # daily_box_3 = 4
-targetStartNum = 6
+targetStartNum = 0
 # targetList = [
 #     {"resourceItem": rd.license_box_1, "targetItem": rd.stone_3, "mergeRequired": True},
 #     {"resourceItem": rd.license_box_2_1, "targetItem": rd.stone_3, "mergeRequired": True},
@@ -83,6 +87,20 @@ targetList = [
     {"resourceItem": rd.licence_box_3_max, "targetItem": rd.stone_4, "mergeRequired": False, "consumeItem": rd.stone_4},
     {"resourceItem": rd.coin_box, "targetItem": rd.coin_new_4, "mergeRequired": True, "consumeItem": rd.coin_new_5},
     {"resourceItem": rd.box_1, "targetItem": rd.power_4, "mergeRequired": True},
+    {"resourceItem": rd.daily_box_3, "targetItem": rd.power_3, "mergeRequired": True},
+]
+
+targetList = [
+    # {"resourceItem": rd.license_box_1, "targetItem": rd.stone_3, "mergeRequired": True},
+    # {"resourceItem": rd.license_box_2_1, "targetItem": rd.stone_3, "mergeRequired": True},
+    # {"resourceItem": rd.license_box_3, "targetItem": rd.blue_resource_1, "mergeRequired": True},
+    # {"resourceItem": rd.card_1, "targetItem": rd.stone_4, "mergeRequired": False, "consumeItem": rd.stone_4},
+    # {"resourceItem": rd.licence_box_3_max, "targetItem": rd.stone_4, "mergeRequired": False, "consumeItem": rd.stone_4},
+    # {"resourceItem": rd.coin_box, "targetItem": rd.coin_new_4, "mergeRequired": True, "consumeItem": rd.coin_new_5},
+    # {"resourceItem": rd.box_1, "targetItem": rd.power_4, "mergeRequired": True},
+    {"resourceItem": rd.daily_box_3, "targetItem": rd.power_3, "mergeRequired": True},
+    {"resourceItem": rd.daily_box_3, "targetItem": rd.power_3, "mergeRequired": True},
+    {"resourceItem": rd.daily_box_3, "targetItem": rd.power_3, "mergeRequired": True},
     {"resourceItem": rd.daily_box_3, "targetItem": rd.power_3, "mergeRequired": True},
 ]
 currentTarget = targetList[targetStartNum]
@@ -142,13 +160,13 @@ def into_game(verifyIntoFlag = False):
                             break
                     # 其他操作，需要等待结果
                     case _:
-                        retryCount = 0
+                        # retryCount = 0
                         gamer.touch(totalDict[key][0])
                         time.sleep(5)
                         break
         # 一轮识别后的处理
         retryCount += 1
-        if retryCount % 30 == 0 and continueFlag:
+        if retryCount % 40 == 0 and continueFlag:
             # 30次尝试一次解决卡顿
             msh.send_simple_push(f"retryCount 为{retryCount}","错误：已经卡死,试图解决卡顿")
             gamer.touch(rd.first_screen_close_1)
@@ -302,6 +320,8 @@ def get_general_items(refreshCount, targetStartNum):
     if gho.verify_empty():
         logging.info("测试：目前有空位")
     while True:
+        if gho.verify_exit():
+            break
         try:
             if not stayFlag:
                 into_game(True)
@@ -317,11 +337,13 @@ def get_general_items(refreshCount, targetStartNum):
                 gho.round_all()
                 # save_current_device()
                 #收橘子可能导致count不正确
-                count = len(ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNumMin, minAccuracy))
-
+                count = len(ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNumMin, targetMinAccuracy))
+            
+            # 0 初始清理
+            gho.verify_clean()
             # 1 初始目标物数量
             if roundCount == 1:
-                tempList = ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNum, minAccuracy)
+                tempList = ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNum, targetMinAccuracy)
                 logging.info(msh.send_simple_push("在第{0}次执行中，获取列表: {1}".format(roundCount, tempList),f"提示：开始第{roundCount}次执行"))
                 count = len(tempList)
             
@@ -343,7 +365,7 @@ def get_general_items(refreshCount, targetStartNum):
                     # 更换目标
                     currentTarget = targetList[targetStartNum]
                     logging.info(msh.send_simple_push("目标列表数量","提示：更换目标列表，尝试重新进入棋盘".format(roundCount)))
-                    count = len(ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNum, minAccuracy))
+                    count = len(ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNum, targetMinAccuracy))
                     continue
                 else:
                     break
@@ -358,7 +380,7 @@ def get_general_items(refreshCount, targetStartNum):
                 # 获取目前数量
                 time.sleep(1)
                 # tempList = ghh.find_board_items(currentTarget.get("targetItem"))
-                tempList = ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNumMin, minAccuracy)
+                tempList = ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNumMin, targetMinAccuracy)
                 roundCount += 1
                 countNow = len(tempList)
                 if roundCount % 5 == 0:
@@ -366,13 +388,14 @@ def get_general_items(refreshCount, targetStartNum):
                 logging.info("在第{0}次执行中，目标物列表: {1}".format(roundCount, tempList))
             except Exception as e:
                 errorCount += 1
-                if errorCount < 3:
+                if errorCount < 10:
                     msh.send_simple_push(f"开始重启,错误次数{errorCount}",f"提示：执行{roundCount}次卡死，开始重启")
                     restart_all()
                     msh.send_simple_push(f"完成重启,错误次数{errorCount}",f"提示：执行{roundCount}次卡死，完成重启")
                     pass
                 else:
                     msh.send_simple_push(f"错误内容:{e}",f"提示：执行{roundCount}次跳出,未知错误")
+                    break
 
             # 4 处理产物或刷新
             if countNow > count:
@@ -405,16 +428,19 @@ def get_general_items(refreshCount, targetStartNum):
             logging.error(f"错误内容:{e}")
             msh.send_simple_push(f"错误内容:{e}",f"提示：执行{roundCount}次跳出,捕捉错误")
             errorCount += 1
-            if errorCount < 3:
+            if errorCount < 10:
                 msh.send_simple_push(f"开始重启,错误次数{errorCount}",f"提示：执行{roundCount}次卡死，开始重启")
                 restart_all()
                 msh.send_simple_push(f"完成重启,错误次数{errorCount}",f"提示：执行{roundCount}次卡死，完成重启")
                 pass
             else:
                 msh.send_simple_push(f"错误内容:{e}",f"提示：执行{roundCount}次跳出,未知错误")
+                break
     logging.info(msh.send_simple_push("源列表为空","提示：完成执行"))
     logging.info("完成执行")
     while True:
+        if gho.verify_exit():
+            break
         time.sleep(1200)
         gho.round_all()
         logging.info(msh.send_simple_push("结合执行","提示：完成一次结合执行"))
