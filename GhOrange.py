@@ -244,7 +244,6 @@ def filter_orange():
         if count%4 == 0:
             clean_up(1)
     process_existed_orange()
-
 def filter_beike(count = 6):
     for i in range(1, count):
         gamer.touch(ghh.get_center((1,5)))
