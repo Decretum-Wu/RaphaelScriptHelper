@@ -70,12 +70,6 @@ targetListFloat = [
     rd.float_2,
     rd.float_3
 ]
-# targetListCoin = [
-#     rd.icon_1,
-#     rd.icon_2,
-#     rd.icon_3,
-#     rd.icon_4
-# ]
 
 targetListCoin = [
     rd.coin_new_1,
@@ -83,24 +77,6 @@ targetListCoin = [
     rd.coin_new_3,
     rd.coin_new_4
 ]
-
-# targetListOrange = [
-#     rd.orange_1_n,
-#     rd.orange_2_n,
-#     rd.orange_3_n,
-#     rd.orange_4_n,
-#     rd.orange_5_n,
-#     rd.orange_6_n
-# ]
-
-# targetListOrange = [
-#     rd.orange_1_a,
-#     rd.orange_2_a,
-#     rd.orange_3_a,
-#     rd.orange_4_a,
-#     rd.orange_5_a,
-#     rd.orange_6_a
-# ]
 
 targetListOrange = [
     rd.orange_1_stable,
@@ -186,16 +162,17 @@ def verify_clean():
             logging.info(msh.send_simple_push(f"检测到棋盘满,剩余空格数{count}",f"提示：三级清理,不能使用金币，暂停"))
 
 def verify_exit():
-    return False
-    # if datetime.datetime.now().time() > datetime.time(7, 55): 
-    #     gamer.collect_log_image()
-    #     time.sleep(3)
-    #     gamer.home()
-    #     time.sleep(3)
-    #     gamer.collect_log_image()
-    #     return True
-    # else:
-    #     return False
+    # return False
+    nowTime = datetime.datetime.now().time()
+    if nowTime > datetime.time(7, 55) and nowTime < datetime.time(8, 55): 
+        gamer.collect_log_image()
+        time.sleep(3)
+        gamer.home()
+        time.sleep(3)
+        gamer.collect_log_image()
+        return True
+    else:
+        return False
 
 # temp = ImageProc.get_color(rd.empty_blue_2,(64,64))
 # print("在设备{0}中，获取目标个数: {1}".format(gamer.deviceID, powerCol[0]))

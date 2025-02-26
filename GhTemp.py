@@ -44,7 +44,8 @@ stayFlag = False
 retryNum = 9
 retryNumMin = 3
 minAccuracy = 0.55
-targetMinAccuracy = 0.75
+targetMinAccuracy = 0.55
+settings.accuracy = 0.70
 # startAtOrange = False
 # startAtOrange = True
 
@@ -60,7 +61,7 @@ gho.usePower = False
 refreshCount = 0
 # card_1 = 2
 # daily_box_3 = 4
-targetStartNum = 0
+targetStartNum = 1
 # targetList = [
 #     {"resourceItem": rd.license_box_1, "targetItem": rd.stone_3, "mergeRequired": True},
 #     {"resourceItem": rd.license_box_2_1, "targetItem": rd.stone_3, "mergeRequired": True},
@@ -80,29 +81,32 @@ targetStartNum = 0
 # ]
 
 targetList = [
-    {"resourceItem": rd.license_box_1, "targetItem": rd.stone_3, "mergeRequired": True},
-    {"resourceItem": rd.license_box_2_1, "targetItem": rd.stone_3, "mergeRequired": True},
-    {"resourceItem": rd.license_box_3, "targetItem": rd.blue_resource_1, "mergeRequired": True},
-    {"resourceItem": rd.card_1, "targetItem": rd.stone_4, "mergeRequired": False, "consumeItem": rd.stone_4},
-    {"resourceItem": rd.licence_box_3_max, "targetItem": rd.stone_4, "mergeRequired": False, "consumeItem": rd.stone_4},
-    {"resourceItem": rd.coin_box, "targetItem": rd.coin_new_4, "mergeRequired": True, "consumeItem": rd.coin_new_5},
-    {"resourceItem": rd.box_1, "targetItem": rd.power_4, "mergeRequired": True},
-    {"resourceItem": rd.daily_box_3, "targetItem": rd.power_3, "mergeRequired": True},
-]
-
-targetList = [
     # {"resourceItem": rd.license_box_1, "targetItem": rd.stone_3, "mergeRequired": True},
     # {"resourceItem": rd.license_box_2_1, "targetItem": rd.stone_3, "mergeRequired": True},
     # {"resourceItem": rd.license_box_3, "targetItem": rd.blue_resource_1, "mergeRequired": True},
-    # {"resourceItem": rd.card_1, "targetItem": rd.stone_4, "mergeRequired": False, "consumeItem": rd.stone_4},
     # {"resourceItem": rd.licence_box_3_max, "targetItem": rd.stone_4, "mergeRequired": False, "consumeItem": rd.stone_4},
-    # {"resourceItem": rd.coin_box, "targetItem": rd.coin_new_4, "mergeRequired": True, "consumeItem": rd.coin_new_5},
-    # {"resourceItem": rd.box_1, "targetItem": rd.power_4, "mergeRequired": True},
-    {"resourceItem": rd.daily_box_3, "targetItem": rd.power_3, "mergeRequired": True},
-    {"resourceItem": rd.daily_box_3, "targetItem": rd.power_3, "mergeRequired": True},
-    {"resourceItem": rd.daily_box_3, "targetItem": rd.power_3, "mergeRequired": True},
-    {"resourceItem": rd.daily_box_3, "targetItem": rd.power_3, "mergeRequired": True},
+    {"resourceItem": rd.card_1, "targetItem": rd.stone_4, "mergeRequired": False, "consumeItem": rd.stone_4},
+    {"resourceItem": rd.coin_box, "targetItem": rd.coin_new_4, "mergeRequired": True, "consumeItem": rd.coin_new_5},
+    {"resourceItem": rd.box_1, "targetItem": rd.power_4, "mergeRequired": True},
+    {"resourceItem": rd.box_1, "targetItem": rd.power_4, "mergeRequired": True},
+    {"resourceItem": rd.box_1, "targetItem": rd.power_4, "mergeRequired": True},
+    # {"resourceItem": rd.daily_box_3, "targetItem": rd.power_3, "mergeRequired": True},
 ]
+
+# targetList = [
+#     # {"resourceItem": rd.license_box_1, "targetItem": rd.stone_3, "mergeRequired": True},
+#     # {"resourceItem": rd.license_box_2_1, "targetItem": rd.stone_3, "mergeRequired": True},
+#     # {"resourceItem": rd.license_box_3, "targetItem": rd.blue_resource_1, "mergeRequired": True},
+#     # {"resourceItem": rd.card_1, "targetItem": rd.stone_4, "mergeRequired": False, "consumeItem": rd.stone_4},
+#     # {"resourceItem": rd.licence_box_3_max, "targetItem": rd.stone_4, "mergeRequired": False, "consumeItem": rd.stone_4},
+#     # {"resourceItem": rd.coin_box, "targetItem": rd.coin_new_4, "mergeRequired": True, "consumeItem": rd.coin_new_5},
+#     {"resourceItem": rd.box_1, "targetItem": rd.power_4, "mergeRequired": True},
+#     {"resourceItem": rd.box_1, "targetItem": rd.power_4, "mergeRequired": True},
+#     # {"resourceItem": rd.daily_box_3, "targetItem": rd.power_3, "mergeRequired": True},
+#     # {"resourceItem": rd.daily_box_3, "targetItem": rd.power_3, "mergeRequired": True},
+#     # {"resourceItem": rd.daily_box_3, "targetItem": rd.power_3, "mergeRequired": True},
+#     # {"resourceItem": rd.daily_box_3, "targetItem": rd.power_3, "mergeRequired": True},
+# ]
 currentTarget = targetList[targetStartNum]
 
 def into_game(verifyIntoFlag = False):
@@ -141,10 +145,10 @@ def into_game(verifyIntoFlag = False):
                             logging.info(f"已点击进入棋盘，跳过额外验证")
                             continueFlag = False
                             break
-                        if verifyIntoFlag:
-                            time.sleep(3)
+                        elif verifyIntoFlag:
+                            time.sleep(10)
                         else:
-                            time.sleep(7)
+                            time.sleep(10)
                         # 始终未刷新，可能已经自动保存，则不做处理
                         if(gamer.verify_pic(rd.back_from_board)):
                             logging.info(f"正常刷新，5秒后依旧在棋盘内")
@@ -317,7 +321,9 @@ def get_general_items(refreshCount, targetStartNum):
                 logging.info(msh.send_simple_push("目标列表为空","提示：重启出现问题，未能恢复"))
                 break
 
-            if refreshCount % 15 == 0:
+            # if refreshCount % 15 == 0:
+            # 检测到1级橘子才收橘子
+            if len(ghh.stable_find_board_items(rd.orange_1_stable)) > 0:
                 # gho.filter_orange()
                 gho.round_all()
                 # save_current_device()
@@ -357,6 +363,7 @@ def get_general_items(refreshCount, targetStartNum):
             elif roundCount % 10 == 1:
                 logging.info(msh.send_simple_push("目标列表数量","提示：运行第{1}轮开始，总数量{0}".format(count_resource(currentTarget.get("resourceItem")), roundCount)))
 
+            count = len(ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNumMin, targetMinAccuracy))
             # 3 操作获取新元素[重要]，操作时若报错，则使用另一个记录
             try:
                 # 双击一次
