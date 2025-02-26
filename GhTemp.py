@@ -318,7 +318,16 @@ def get_general_items(refreshCount, targetStartNum):
                 stayFlag = False
 
             if len(ADBHelper.getDevicesList()) < 2:
-                logging.info(msh.send_simple_push("目标列表为空","提示：重启出现问题，未能恢复"))
+                logging.info(msh.send_simple_push("目标列表为空","提示：重启出现问题，尝试恢复"))
+                errorCount += 1
+                if errorCount < 3:
+                    msh.send_simple_push(f"开始重启,错误次数{errorCount}",f"提示：执行{roundCount}次卡死，开始重启")
+                    restart_all()
+                    msh.send_simple_push(f"完成重启,错误次数{errorCount}",f"提示：执行{roundCount}次卡死，完成重启")
+                    pass
+                else:
+                    msh.send_simple_push(f"错误内容:{e}",f"提示：执行{roundCount}次跳出,未知错误")
+                    break
                 break
 
             # if refreshCount % 15 == 0:
