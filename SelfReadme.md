@@ -52,3 +52,6 @@ PyAutoGUI fail-safe triggered from mouse moving to a corner of the screen. To di
 ===========
 
 useCoin需要打开 以处理多余硬币
+
+targetMinAccuracy = 0.75 对每日宝箱
+targetMinAccuracy = 0.55 对卡，金币等

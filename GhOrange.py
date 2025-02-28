@@ -20,7 +20,8 @@ class Direction(Enum):
     LEFT = 2
     RIGHT = 3
 # beikeAcc = 0.65
-beikeAcc = 0.60
+errorCount = 0
+beikeAcc = 0.65
 windowID = "BlueStacks App Main"
 windowID2 = "BlueStacks App Player 2"
 windowID3 = "BlueStacks Multi"
@@ -30,14 +31,14 @@ deviceID = "emulator-5554"
 useCoin = False
 useCoin = True
 usePower = False
-usePower = True
+# usePower = True
 
 targetListOrangeTree = rd.orange_tree_list1
 # targetListOrangeTree = rd.orange_tree_list2
 
 gamer.deviceID = deviceID
 targetListBeike = [
-    rd.beike_2,
+    # rd.beike_2,
     rd.beike_3,
     rd.beike_4,
     rd.beike_5,
@@ -301,7 +302,7 @@ def round_all():
             # ghh.click_order(rd.order_orange)
     filter_orange()
     if useCoin and usePower:
-        for i in range(1,20):
+        for i in range(1,30):
             filter_beike()
             # if gamer.verify_pic(rd.back_from_board):
             if solve_breaker():
@@ -385,19 +386,36 @@ if __name__ == "__main__":
     # round_all()
     # 设置定时任务
     # schedule.every().hour.at(":05").do(round_all)  # 每小时 0 分钟
-    schedule.every().hour.at(":15").do(round_all)  # 每小时 20 分钟
-    schedule.every().hour.at(":45").do(round_all)  # 每小时 40 分钟
+    schedule.every().hour.at(":17").do(round_all)  # 每小时 20 分钟
+    schedule.every().hour.at(":47").do(round_all)  # 每小时 40 分钟
 
     print("定时任务已启动，等待运行...")
 
     # 保持程序运行
     while True:
-        schedule.run_pending()  # 运行待执行的任务
-        if datetime.datetime.now().time() > datetime.time(7, 55): 
-            gamer.collect_log_image()
-            time.sleep(3)
-            gamer.home()
-            time.sleep(3)
-            gamer.collect_log_image()
-            break
-        time.sleep(5)  # 每5秒检查一次
+        try:
+            schedule.run_pending()  # 运行待执行的任务
+            if datetime.datetime.now().time() > datetime.time(7, 55): 
+                gamer.collect_log_image()
+                time.sleep(3)
+                gamer.home()
+                time.sleep(3)
+                gamer.collect_log_image()
+                break
+            time.sleep(5)  # 每5秒检查一次
+            nowTime = datetime.datetime.now().time()
+            if nowTime > datetime.time(4, 10) and nowTime < datetime.time(4, 20):
+                usePower = True
+            elif nowTime > datetime.time(7, 40) and nowTime < datetime.time(7, 50):
+                usePower = True
+            else: usePower = False
+        except Exception as e:
+            errorCount += 1
+            if errorCount < 3:
+                msh.send_simple_push(f"开始重启,错误次数{errorCount}",f"提示：卡死，开始重启")
+                GhTemp.restart_all()
+                msh.send_simple_push(f"完成重启,错误次数{errorCount}",f"提示：卡死，完成重启")
+                pass
+            else:
+                msh.send_simple_push(f"错误内容:{e}",f"提示：跳出,未知错误")
+                raise

@@ -41,10 +41,11 @@ refreshCount = 1
 tagCount = 0
 point = (0,0)
 stayFlag = False
+switchFlag = False
 retryNum = 9
 retryNumMin = 3
-minAccuracy = 0.55
-targetMinAccuracy = 0.55
+resourceAcc = 0.55
+targetAcc = 0.55
 settings.accuracy = 0.70
 # startAtOrange = False
 # startAtOrange = True
@@ -53,7 +54,7 @@ settings.accuracy = 0.70
 # targetItem = rd.power_3
 # mergeRequired = True
 # 重要
-gho.useCoin = True
+gho.useCoin = False
 gho.usePower = False
 # gho.useCoin = True
 # gho.usePower = True
@@ -61,51 +62,24 @@ gho.usePower = False
 refreshCount = 0
 # card_1 = 2
 # daily_box_3 = 4
-targetStartNum = 1
-# targetList = [
-#     {"resourceItem": rd.license_box_1, "targetItem": rd.stone_3, "mergeRequired": True},
-#     {"resourceItem": rd.license_box_2_1, "targetItem": rd.stone_3, "mergeRequired": True},
-#     {"resourceItem": rd.license_box_3, "targetItem": rd.blue_resource_1, "mergeRequired": True},
-    # {"resourceItem": rd.card_1, "targetItem": rd.stone_4, "mergeRequired": False, "consumeItem": rd.stone_4},
-#     {"resourceItem": rd.box_1, "targetItem": rd.power_4, "mergeRequired": True},
-#     {"resourceItem": rd.daily_box_3, "targetItem": rd.power_3, "mergeRequired": True},
-#     {"resourceItem": rd.daily_box_3, "targetItem": rd.power_3, "mergeRequired": True},
-# ]
-
-# targetList = [
-#     {"resourceItem": rd.card_1, "targetItem": rd.stone_4, "mergeRequired": False},
-#     {"resourceItem": rd.jingxi_box_3, "targetItem": rd.stone_3, "mergeRequired": True},
-#     {"resourceItem": rd.rubin_box, "targetItem": rd.stone_2, "mergeRequired": True},
-#     {"resourceItem": rd.box_1, "targetItem": rd.power_4, "mergeRequired": True},
-#     {"resourceItem": rd.daily_box_3, "targetItem": rd.power_3, "mergeRequired": True},
-# ]
+targetStartNum = 2
 
 targetList = [
-    # {"resourceItem": rd.license_box_1, "targetItem": rd.stone_3, "mergeRequired": True},
-    # {"resourceItem": rd.license_box_2_1, "targetItem": rd.stone_3, "mergeRequired": True},
-    # {"resourceItem": rd.license_box_3, "targetItem": rd.blue_resource_1, "mergeRequired": True},
-    # {"resourceItem": rd.licence_box_3_max, "targetItem": rd.stone_4, "mergeRequired": False, "consumeItem": rd.stone_4},
-    {"resourceItem": rd.card_1, "targetItem": rd.stone_4, "mergeRequired": False, "consumeItem": rd.stone_4},
-    {"resourceItem": rd.coin_box, "targetItem": rd.coin_new_4, "mergeRequired": True, "consumeItem": rd.coin_new_5},
-    {"resourceItem": rd.box_1, "targetItem": rd.power_4, "mergeRequired": True},
-    {"resourceItem": rd.box_1, "targetItem": rd.power_4, "mergeRequired": True},
-    {"resourceItem": rd.box_1, "targetItem": rd.power_4, "mergeRequired": True},
-    # {"resourceItem": rd.daily_box_3, "targetItem": rd.power_3, "mergeRequired": True},
+    # {"resourceItem": rd.license_box_1, "resourceAcc":0.55, "targetItem": rd.stone_3, "targetAcc":0.75, "mergeRequired": True},
+    # {"resourceItem": rd.license_box_2_1, "resourceAcc":0.55, "targetItem": rd.stone_3, "targetAcc":0.75, "mergeRequired": True},
+    # {"resourceItem": rd.license_box_3, "resourceAcc":0.55, "targetItem": rd.blue_resource_1, "targetAcc":0.55, "mergeRequired": True},
+    # {"resourceItem": rd.licence_box_3_max, "resourceAcc":0.55, "targetItem": rd.stone_4, "targetAcc":0.55, "mergeRequired": False, "consumeItem": rd.stone_4},
+    {"resourceItem": rd.card_1, "resourceAcc":0.55, "targetItem": rd.stone_4, "targetAcc":0.55, "mergeRequired": False, "consumeItem": rd.stone_4},
+    {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True, "consumeItem": rd.coin_new_5},
+    {"resourceItem": rd.box_1, "resourceAcc":0.6, "targetItem": rd.power_4, "targetAcc":0.75, "mergeRequired": True},
+    {"resourceItem": rd.daily_box_3, "resourceAcc":0.55, "targetItem": rd.power_3,  "targetAcc":0.75,"mergeRequired": True},
 ]
 
 # targetList = [
-#     # {"resourceItem": rd.license_box_1, "targetItem": rd.stone_3, "mergeRequired": True},
-#     # {"resourceItem": rd.license_box_2_1, "targetItem": rd.stone_3, "mergeRequired": True},
-#     # {"resourceItem": rd.license_box_3, "targetItem": rd.blue_resource_1, "mergeRequired": True},
-#     # {"resourceItem": rd.card_1, "targetItem": rd.stone_4, "mergeRequired": False, "consumeItem": rd.stone_4},
-#     # {"resourceItem": rd.licence_box_3_max, "targetItem": rd.stone_4, "mergeRequired": False, "consumeItem": rd.stone_4},
-#     # {"resourceItem": rd.coin_box, "targetItem": rd.coin_new_4, "mergeRequired": True, "consumeItem": rd.coin_new_5},
-#     {"resourceItem": rd.box_1, "targetItem": rd.power_4, "mergeRequired": True},
-#     {"resourceItem": rd.box_1, "targetItem": rd.power_4, "mergeRequired": True},
-#     # {"resourceItem": rd.daily_box_3, "targetItem": rd.power_3, "mergeRequired": True},
-#     # {"resourceItem": rd.daily_box_3, "targetItem": rd.power_3, "mergeRequired": True},
-#     # {"resourceItem": rd.daily_box_3, "targetItem": rd.power_3, "mergeRequired": True},
-#     # {"resourceItem": rd.daily_box_3, "targetItem": rd.power_3, "mergeRequired": True},
+    # {"resourceItem": rd.license_box_1, "resourceAcc":0.55, "targetItem": rd.stone_3, "targetAcc":0.75, "mergeRequired": True},
+    # {"resourceItem": rd.license_box_2_1, "resourceAcc":0.55, "targetItem": rd.stone_3, "targetAcc":0.75, "mergeRequired": True},
+    # {"resourceItem": rd.license_box_3, "resourceAcc":0.55, "targetItem": rd.blue_resource_1, "targetAcc":0.55, "mergeRequired": True},
+    # {"resourceItem": rd.licence_box_3_max, "resourceAcc":0.55, "targetItem": rd.stone_4, "targetAcc":0.55, "mergeRequired": False, "consumeItem": rd.stone_4},
 # ]
 currentTarget = targetList[targetStartNum]
 
@@ -245,10 +219,10 @@ def resume_main_device(waitSeconds = 3):
     time.sleep(waitSeconds)  # 等待窗口激活
 
 def count_resource(target):
-    return len(ghh.stable_find_board_items(target, retryNum, minAccuracy))
+    return len(ghh.stable_find_board_items(target, retryNum, resourceAcc))
 
 def find_first_resource_point(target, remainNum = 0):
-    resourceList = ghh.stable_find_board_items(target, retryNum, minAccuracy)
+    resourceList = ghh.stable_find_board_items(target, retryNum, resourceAcc)
     logging.info("find_first_resource_point for {0} get number {1}, when remainNum {2}".format(target, len(resourceList), remainNum))
     if len(resourceList) > remainNum:
         return resourceList[0]
@@ -272,6 +246,11 @@ def simple_merge(target):
         merged_results.append(gamer.slide(a, b))
         # 实时日志
         logging.debug(f"Merged ({a}, {b}) for target {target}")
+
+def set_acc_by_item(currentTarget):
+    global resourceAcc, targetAcc
+    if currentTarget.get("resourceAcc"): resourceAcc = currentTarget.get("resourceAcc")
+    if currentTarget.get("targetAcc"): targetAcc = currentTarget.get("targetAcc")
 
 def reset_game_with_error_restart():
     """循环中的逻辑"""
@@ -300,12 +279,16 @@ def reset_game_with_error_restart():
                 raise  # 抛出异常并退出程序
 
 def get_general_items(refreshCount, targetStartNum):
-    global stayFlag, currentTarget, targetList
+    global stayFlag, switchFlag, currentTarget, targetList
     tagCount = 0
     roundCount = 1
     errorCount = 0
     ADBHelper.connent(deviceID)
     ADBHelper.connent(deviceID2)
+
+    # 初始设置acc
+    set_acc_by_item(currentTarget)
+
     if gho.verify_empty():
         logging.info("测试：目前有空位")
     while True:
@@ -337,42 +320,51 @@ def get_general_items(refreshCount, targetStartNum):
                 gho.round_all()
                 # save_current_device()
                 #收橘子可能导致count不正确
-                count = len(ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNumMin, targetMinAccuracy))
+                count = len(ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNumMin, targetAcc))
             
             # 0 初始清理
             gho.verify_clean()
             # 1 初始目标物数量
             if roundCount == 1:
-                tempList = ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNum, targetMinAccuracy)
+                tempList = ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNum, targetAcc)
                 logging.info(msh.send_simple_push("在第{0}次执行中，获取列表: {1}".format(roundCount, tempList),f"提示：开始第{roundCount}次执行"))
                 count = len(tempList)
             
             # 2 通用逻辑, 更新目标列表
             point = find_first_resource_point(currentTarget.get("resourceItem"))
+            # 当未找到目标时
             if not point: 
-                logging.info(msh.send_simple_push("目标列表为空","提示：目标列表为空"))
-                logging.info("提示：目标列表为空")
-                # if gamer.find_pic_touch(rd.into_board):
-                if not gamer.verify_pic(rd.back_from_board):
-                    gamer.home()
-                    logging.info(msh.send_simple_push("目标列表为空但未在棋盘内，直接重启","提示：运行第{0}轮异常，尝试重新进入棋盘".format(roundCount)))
-                    # 根据经验，这种情况一般已经卡住，直接重启
-                    restart_all()
-                    gamer.delay(3)
-                    continue
-                targetStartNum += 1
-                if targetStartNum < len(targetList):
-                    # 更换目标
-                    currentTarget = targetList[targetStartNum]
-                    logging.info(msh.send_simple_push("目标列表数量","提示：更换目标列表，尝试重新进入棋盘".format(roundCount)))
-                    count = len(ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNum, targetMinAccuracy))
-                    continue
+                if switchFlag:
+                    logging.info(msh.send_simple_push("目标列表为空","提示：目标列表为空"))
+                    logging.info("提示：目标列表为空")
+                    # if gamer.find_pic_touch(rd.into_board):
+                    if not gamer.verify_pic(rd.back_from_board):
+                        gamer.home()
+                        logging.info(msh.send_simple_push("目标列表为空但未在棋盘内，直接重启","提示：运行第{0}轮异常，尝试重新进入棋盘".format(roundCount)))
+                        # 根据经验，这种情况一般已经卡住，直接重启
+                        restart_all()
+                        gamer.delay(3)
+                        continue
+                    targetStartNum += 1
+                    if targetStartNum < len(targetList):
+                        # 更换目标
+                        switchFlag = False
+                        currentTarget = targetList[targetStartNum]
+                        # 更换设置acc
+                        set_acc_by_item(currentTarget)
+                        logging.info(msh.send_simple_push("目标列表数量","提示：更换目标列表，尝试重新进入棋盘".format(roundCount)))
+                        count = len(ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNum, targetAcc))
+                        continue
+                    else:
+                        break
                 else:
-                    break
+                    switchFlag = True
             elif roundCount % 10 == 1:
                 logging.info(msh.send_simple_push("目标列表数量","提示：运行第{1}轮开始，总数量{0}".format(count_resource(currentTarget.get("resourceItem")), roundCount)))
+            # 当找到目标时
+            switchFlag = False
 
-            count = len(ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNumMin, targetMinAccuracy))
+            count = len(ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNumMin, targetAcc))
             # 3 操作获取新元素[重要]，操作时若报错，则使用另一个记录
             try:
                 # 双击一次
@@ -381,7 +373,7 @@ def get_general_items(refreshCount, targetStartNum):
                 # 获取目前数量
                 time.sleep(1)
                 # tempList = ghh.find_board_items(currentTarget.get("targetItem"))
-                tempList = ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNumMin, targetMinAccuracy)
+                tempList = ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNumMin, targetAcc)
                 roundCount += 1
                 countNow = len(tempList)
                 if roundCount % 5 == 0:
@@ -405,7 +397,7 @@ def get_general_items(refreshCount, targetStartNum):
                 if (currentTarget.get("mergeRequired")):
                     simple_merge(currentTarget.get("targetItem"))
                 if currentTarget.get("consumeItem"):
-                    gamer.find_pic_double_touch(currentTarget.get("consumeItem"), minAccuracy)
+                    gamer.find_pic_double_touch(currentTarget.get("consumeItem"), resourceAcc)
                 gamer.delay(2)
                 count = len(ghh.find_board_items(currentTarget.get("targetItem")))
                 # 后续处理

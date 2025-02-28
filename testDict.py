@@ -148,3 +148,4 @@ event_at_1 = "./img/event_at_1.png"
 event_bear_4 = "./img/event_bear_4.png"
 event_gift_1_new = "./img/event_gift_1_new.png"
 licence_box_3_max = "./img/licence_box_3_max.png"
+point_drop = (540, 1530)

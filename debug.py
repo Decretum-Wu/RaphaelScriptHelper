@@ -26,7 +26,7 @@ deviceID = "emulator-5554"
 deviceID2 = "emulator-5574"
 # deviceID = "127.0.0.1:5625"
 # deviceID2 = "127.0.0.1:5625"
-deviceID = "emulator-5584"
+# deviceID = "emulator-5584"
 # deviceID2 = "127.0.0.1:5595"
 manager_pos_1 = (900, 225)
 manager_pos_2 = (900, 330)
@@ -35,6 +35,7 @@ retryNum = 5
 doneFlag = False
 cardMaxX = 180
 cardMaxY = 70
+stayFlag = True
 
 settings.accuracy = 0.75
 #正确率0.55时，bubble难以判断
@@ -99,18 +100,19 @@ targetListOrange = [
 ]
 
 def restart_all():
-    gamer.bs_manager_click(windowID3, manager_pos_1)
-    gamer.delay(1)
-    gamer.bs_manager_click(windowID3, manager_pos_submit)
-    gamer.delay(1)
-    gamer.bs_manager_click(windowID3, manager_pos_2)
-    gamer.delay(1)
-    gamer.bs_manager_click(windowID3, manager_pos_submit)
-    gamer.delay(10)
-    gamer.bs_manager_click(windowID3, manager_pos_1)
+    # 重置跳过变量，重启后必须重新进入游戏
+    global stayFlag
+    stayFlag = False
+    # 首次点击容易失败，重复点击更安全
+    gamer.stop_process_by_window_title(settings.deviceList[0]["window_title"])
+    gamer.stop_process_by_window_title(settings.deviceList[1]["window_title"])
+    gamer.delay(25)
+    gamer.run_bluestacks_instance(settings.deviceList[0]["instance_title"])
+    gamer.run_bluestacks_instance(settings.deviceList[1]["instance_title"])
+    gamer.delay(35)
+    ADBHelper.connent(settings.deviceList[0]["deviceId"])
+    ADBHelper.connent(settings.deviceList[1]["deviceId"])
     gamer.delay(5)
-    gamer.bs_manager_click(windowID3, manager_pos_2)
-    gamer.delay(40)
 
 def count_resource(target):
     return len(ghh.stable_find_board_items(target, retryNum))
@@ -254,24 +256,53 @@ def simple_merge(target):
 # print("temp:{0}".format(get_all_center()))
 # [(268, 576), (268, 712), (268, 848), (268, 984), (268, 1120), (268, 1256), (268, 1392), (268, 1528), (948, 1392), (948, 1528)]
 
-targetList = [
-    {"deviceId": 'emulator-5554', "window_title": 'BlueStacks App Main', "instance_title": 'Pie64'},
-    {"deviceId": '127.0.0.1:5635', "window_title": 'BlueStacks App Save2', "instance_title": 'Pie64_8'},
-    {"deviceId": '127.0.0.1:5585', "window_title": 'BlueStacks App Sub Main', "instance_title": 'Pie64_3'},
-    {"deviceId": '127.0.0.1:5615', "window_title": 'BlueStacks App Sub Save', "instance_title": 'Pie64_6'},
+
+# 环境变量
+# targetList = [
+#     {"deviceId": 'emulator-5554', "window_title": 'BlueStacks App Main', "instance_title": 'Pie64'},
+#     {"deviceId": '127.0.0.1:5635', "window_title": 'BlueStacks App Save2', "instance_title": 'Pie64_8'},
+#     {"deviceId": '127.0.0.1:5585', "window_title": 'BlueStacks App Sub Main', "instance_title": 'Pie64_3'},
+#     {"deviceId": '127.0.0.1:5615', "window_title": 'BlueStacks App Sub Save', "instance_title": 'Pie64_6'},
+# ]
+
+# deviceID = "emulator-5554"
+# deviceID2 = "127.0.0.1:5625"
+
+# # deviceID = "127.0.0.1:5585"
+# # deviceID2 = "127.0.0.1:5615"
+# # 示例调用
+# window_title = "BlueStacks App Save2"  # 替换为传入的参数
+# instance_title = "Nougat64_4"
+# i = 0
+# gamer.stop_process_by_window_title(targetList[i]["window_title"])
+# time.sleep(10)
+# gamer.run_bluestacks_instance(targetList[i]["instance_title"])
+# time.sleep(30)
+
+
+targetListBeike = [
+    rd.beike_2,
+    rd.beike_3,
+    rd.beike_4,
+    rd.beike_5,
+    rd.beike_6,
+    rd.beike_7,
+    rd.beike_8,
+    rd.beike_9,
+    rd.beike_10
 ]
 
-deviceID = "emulator-5554"
-deviceID2 = "127.0.0.1:5625"
+# temp = ghh.find_board_items(rd.power_4)
+# temp = ghh.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListBeike, 0.65))
+# temp = ghh.get_collection_unique_grid_positions_read(gamer.find_pic_all_list([rd.box_1,rd.daily_box_3], 0.55))
+# temp = ghh.get_collection_unique_grid_positions_read(gamer.find_pic_all_list([rd.power_4,rd.power_3], 0.75))
+# ADBHelper.keyEvent(deviceID, '3')
+# temp = ghh.get_collection_unique_grid_positions_read([[(132.0, 984.0), (540.0, 848.0)]])
 
-# deviceID = "127.0.0.1:5585"
-# deviceID2 = "127.0.0.1:5615"
-# 示例调用
-window_title = "BlueStacks App Save2"  # 替换为传入的参数
-instance_title = "Nougat64_4"
-i = 0
-gamer.stop_process_by_window_title(targetList[i]["window_title"])
-time.sleep(10)
-gamer.run_bluestacks_instance(targetList[i]["instance_title"])
-time.sleep(30)
+# restart_all()
+# ADBHelper.screenCapture("emulator-5554", "screen.png")
+# print("temp:{0}".format(temp))
+while True:
+    gamer.touch(rd.point_drop)
+    gamer.delay(2)
 
