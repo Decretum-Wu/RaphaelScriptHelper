@@ -5,11 +5,13 @@ import settings
 import pyautogui
 import time
 import GhHelper as ghh
+import GhEventHelper as gheh
 import ImageProc
 import logging
 import messageHelper as msh
 import GhOrange as gho
 import ADBHelper
+import concurrent.futures
 import datetime
 from enum import Enum
 
@@ -22,8 +24,8 @@ class Direction(Enum):
 intoGameList = [
     rd.start_game,
     rd.cloud_button,
-    rd.into_board,
-    rd.back_from_board
+    rd.into_event_1,
+    rd.event_at_1
     ]
 windowID3 = "BlueStacks Multi"
 deviceID = "emulator-5554"
@@ -39,14 +41,12 @@ errorCount = 0
 roundCount = 1
 refreshCount = 1
 tagCount = 0
-point = (0,0)
+point = settings.event_first_block
+settings.accuracy = 0.75
 stayFlag = False
-switchFlag = False
-retryNum = 9
-retryNumMin = 3
-resourceAcc = 0.55
-targetAcc = 0.55
-settings.accuracy = 0.70
+retryNum = 3
+retryNumMin = 2
+minAccuracy = 0.40
 # startAtOrange = False
 # startAtOrange = True
 
@@ -59,38 +59,108 @@ gho.usePower = False
 # gho.useCoin = True
 # gho.usePower = True
 # startAtOrange = 0
-refreshCount = 0
+refreshCount = 1
 # card_1 = 2
 # daily_box_3 = 4
-targetStartNum = 2
+targetStartNum = 0
+totalCount = 11
 
 targetList = [
-    # {"resourceItem": rd.license_box_1, "resourceAcc":0.55, "targetItem": rd.stone_3, "targetAcc":0.75, "mergeRequired": True},
-    # {"resourceItem": rd.license_box_2_1, "resourceAcc":0.55, "targetItem": rd.stone_3, "targetAcc":0.75, "mergeRequired": True},
-    # {"resourceItem": rd.license_box_3, "resourceAcc":0.55, "targetItem": rd.blue_resource_1, "targetAcc":0.55, "mergeRequired": True},
-    # {"resourceItem": rd.licence_box_3_max, "resourceAcc":0.55, "targetItem": rd.stone_4, "targetAcc":0.55, "mergeRequired": False, "consumeItem": rd.stone_4},
-    {"resourceItem": rd.card_1, "resourceAcc":0.55, "targetItem": rd.stone_4, "targetAcc":0.55, "mergeRequired": False, "consumeItem": rd.stone_4},
-    {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True, "consumeItem": rd.coin_new_5},
-    {"resourceItem": rd.box_1, "resourceAcc":0.6, "targetItem": rd.power_4, "targetAcc":0.75, "mergeRequired": True},
-    {"resourceItem": rd.daily_box_3, "resourceAcc":0.55, "targetItem": rd.power_3,  "targetAcc":0.75,"mergeRequired": True},
+    {"resourceItem": rd.event_bear_1, "targetItem": rd.event_bear_1, "mergeRequired": True},
+]
+currentTarget = targetList[targetStartNum]
+
+targetListCoin = [
+    rd.coin_0,
+    rd.coin_new_1,
+    rd.coin_new_2,
+    rd.coin_new_3,
+    rd.coin_new_4
 ]
 
-# targetList = [
-    # {"resourceItem": rd.license_box_1, "resourceAcc":0.55, "targetItem": rd.stone_3, "targetAcc":0.75, "mergeRequired": True},
-    # {"resourceItem": rd.license_box_2_1, "resourceAcc":0.55, "targetItem": rd.stone_3, "targetAcc":0.75, "mergeRequired": True},
-    # {"resourceItem": rd.license_box_3, "resourceAcc":0.55, "targetItem": rd.blue_resource_1, "targetAcc":0.55, "mergeRequired": True},
-    # {"resourceItem": rd.licence_box_3_max, "resourceAcc":0.55, "targetItem": rd.stone_4, "targetAcc":0.55, "mergeRequired": False, "consumeItem": rd.stone_4},
-# ]
-currentTarget = targetList[targetStartNum]
+targetListGift = [
+    rd.event_gift_1_new,
+    rd.event_gift_2,
+    rd.event_gift_3,
+    rd.event_gift_4,
+    rd.event_gift_5,
+    rd.event_gift_6,
+    rd.event_gift_7,
+    # rd.event_gift_8
+]
+
+targetListPower = [
+    rd.power_1_new,
+    rd.power_2_new,
+    rd.power_3,
+    rd.power_4
+]
+
+targetListBear = [
+    # rd.event_bear_1,
+    rd.event_bear_2,
+    rd.event_bear_3,
+    rd.event_bear_4,
+]
+
+targetListCoin = [
+    rd.coin_0,
+    rd.coin_new_1,
+    rd.coin_new_2,
+    rd.coin_new_3,
+    rd.coin_new_4
+]
+
+targetListItem = [
+    rd.event_2_item_1,
+    rd.event_2_item_2,
+    rd.event_2_item_3,
+    rd.event_2_item_4,
+    rd.event_2_item_5,
+    rd.event_2_item_6,
+    rd.event_2_item_7,
+]
+
+targetListTag = [
+    rd.event_2_tag_1,
+    rd.event_2_tag_2,
+]
+
+def process_existed(targetList, acc, cacheFlag = False):
+    slideCount = 1
+    if cacheFlag:
+        powerCol = gamer.find_pic_all_list_cache(targetList, acc)
+        powerCol = gheh.get_collection_unique_grid_positions(powerCol)
+        print("在设备{0}中，获取目标个数: {1}".format(gamer.deviceID, powerCol))
+        slideCount = gheh.process_collection(powerCol, gamer.slide)
+        print("在设备{0}中，获取滑动次数: {1}".format(gamer.deviceID, slideCount))
+    else:
+        while slideCount > 0:
+            # gamer.delay(1)
+            powerCol = gamer.find_pic_all_list(targetList, acc)
+            powerCol = gheh.get_collection_unique_grid_positions(powerCol)
+            print("在设备{0}中，获取目标个数: {1}".format(gamer.deviceID, powerCol))
+            slideCount = gheh.process_collection(powerCol, gamer.slide)
+            print("在设备{0}中，获取滑动次数: {1}".format(gamer.deviceID, slideCount))
+
+def clean_event():
+    gamer.screenCap()
+    process_existed(targetListGift, True)
+    gamer.screenCap()
+    process_existed(targetListBear, True)
+    process_existed(targetListCoin, True)
+    process_existed(targetListPower, True)
+    gamer.find_pic_double_touch(rd.coin_new_5)
 
 def into_game(verifyIntoFlag = False):
     continueFlag = True
     doneIntoFlag = False
     retryCount = 0
     gamer.home()
+    gamer.delay(3)
     while continueFlag:
         totalList = gamer.find_pic_all_list(intoGameList)
-        totalDict = ghh.combine_lists_to_dict(intoGameList, totalList)
+        totalDict = gheh.combine_lists_to_dict(intoGameList, totalList)
         for key in intoGameList:
             if len(totalDict[key]) > 0:
                 match key:
@@ -103,48 +173,56 @@ def into_game(verifyIntoFlag = False):
                         time.sleep(3)
                         break
                     # 进入棋盘后无需额外操作
-                    case rd.into_board: 
+                    case rd.into_event_1: 
                         gamer.touch(totalDict[key][0])
                         # 如果不需要确认已进入，则直接跳出，否则依赖back_from_board跳出
-                        if not verifyIntoFlag:
-                            continueFlag = False
-                        else:
-                            #防止截图过快导致的后续问题
-                            doneIntoFlag = True
-                            time.sleep(2)
-                        break
+                        # if not verifyIntoFlag:
+                        #     continueFlag = False
+                        # else:
+                        #     #防止截图过快导致的后续问题
+                        #     doneIntoFlag = True
+                        #     time.sleep(2)
+                        # break
+                        time.sleep(2)
                     # back_from_board
-                    case rd.back_from_board: 
-                        if doneIntoFlag:
-                            logging.info(f"已点击进入棋盘，跳过额外验证")
-                            continueFlag = False
-                            break
-                        elif verifyIntoFlag:
-                            time.sleep(10)
-                        else:
-                            time.sleep(10)
-                        # 始终未刷新，可能已经自动保存，则不做处理
-                        if(gamer.verify_pic(rd.back_from_board)):
-                            logging.info(f"正常刷新，5秒后依旧在棋盘内")
-                            continueFlag = False
+                    case rd.event_at_1: 
+                        if not gamer.verify_pic(rd.event_at_1):
+                            logging.info("重试进入活动")
+                            msh.send_simple_push(f"错误内容",f"提示：跳出,重试进入活动")
                             break
                         else:
-                            time.sleep(5)
-                            if(gamer.verify_pic(rd.back_from_board)):
-                                logging.info(f"异常刷新，但10秒后依旧在棋盘内，已解决")
-                                continueFlag = False
-                                break
-                            # 重新尝试整个刷新逻辑
+                            continueFlag = False
                             break
+                        # if doneIntoFlag:
+                        #     logging.info(f"已点击进入棋盘，跳过额外验证")
+                        #     continueFlag = False
+                        #     break
+                        # if verifyIntoFlag:
+                        #     time.sleep(3)
+                        # else:
+                        #     time.sleep(7)
+                        # # 始终未刷新，可能已经自动保存，则不做处理
+                        # if(gamer.verify_pic(rd.back_from_board)):
+                        #     logging.info(f"正常刷新，5秒后依旧在棋盘内")
+                        #     continueFlag = False
+                        #     break
+                        # else:
+                        #     time.sleep(5)
+                        #     if(gamer.verify_pic(rd.back_from_board)):
+                        #         logging.info(f"异常刷新，但10秒后依旧在棋盘内，已解决")
+                        #         continueFlag = False
+                        #         break
+                        #     # 重新尝试整个刷新逻辑
+                        #     break
                     # 其他操作，需要等待结果
                     case _:
-                        # retryCount = 0
+                        retryCount = 0
                         gamer.touch(totalDict[key][0])
                         time.sleep(5)
                         break
         # 一轮识别后的处理
         retryCount += 1
-        if retryCount % 40 == 0 and continueFlag:
+        if retryCount % 30 == 0 and continueFlag:
             # 30次尝试一次解决卡顿
             msh.send_simple_push(f"retryCount 为{retryCount}","错误：已经卡死,试图解决卡顿")
             gamer.touch(rd.first_screen_close_1)
@@ -219,10 +297,10 @@ def resume_main_device(waitSeconds = 3):
     time.sleep(waitSeconds)  # 等待窗口激活
 
 def count_resource(target):
-    return len(ghh.stable_find_board_items(target, retryNum, resourceAcc))
+    return len(gheh.stable_find_board_items(target, retryNum, minAccuracy))
 
 def find_first_resource_point(target, remainNum = 0):
-    resourceList = ghh.stable_find_board_items(target, retryNum, resourceAcc)
+    resourceList = gheh.stable_find_board_items(target, retryNum, minAccuracy)
     logging.info("find_first_resource_point for {0} get number {1}, when remainNum {2}".format(target, len(resourceList), remainNum))
     if len(resourceList) > remainNum:
         return resourceList[0]
@@ -230,7 +308,7 @@ def find_first_resource_point(target, remainNum = 0):
         return False
 
 def simple_merge(target):
-    current_list = ghh.stable_find_board_items(target, retryNum)
+    current_list = gheh.stable_find_board_items(target, retryNum)
     logging.info("simple_merge for {0} get number {1}".format(target, len(current_list)))
     # 跳过无效列表记录
     if len(current_list) < 2:
@@ -247,10 +325,21 @@ def simple_merge(target):
         # 实时日志
         logging.debug(f"Merged ({a}, {b}) for target {target}")
 
-def set_acc_by_item(currentTarget):
-    global resourceAcc, targetAcc
-    if currentTarget.get("resourceAcc"): resourceAcc = currentTarget.get("resourceAcc")
-    if currentTarget.get("targetAcc"): targetAcc = currentTarget.get("targetAcc")
+def quick_merge(current_list):
+    # 跳过无效列表记录
+    if len(current_list) < 3:
+        status = "empty" if not current_list else "just 2-element"
+        logging.info(f"simple_merge ({status}) skipped")
+
+    merged_results = []
+    # 持续处理直到剩余元素不足两个
+    while len(current_list) >= 3:
+        # 总是取出前两个元素
+        a = current_list.pop(0)
+        b = current_list.pop(0)
+        merged_results.append(gamer.slide(a, b))
+        # 实时日志
+        logging.debug(f"Merged ({a}, {b}) for target {current_list}")
 
 def reset_game_with_error_restart():
     """循环中的逻辑"""
@@ -280,22 +369,13 @@ def reset_game_with_error_restart():
                 print("重试次数已达上限，退出程序")
                 raise  # 抛出异常并退出程序
 
-def get_general_items(refreshCount, targetStartNum):
-    global stayFlag, switchFlag, currentTarget, targetList
-    tagCount = 0
-    roundCount = 1
-    errorCount = 0
+# [脚本从这里开始运行]
+ADBHelper.connent(deviceID2)
+
+if __name__ == "__main__":
     ADBHelper.connent(deviceID)
     ADBHelper.connent(deviceID2)
-
-    # 初始设置acc
-    set_acc_by_item(currentTarget)
-
-    if gho.verify_empty():
-        logging.info("测试：目前有空位")
     while True:
-        if gho.verify_exit():
-            break
         try:
             if not stayFlag:
                 into_game(True)
@@ -315,67 +395,36 @@ def get_general_items(refreshCount, targetStartNum):
                     break
                 break
 
-            # 检测到1级橘子才收橘子
-            # if len(ghh.stable_find_board_items(rd.orange_1_stable)) > 0:
-            #     # gho.filter_orange()
-            #     gho.round_all()
-            #     # save_current_device()
-            #     #收橘子可能导致count不正确
-            #     count = len(ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNumMin, targetAcc))
-            
-            # 0 初始清理
-            gho.verify_clean()
+            if refreshCount % 15 == 0:
+                # gho.filter_orange()
+                # gho.round_all()
+                # save_current_device()
+                #收橘子可能导致count不正确
+                count = len(gheh.stable_find_board_items(currentTarget["targetItem"], retryNumMin))
+
             # 1 初始目标物数量
             if roundCount == 1:
-                tempList = ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNum, targetAcc)
+                tempList = gheh.stable_find_board_items(currentTarget["targetItem"], retryNum)
                 logging.info(msh.send_simple_push("在第{0}次执行中，获取列表: {1}".format(roundCount, tempList),f"提示：开始第{roundCount}次执行"))
                 count = len(tempList)
             
-            # 2 通用逻辑, 更新目标列表
-            point = find_first_resource_point(currentTarget.get("resourceItem"))
-            # 当未找到目标时
-            if not point: 
-                if switchFlag:
-                    logging.info(msh.send_simple_push("目标列表为空","提示：目标列表为空"))
-                    logging.info("提示：目标列表为空")
-                    # if gamer.find_pic_touch(rd.into_board):
-                    if not gamer.verify_pic(rd.back_from_board):
-                        gamer.home()
-                        logging.info(msh.send_simple_push("目标列表为空但未在棋盘内，直接重启","提示：运行第{0}轮异常，尝试重新进入棋盘".format(roundCount)))
-                        # 根据经验，这种情况一般已经卡住，直接重启
-                        restart_all()
-                        gamer.delay(3)
-                        continue
-                    targetStartNum += 1
-                    if targetStartNum < len(targetList):
-                        # 更换目标
-                        switchFlag = False
-                        currentTarget = targetList[targetStartNum]
-                        # 更换设置acc
-                        set_acc_by_item(currentTarget)
-                        logging.info(msh.send_simple_push("目标列表数量","提示：更换目标列表，尝试重新进入棋盘".format(roundCount)))
-                        count = len(ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNum, targetAcc))
-                        continue
-                    else:
-                        break
-                else:
-                    switchFlag = True
-                    continue
-            elif roundCount % 10 == 1:
-                logging.info(msh.send_simple_push("目标列表数量","提示：运行第{1}轮开始，总数量{0}".format(count_resource(currentTarget.get("resourceItem")), roundCount)))
-            # 当找到目标时
-            switchFlag = False
+            # 2 通用逻辑, 更新目标列表[直接为固定值]
+            # point = settings.event_first_block
 
-            count = len(ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNumMin, targetAcc))
             # 3 操作获取新元素[重要]，操作时若报错，则使用另一个记录
             try:
                 # 双击一次
-                gamer.clean_touch(point, 2)
+                # gamer.clean_touch(point, 2)
+                gamer.touch(point)
+
+                if tagCount > 70:
+                    logging.info(f"轮数{tagCount}较多，提前清理")
+                    clean_event()
 
                 # 获取目前数量
-                time.sleep(1)
-                # tempList = ghh.find_board_items(currentTarget.get("targetItem"))
-                tempList = ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNumMin, targetAcc)
+                time.sleep(3)
+                # tempList = gheh.find_board_items(currentTarget["targetItem"])
+                tempList = gheh.stable_find_board_items(currentTarget["targetItem"], retryNumMin, 0.65)
                 roundCount += 1
                 countNow = len(tempList)
                 if roundCount % 5 == 0:
@@ -398,12 +447,13 @@ def get_general_items(refreshCount, targetStartNum):
             if countNow > count:
                 count = countNow
                 # 成功，若需要则合成，并更新count
-                if (currentTarget.get("mergeRequired")):
-                    simple_merge(currentTarget.get("targetItem"))
-                if currentTarget.get("consumeItem"):
-                    gamer.find_pic_double_touch(currentTarget.get("consumeItem"), resourceAcc)
-                gamer.delay(2)
-                count = len(ghh.find_board_items(currentTarget.get("targetItem")))
+                if (currentTarget["mergeRequired"]):
+                    # simple_merge(currentTarget["targetItem"])
+                    quick_merge(tempList)
+                    # gho.clean_up(1)
+                    clean_event()
+                # gamer.delay(2)
+                count = len(gheh.stable_find_board_items(currentTarget["targetItem"], retryNumMin, 0.65))
                 # 后续处理
                 save_current_device()
                 stayFlag = True
@@ -420,6 +470,8 @@ def get_general_items(refreshCount, targetStartNum):
                 switch_device()
                 # 重置错误次数
                 errorCount = 0
+            if tagCount > totalCount-1:
+                break
         # except concurrent.futures.TimeoutError as e:
         except Exception as e:
             logging.error(f"错误内容:{e}")
@@ -435,13 +487,7 @@ def get_general_items(refreshCount, targetStartNum):
                 break
     logging.info(msh.send_simple_push("源列表为空","提示：完成执行"))
     logging.info("完成执行")
-    while True:
-        if gho.verify_exit():
-            break
-        time.sleep(1200)
-        gho.round_all()
-        logging.info(msh.send_simple_push("结合执行","提示：完成一次结合执行"))
-# [脚本从这里开始运行]
-
-if __name__ == "__main__":
-    get_general_items(refreshCount, targetStartNum)
+    # while True:
+    #     time.sleep(1200)
+    #     # gho.round_all()
+    #     logging.info(msh.send_simple_push("结合执行","提示：完成一次结合执行"))

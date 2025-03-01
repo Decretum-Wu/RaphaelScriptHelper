@@ -149,3 +149,13 @@ event_bear_4 = "./img/event_bear_4.png"
 event_gift_1_new = "./img/event_gift_1_new.png"
 licence_box_3_max = "./img/licence_box_3_max.png"
 point_drop = (540, 1530)
+event_2_tag_1 = "./img/event_2_tag_1.png"
+event_2_tag_2 = "./img/event_2_tag_2.png"
+event_2_item_1 = "./img/event_2_item_1.png"
+event_2_item_2 = "./img/event_2_item_2.png"
+event_2_item_3 = "./img/event_2_item_3.png"
+event_2_item_4 = "./img/event_2_item_4.png"
+event_2_item_5 = "./img/event_2_item_5.png"
+event_2_item_6 = "./img/event_2_item_6.png"
+event_2_item_7 = "./img/event_2_item_7.png"
+

@@ -10,6 +10,7 @@ import GhHelper as ghh
 import ImageProc
 import GhOrange as gho
 import GhEventHelper as gheh
+import GhEventHelper_2 as gheh2
 import subprocess
 from enum import Enum
 
@@ -292,6 +293,36 @@ targetListBeike = [
     rd.beike_10
 ]
 
+targetListCoin = [
+    rd.coin_0,
+    rd.coin_new_1,
+    rd.coin_new_2,
+    rd.coin_new_3,
+    rd.coin_new_4
+]
+
+targetListItem = [
+    rd.event_2_item_1,
+    rd.event_2_item_2,
+    rd.event_2_item_3,
+    rd.event_2_item_4,
+    rd.event_2_item_5,
+    rd.event_2_item_6,
+    rd.event_2_item_7,
+]
+
+targetListTag = [
+    rd.event_2_tag_1,
+    rd.event_2_tag_2,
+]
+
+# targetListPower = [
+#     rd.power_1_new,
+#     rd.power_2_new,
+#     rd.power_3,
+#     rd.power_4
+# ]
+
 # temp = ghh.find_board_items(rd.power_4)
 # temp = ghh.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListBeike, 0.65))
 # temp = ghh.get_collection_unique_grid_positions_read(gamer.find_pic_all_list([rd.box_1,rd.daily_box_3], 0.55))
@@ -301,8 +332,18 @@ targetListBeike = [
 
 # restart_all()
 # ADBHelper.screenCapture("emulator-5554", "screen.png")
-# print("temp:{0}".format(temp))
-while True:
-    gamer.touch(rd.point_drop)
-    gamer.delay(2)
 
+
+
+# while True:
+#     gamer.touch(rd.point_drop)
+#     gamer.delay(2)
+
+# temp = gheh2.get_collection_unique_grid_positions_read(gamer.find_pic_all_list([rd.event_2_tag_1, rd.coin_0], 0.75))
+
+temp = gheh2.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListTag, 0.75))
+# temp = gheh2.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListItem, 0.75))
+# temp = gheh2.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListCoin, 0.6))
+# temp = gheh2.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListPower, 0.775))
+# temp = gamer.find_pic_all_list([rd.event_tag_1_1], 0.75)
+print("temp:{0}".format(temp))
