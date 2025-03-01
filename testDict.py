@@ -159,3 +159,7 @@ event_2_item_5 = "./img/event_2_item_5.png"
 event_2_item_6 = "./img/event_2_item_6.png"
 event_2_item_7 = "./img/event_2_item_7.png"
 
+event_2_at = "./img/event_2_at.png"
+event_2_into = "./img/event_2_into.png"
+event_2_tag_3 = "./img/event_2_tag_3.png"
+event_2_tag_4 = "./img/event_2_tag_4.png"

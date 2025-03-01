@@ -5,7 +5,7 @@ import settings
 import pyautogui
 import time
 import GhHelper as ghh
-import GhEventHelper as gheh
+import GhEventHelper_2 as gheh
 import ImageProc
 import logging
 import messageHelper as msh
@@ -24,8 +24,8 @@ class Direction(Enum):
 intoGameList = [
     rd.start_game,
     rd.cloud_button,
-    rd.into_event_1,
-    rd.event_at_1
+    rd.event_2_into,
+    rd.event_2_at
     ]
 windowID3 = "BlueStacks Multi"
 deviceID = "emulator-5554"
@@ -33,9 +33,6 @@ deviceID2 = "127.0.0.1:5635"
 # deviceID = "emulator-5584"
 # deviceID = "127.0.0.1:5585"
 # deviceID2 = "127.0.0.1:5615"
-managerPos1 = (900, 220)
-managerPos2 = (900, 330)
-managerPosSubmit = (900, 600)
 gamer.deviceID = deviceID
 errorCount = 0
 roundCount = 1
@@ -44,8 +41,8 @@ tagCount = 0
 point = settings.event_first_block
 settings.accuracy = 0.75
 stayFlag = False
-retryNum = 3
-retryNumMin = 2
+retryNum = 1
+retryNumMin = 1
 minAccuracy = 0.40
 # startAtOrange = False
 # startAtOrange = True
@@ -63,10 +60,10 @@ refreshCount = 1
 # card_1 = 2
 # daily_box_3 = 4
 targetStartNum = 0
-totalCount = 11
+totalCount = 10
 
 targetList = [
-    {"resourceItem": rd.event_bear_1, "targetItem": rd.event_bear_1, "mergeRequired": True},
+    {"resourceItem": rd.event_2_tag_1, "resourceAcc":0.75, "targetItem": rd.event_2_tag_1, "targetAcc":0.75, "mergeRequired": True},
 ]
 currentTarget = targetList[targetStartNum]
 
@@ -78,29 +75,11 @@ targetListCoin = [
     rd.coin_new_4
 ]
 
-targetListGift = [
-    rd.event_gift_1_new,
-    rd.event_gift_2,
-    rd.event_gift_3,
-    rd.event_gift_4,
-    rd.event_gift_5,
-    rd.event_gift_6,
-    rd.event_gift_7,
-    # rd.event_gift_8
-]
-
 targetListPower = [
     rd.power_1_new,
     rd.power_2_new,
     rd.power_3,
     rd.power_4
-]
-
-targetListBear = [
-    # rd.event_bear_1,
-    rd.event_bear_2,
-    rd.event_bear_3,
-    rd.event_bear_4,
 ]
 
 targetListCoin = [
@@ -124,6 +103,8 @@ targetListItem = [
 targetListTag = [
     rd.event_2_tag_1,
     rd.event_2_tag_2,
+    rd.event_2_tag_3,
+    rd.event_2_tag_4,
 ]
 
 def process_existed(targetList, acc, cacheFlag = False):
@@ -145,12 +126,13 @@ def process_existed(targetList, acc, cacheFlag = False):
 
 def clean_event():
     gamer.screenCap()
-    process_existed(targetListGift, True)
+    process_existed(targetListItem, 0.75, True)
     gamer.screenCap()
-    process_existed(targetListBear, True)
-    process_existed(targetListCoin, True)
-    process_existed(targetListPower, True)
-    gamer.find_pic_double_touch(rd.coin_new_5)
+    process_existed(targetListTag, 0.75, True)
+    process_existed(targetListCoin, 0.55, True)
+    # process_existed(targetListPower, 0.775, True)
+    process_existed(targetListPower, 0.775, True)
+    # gamer.find_pic_double_touch(rd.coin_new_5)
 
 def into_game(verifyIntoFlag = False):
     continueFlag = True
@@ -173,7 +155,7 @@ def into_game(verifyIntoFlag = False):
                         time.sleep(3)
                         break
                     # 进入棋盘后无需额外操作
-                    case rd.into_event_1: 
+                    case rd.event_2_into: 
                         gamer.touch(totalDict[key][0])
                         # 如果不需要确认已进入，则直接跳出，否则依赖back_from_board跳出
                         # if not verifyIntoFlag:
@@ -185,8 +167,9 @@ def into_game(verifyIntoFlag = False):
                         # break
                         time.sleep(2)
                     # back_from_board
-                    case rd.event_at_1: 
-                        if not gamer.verify_pic(rd.event_at_1):
+                    case rd.event_2_at: 
+                        time.sleep(5)
+                        if not gamer.verify_pic(rd.event_2_at):
                             logging.info("重试进入活动")
                             msh.send_simple_push(f"错误内容",f"提示：跳出,重试进入活动")
                             break
@@ -416,6 +399,11 @@ if __name__ == "__main__":
                 # 双击一次
                 # gamer.clean_touch(point, 2)
                 gamer.touch(point)
+                #暂时 多次点击
+                gamer.delay(1)
+                gamer.touch(point)
+                # gamer.delay(1)
+                # gamer.touch(point)
 
                 if tagCount > 70:
                     logging.info(f"轮数{tagCount}较多，提前清理")
@@ -445,6 +433,9 @@ if __name__ == "__main__":
 
             # 4 处理产物或刷新
             if countNow > count:
+            # 暂时，更新单个物品
+            # if True:
+                logging.info(f"countNow:{countNow}, count:{count}")
                 count = countNow
                 # 成功，若需要则合成，并更新count
                 if (currentTarget["mergeRequired"]):
@@ -452,12 +443,17 @@ if __name__ == "__main__":
                     quick_merge(tempList)
                     # gho.clean_up(1)
                     clean_event()
-                # gamer.delay(2)
+                gamer.delay(2)
                 count = len(gheh.stable_find_board_items(currentTarget["targetItem"], retryNumMin, 0.65))
+                # 暂时，允许中途退出
+                if tagCount > totalCount-1:
+                    break
                 # 后续处理
+                # 暂时取消
                 save_current_device()
                 stayFlag = True
                 tagCount += 1
+
                 logging.info(msh.send_simple_push(f"源目标物位置：{tempList}", f"提示：获得一个目标物,累计{tagCount}个"))
                 logging.info(f"目标物位置：{tempList}")
             else:

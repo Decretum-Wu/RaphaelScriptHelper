@@ -43,7 +43,9 @@ empty_colors = [empty_color_1, empty_color_2]
 # empty_color_green = (185, 183, 88)
 # empty_colors = [empty_color_green]
 empty_block = (132,576)
-event_first_block = (204,736)
+
+# event_first_block 玫瑰 (204,736)
+event_first_block = (685, 1755)
 
 intoGameList = [
     rd.start_game,

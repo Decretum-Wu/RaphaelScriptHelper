@@ -111,7 +111,8 @@ def process_collection(collection, merge_func):
             b = current_list.pop(0)
             merged_results.append(merge_func(a, b))
             total_merges += 1
-
+            # 防止双击问题
+            gamer.delay(0.1)
             # 实时日志
             logging.debug(f"Merged ({a}, {b}) in list {list_idx}")
 

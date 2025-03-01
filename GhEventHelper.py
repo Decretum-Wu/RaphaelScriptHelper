@@ -97,6 +97,7 @@ def process_collection(collection, merge_func):
             a = current_list.pop(0)
             b = current_list.pop(0)
             merged_results.append(merge_func(a, b))
+            gamer.delay(0.1)
             total_merges += 1
 
             # 实时日志
