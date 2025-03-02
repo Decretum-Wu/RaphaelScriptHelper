@@ -124,15 +124,22 @@ def process_existed_orange():
         slideCount = ghh.process_collection(powerCol, gamer.slide)
         print("在设备{0}中，获取滑动次数: {1}".format(gamer.deviceID, slideCount))
 
-def process_existed(targetList, accuracy = settings.accuracy):
+def process_existed(targetList, cacheFlag = False, accuracy = settings.accuracy):
     slideCount = 1
-    while slideCount > 0:
-        gamer.delay(1)
-        powerCol = gamer.find_pic_all_list(targetList, accuracy)
+    if cacheFlag:
+        powerCol = gamer.find_pic_all_list_cache(targetList, accuracy)
         powerCol = ghh.get_collection_unique_grid_positions(powerCol)
         print("在设备{0}中，获取目标个数: {1}".format(gamer.deviceID, powerCol))
         slideCount = ghh.process_collection(powerCol, gamer.slide)
         print("在设备{0}中，获取滑动次数: {1}".format(gamer.deviceID, slideCount))
+    else:
+        while slideCount > 0:
+            # gamer.delay(1)
+            powerCol = gamer.find_pic_all_list(targetList, accuracy)
+            powerCol = ghh.get_collection_unique_grid_positions(powerCol)
+            print("在设备{0}中，获取目标个数: {1}".format(gamer.deviceID, powerCol))
+            slideCount = ghh.process_collection(powerCol, gamer.slide)
+            print("在设备{0}中，获取滑动次数: {1}".format(gamer.deviceID, slideCount))
 
 def verify_empty():
     time.sleep(1)
@@ -186,17 +193,11 @@ def verify_exit():
 
 # 此处为收橘子完整逻辑
 def filter_orange():
-    # countTree = 0
-    # while countTree < 9:
-    #     treeCol = gamer.find_pic_all_list([
-    #         rd.orange_tree_new
-    #     ])
-    #     treeCol = ghh.get_collection_unique_grid_positions(treeCol)
-    #     countTree = len(treeCol[0])
-    # print("在设备{0}中，获取橘子树总数: {1}".format(gamer.deviceID, len(treeCol[0])))
     count = 0
+    tryCount = 0
     for tree in targetListOrangeTree:
-        while True:
+        tryCount = 0
+        while tryCount < 30:
             gamer.touch(tree)
             if(gamer.verify_pic(rd.general_current_loading)):
                 break
@@ -213,11 +214,22 @@ def filter_orange():
             solve_breaker()
             process_existed_orange()
             verify_clean()
+            tryCount += 1
             # if useCoin:
             #     if not verify_empty():
             #         logging.info(msh.send_simple_push("进入页面时","提示：棋盘已满，进入前完全清理"))
             #         clean_up(3)
                     # ghh.click_order(rd.order_orange)
+            # 安全措施，防止无限卡死
+            if datetime.datetime.now().time() > datetime.time(7, 55): 
+                gamer.collect_log_image('orange_err')
+                time.sleep(3)
+                gamer.home()
+                time.sleep(3)
+                gamer.collect_log_image('orange_err')
+                break
+        if tryCount > 29:
+            gamer.collect_log_image()
         count += 1
         if count%4 == 0:
             clean_up(1)
@@ -238,9 +250,10 @@ def filter_beike(count = 6):
 def clean_up(type):
     if type == 1:
         morning_clean()
-        process_existed(targetListCoin)
+        process_existed(targetListCoin, True)
         #temp
-        process_existed(targetListPower)
+        process_existed(targetListPower, True)
+        process_existed_orange()
         # process_existed(targetListStone)
         # gamer.find_pic_double_touch(rd.stone_4)
 
@@ -267,26 +280,6 @@ logging.basicConfig(level=logging.INFO,
 
 
 # 简单功能测试
-# temp = gamer.find_pic_all_list([rd.bubble_beike_4])
-# logging.info(temp[0])
-# logging.info(ghh.find_item_counts(rd.bubble_beike_4))
-# logging.info(ghh.find_item_counts(rd.beike_4))
-# logging.info(ghh.find_item_counts(gamer.find_pic_all_list([rd.beike_4])[0]))
-
-# button_location = pyautogui.locateCenterOnScreen('./img/manager_start.png', confidence=0.8)
-# window = gw.getWindowsWithTitle("BlueStacks Multi")[0]
-# if window:
-#     # 激活窗口
-#     window.activate()
-#     # 首个按钮 150%中 (900, 225), (900, 330), 确认键为 (900, 600)
-#     button_x = window.left + 900
-#     button_y = window.top + 600
-#     # 移动鼠标并点击按钮
-#     pyautogui.click(button_x, button_y)
-#     print("按钮点击成功！")
-# else:
-#     print("未找到窗口，请检查窗口标题。")
-
 
 def round_all():
     if useCoin:
@@ -347,7 +340,7 @@ def draft():
             # continue
         logging.info("正确离开无体力状态")
         # msh.send_simple_push("1","提示：正确离开无体力状态")
-        process_existed(targetListBeike, beikeAcc)
+        process_existed(targetListBeike, False, beikeAcc)
         clean_up(2)
         # break
 
@@ -386,8 +379,8 @@ if __name__ == "__main__":
     # round_all()
     # 设置定时任务
     # schedule.every().hour.at(":05").do(round_all)  # 每小时 0 分钟
-    schedule.every().hour.at(":17").do(round_all)  # 每小时 20 分钟
-    schedule.every().hour.at(":47").do(round_all)  # 每小时 40 分钟
+    schedule.every().hour.at(":10").do(round_all)  # 每小时 20 分钟
+    schedule.every().hour.at(":40").do(round_all)  # 每小时 40 分钟
 
     print("定时任务已启动，等待运行...")
 
@@ -396,17 +389,17 @@ if __name__ == "__main__":
         try:
             schedule.run_pending()  # 运行待执行的任务
             if datetime.datetime.now().time() > datetime.time(7, 55): 
-                gamer.collect_log_image()
+                gamer.collect_log_image('orange_fin_1')
                 time.sleep(3)
                 gamer.home()
                 time.sleep(3)
-                gamer.collect_log_image()
+                gamer.collect_log_image('orange_fin_2')
                 break
             time.sleep(5)  # 每5秒检查一次
             nowTime = datetime.datetime.now().time()
-            if nowTime > datetime.time(4, 10) and nowTime < datetime.time(4, 20):
+            if nowTime > datetime.time(4, 9) and nowTime < datetime.time(4, 20):
                 usePower = True
-            elif nowTime > datetime.time(7, 40) and nowTime < datetime.time(7, 50):
+            elif nowTime > datetime.time(7, 39) and nowTime < datetime.time(7, 50):
                 usePower = True
             else: usePower = False
         except Exception as e:

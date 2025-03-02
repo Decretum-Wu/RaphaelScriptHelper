@@ -62,18 +62,21 @@ gho.usePower = False
 refreshCount = 0
 # card_1 = 2
 # daily_box_3 = 4
-targetStartNum = 2
+targetStartNum = 0
 
 targetList = [
-    # {"resourceItem": rd.license_box_1, "resourceAcc":0.55, "targetItem": rd.stone_3, "targetAcc":0.75, "mergeRequired": True},
-    # {"resourceItem": rd.license_box_2_1, "resourceAcc":0.55, "targetItem": rd.stone_3, "targetAcc":0.75, "mergeRequired": True},
-    # {"resourceItem": rd.license_box_3, "resourceAcc":0.55, "targetItem": rd.blue_resource_1, "targetAcc":0.55, "mergeRequired": True},
-    # {"resourceItem": rd.licence_box_3_max, "resourceAcc":0.55, "targetItem": rd.stone_4, "targetAcc":0.55, "mergeRequired": False, "consumeItem": rd.stone_4},
     {"resourceItem": rd.card_1, "resourceAcc":0.55, "targetItem": rd.stone_4, "targetAcc":0.55, "mergeRequired": False, "consumeItem": rd.stone_4},
     {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True, "consumeItem": rd.coin_new_5},
     {"resourceItem": rd.box_1, "resourceAcc":0.6, "targetItem": rd.power_4, "targetAcc":0.75, "mergeRequired": True},
     {"resourceItem": rd.daily_box_3, "resourceAcc":0.55, "targetItem": rd.power_3,  "targetAcc":0.75,"mergeRequired": True},
 ]
+
+# targetList = [
+#     {"resourceItem": rd.resource_blank, "resourceAcc":0.55, "targetItem": rd.beard_tag_3, "targetAcc":0.55, "mergeRequired": True},
+#     {"resourceItem": rd.resource_blank, "resourceAcc":0.55, "targetItem": rd.coffee_tag_3, "targetAcc":0.55, "mergeRequired": True},
+#     # {"resourceItem": rd.box_1, "resourceAcc":0.6, "targetItem": rd.power_4, "targetAcc":0.75, "mergeRequired": True},
+#     # {"resourceItem": rd.daily_box_3, "resourceAcc":0.55, "targetItem": rd.power_3,  "targetAcc":0.75,"mergeRequired": True},
+# ]
 
 # targetList = [
     # {"resourceItem": rd.license_box_1, "resourceAcc":0.55, "targetItem": rd.stone_3, "targetAcc":0.75, "mergeRequired": True},
@@ -316,12 +319,12 @@ def get_general_items(refreshCount, targetStartNum):
                 break
 
             # 检测到1级橘子才收橘子
-            # if len(ghh.stable_find_board_items(rd.orange_1_stable)) > 0:
-            #     # gho.filter_orange()
-            #     gho.round_all()
-            #     # save_current_device()
-            #     #收橘子可能导致count不正确
-            #     count = len(ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNumMin, targetAcc))
+            if len(ghh.stable_find_board_items(rd.orange_1_stable)) > 0:
+                # gho.filter_orange()
+                gho.round_all()
+                # save_current_device()
+                #收橘子可能导致count不正确
+                count = len(ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNumMin, targetAcc))
             
             # 0 初始清理
             gho.verify_clean()
