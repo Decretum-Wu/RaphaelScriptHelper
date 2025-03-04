@@ -27,12 +27,8 @@ intoGameList = [
     rd.event_2_into,
     rd.event_2_at
     ]
-windowID3 = "BlueStacks Multi"
-deviceID = "emulator-5554"
-deviceID2 = "127.0.0.1:5635"
-# deviceID = "emulator-5584"
-# deviceID = "127.0.0.1:5585"
-# deviceID2 = "127.0.0.1:5615"
+deviceID = settings.deviceList[0]["deviceId"]
+deviceID2 = settings.deviceList[1]["deviceId"]
 gamer.deviceID = deviceID
 errorCount = 0
 roundCount = 1

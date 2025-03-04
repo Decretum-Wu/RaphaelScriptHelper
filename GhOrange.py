@@ -26,8 +26,9 @@ windowID = "BlueStacks App Main"
 windowID2 = "BlueStacks App Player 2"
 windowID3 = "BlueStacks Multi"
 # 首个按钮 150%中 (900, 225), (900, 330), 确认键为 (900, 600)
-deviceID = "emulator-5554"
-# deviceID = "emulator-5584"
+deviceID = settings.deviceList[0]["deviceId"]
+deviceID2 = settings.deviceList[1]["deviceId"]
+
 useCoin = False
 useCoin = True
 usePower = False
@@ -220,14 +221,15 @@ def filter_orange():
             #         logging.info(msh.send_simple_push("进入页面时","提示：棋盘已满，进入前完全清理"))
             #         clean_up(3)
                     # ghh.click_order(rd.order_orange)
-            # 安全措施，防止无限卡死
-            if datetime.datetime.now().time() > datetime.time(7, 55): 
-                gamer.collect_log_image('orange_err')
-                time.sleep(3)
-                gamer.home()
-                time.sleep(3)
-                gamer.collect_log_image('orange_err')
-                break
+            
+            # 暂时 安全措施，防止无限卡死
+            # if datetime.datetime.now().time() > datetime.time(7, 55): 
+            #     gamer.collect_log_image('orange_err')
+            #     time.sleep(3)
+            #     gamer.home()
+            #     time.sleep(3)
+            #     gamer.collect_log_image('orange_err')
+            #     break
         if tryCount > 29:
             gamer.collect_log_image()
         count += 1

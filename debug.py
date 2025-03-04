@@ -25,10 +25,7 @@ windowID2 = "BlueStacks App Player 2"
 windowID3 = "BlueStacks Multi"
 deviceID = "emulator-5554"
 deviceID2 = "emulator-5574"
-# deviceID = "127.0.0.1:5625"
-# deviceID2 = "127.0.0.1:5625"
-# deviceID = "emulator-5584"
-# deviceID2 = "127.0.0.1:5595"
+
 manager_pos_1 = (900, 225)
 manager_pos_2 = (900, 330)
 manager_pos_submit = (900, 600)
@@ -341,9 +338,17 @@ targetListTag = [
 
 # temp = gheh2.get_collection_unique_grid_positions_read(gamer.find_pic_all_list([rd.event_2_tag_1, rd.coin_0], 0.75))
 
-temp = gheh2.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListTag, 0.75))
+# temp = gheh2.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListTag, 0.75))
 # temp = gheh2.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListItem, 0.75))
 # temp = gheh2.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListCoin, 0.6))
 # temp = gheh2.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListPower, 0.775))
 # temp = gamer.find_pic_all_list([rd.event_tag_1_1], 0.75)
+
+# temp = ghh.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListBeike, 0.65))
+# temp = ghh.calculate_total_weight(temp)
+
+ADBHelper.connent(settings.deviceList[0]["deviceId"])
+ADBHelper.connent(settings.deviceList[1]["deviceId"])
+
+temp = ghh.get_center((1,5))
 print("temp:{0}".format(temp))

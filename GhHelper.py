@@ -157,4 +157,14 @@ def click_order(targetPic):
         print(f"成功点击{targetPic}")
     else:
         print(f"未能点击{targetPic}")
+
+def calculate_total_weight(collection):
+    total_weight = 0
+    for index, lst in enumerate(collection):
+        weight = 2 ** index  # 计算当前列表的权重
+        total_weight += len(lst) * weight  # 当前列表的总权重 = 列表长度 * 权重
+    return total_weight
+
+def get_total_weight(collection, accuracy = st.accuracy):
+    return calculate_total_weight(get_collection_unique_grid_positions(gamer.find_pic_all_list(collection, accuracy)))
     

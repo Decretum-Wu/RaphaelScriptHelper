@@ -1,6 +1,6 @@
 import testDict as rd
 deviceList = [
-    {"deviceId": 'emulator-5554', "window_title": 'BlueStacks App Main', "instance_title": 'Pie64'},
+    {"deviceId": '127.0.0.1:5645', "window_title": 'BlueStacks App Main', "instance_title": 'Pie64_9'},
     {"deviceId": '127.0.0.1:5635', "window_title": 'BlueStacks App Save2', "instance_title": 'Pie64_8'},
 ]
 
@@ -33,11 +33,12 @@ slideMinVer = 200
 slideMaxVer = 300
 
 # blue
-# empty_color_1 = (241, 184, 142)
-# empty_color_2 = (237, 179, 135)
+empty_color_1 = (241, 184, 142)
+empty_color_2 = (237, 179, 135)
 
-empty_color_1 = (67, 135, 202)
-empty_color_2 = (55, 123, 191)
+# brown
+# empty_color_1 = (67, 135, 202)
+# empty_color_2 = (55, 123, 191)
 empty_colors = [empty_color_1, empty_color_2]
 
 # empty_color_green = (185, 183, 88)
@@ -53,4 +54,6 @@ intoGameList = [
     rd.into_board,
     rd.back_from_board
     ]
+usePower = False
+# event_first_block = (685, 1755)
 

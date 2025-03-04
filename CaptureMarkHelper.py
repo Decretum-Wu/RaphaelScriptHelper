@@ -4,6 +4,7 @@
 import cv2, tkinter, os
 import tkinter.simpledialog
 import ADBHelper
+import settings
 
 # 修改以下参数来运行
 
@@ -20,8 +21,8 @@ pos_img_dict = "./testDict.py"
 action = 1
 
 # 图片来源替换输入你的did
-# ADBHelper.screenCapture("127.0.0.1:5625", "screen.png")
-ADBHelper.screenCapture("emulator-5554", "screen.png")
+# ADBHelper.screenCapture(settings.deviceList[1]["deviceId"], "screen.png")
+ADBHelper.screenCapture(settings.deviceList[0]["deviceId"], "screen.png")
 img_file = "./screen.png"
 
 
