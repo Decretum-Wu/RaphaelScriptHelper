@@ -144,6 +144,12 @@ def find_all_empty(pointList):
     resultPointList = ImageProc.find_matching_coordinates(st.cache_path + "screenCap.png", pointList, st.empty_colors)
     return resultPointList
 
+def find_all_color(pointList):
+    ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")
+    time.sleep(0.1)
+    resultColorList = ImageProc.get_color_list(st.cache_path + "screenCap.png", pointList)
+    return resultColorList
+
 # 判断图片是否存在
 def verify_pic(target):
     ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")

@@ -33,16 +33,18 @@ slideMinVer = 200
 slideMaxVer = 300
 
 # blue
-empty_color_1 = (241, 184, 142)
-empty_color_2 = (237, 179, 135)
+# empty_color_1 = (241, 184, 142)
+# empty_color_2 = (237, 179, 135)
 
 # brown
 # empty_color_1 = (67, 135, 202)
 # empty_color_2 = (55, 123, 191)
-empty_colors = [empty_color_1, empty_color_2]
 
-# empty_color_green = (185, 183, 88)
-# empty_colors = [empty_color_green]
+# green
+empty_color_1 =  (185, 183, 88)
+empty_color_2 = (184, 182, 86)
+
+empty_colors = [empty_color_1, empty_color_2]
 empty_block = (132,576)
 
 # event_first_block 玫瑰 (204,736)

@@ -128,6 +128,7 @@ def get_color(source, position):
         raise ValueError("图片读取失败，请检查路径是否正确。")
     x, y = position
     pixel_color = image[y, x]  # OpenCV 中坐标顺序是 (y, x)
+    # pixel_color = image[x, y]  # OpenCV 中坐标顺序是 (y, x)
     return pixel_color
 
 def find_matching_coordinates(image_path, coordinates, expected_colors):
@@ -154,9 +155,38 @@ def find_matching_coordinates(image_path, coordinates, expected_colors):
     for (x, y) in coordinates:
         # 读取坐标点的颜色
         pixel_color = image[y, x]  # OpenCV 中坐标顺序是 (y, x)
+        # pixel_color = image[x, y]  # OpenCV 中坐标顺序是 (y, x)
 
         # 检查颜色是否在 expected_colors 中
         if any(numpy.array_equal(pixel_color, color) for color in expected_colors):
             matching_coordinates.append((x, y))
 
     return matching_coordinates
+
+def get_color_list(image_path, coordinates):
+    """
+    读取图片上指定坐标点的颜色
+
+    :param image_path: 图片路径
+    :param coordinates: 坐标列表，格式为 [(x1, y1), (x2, y2), ...]
+    :param expected_colors: 期望的颜色值列表，格式为 [(B1, G1, R1), (B2, G2, R2), ...]
+    :return: 颜色匹配的坐标列表
+    """
+    # 读取图片
+    image = cv2.imread(image_path)
+    if image is None:
+        raise ValueError("图片读取失败，请检查路径是否正确。")
+
+
+    # 初始化结果列表
+    result = []
+
+    # 遍历坐标列表
+    for (x, y) in coordinates:
+        # 读取坐标点的颜色
+        pixel_color = image[y, x]  # OpenCV 中坐标顺序是 (y, x)
+        # pixel_color = image[x, y]  # OpenCV 中坐标顺序是 (y, x)
+
+        result.append(pixel_color)
+
+    return result

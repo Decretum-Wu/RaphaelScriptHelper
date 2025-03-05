@@ -29,6 +29,17 @@ targetListBeike = [
     rd.beike_9,
     rd.beike_10
 ]
+
+targetListFish = [
+    rd.fish_item_1,
+    rd.fish_item_2,
+    rd.fish_item_3,
+    rd.fish_item_4,
+    rd.fish_item_5,
+    rd.fish_item_6,
+    rd.fish_item_7,
+    rd.fish_item_8,
+]
 intoGameList = [
     rd.start_game,
     rd.cloud_button,
@@ -69,26 +80,38 @@ gho.usePower = False
 refreshCount = 0
 # card_1 = 2
 # daily_box_3 = 4
-targetStartNum = 4
+targetStartNum = 0
 
-getBoxFlag = True
+getBoxFlag = False
 
 # 体力目标
 tagAcc = 0.65
-itemPoint = ghh.get_center((1,5))
-tagList = targetListBeike
-stepLen = 2
-targetWeight = 3
-lastWeight = 250
+itemImg = False
+
+# 贝壳
+# itemPoint = ghh.get_center((1,5))
+# tagList = targetListBeike
+# stepLen = 2
+# targetWeight = 3
+# lastWeight = 400
 # 128为10级
 # 单次直接刷2非常难，几乎不可能
 
+# 鱼(原始)
 # itemPoint = ghh.get_center((7,1))
-# tagList =[rd.fish_source_5]
+# tagList =[rd.fish_source_4, rd.fish_source_5]
 # stepLen = 1
 # targetWeight = 1
 # lastWeight = 6
 
+# 鱼(产物)
+itemPoint = ()
+itemImg = rd.fish_source_5
+tagList = targetListFish
+# (产物)12次，需为约数方能避免点击空格
+stepLen = 3
+targetWeight = 4
+lastWeight = 300
 
 targetList = [
     {"resourceItem": rd.card_1, "resourceAcc":0.55, "targetItem": rd.stone_4, "targetAcc":0.55, "mergeRequired": False, "consumeItem": rd.stone_4},
@@ -313,7 +336,8 @@ def get_general_items(refreshCount, targetStartNum, targetCount = 5):
                     count += len(ghh.stable_find_board_items(currentTarget.get("targetItem2"), retryNumMin, targetAcc))
             
             # 0 初始清理
-            gho.verify_clean()
+            if not gho.verify_clean(stepLen):
+                raise Exception(f'清理棋盘失败，未能使空格数量到达: {stepLen}')
             # 1 初始目标物数量
             if roundCount == 1:
                 tempList = ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNum, targetAcc)
@@ -442,7 +466,7 @@ def get_general_items(refreshCount, targetStartNum, targetCount = 5):
         logging.info(msh.send_simple_push("结合执行","提示：完成一次结合执行"))
 # [脚本从这里开始运行]
 
-def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeight = 256):
+def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeight = 256, itemImg = rd.fish_source_5):
     global stayFlag, switchFlag, currentTarget, targetList
     tagCount = 0
     roundCount = 1
@@ -492,6 +516,11 @@ def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeigh
             # 完成后退出
             if count > lastWeight:
                 break
+
+            if itemImg:
+                itemPoint = find_first_resource_point(itemImg)
+                if not itemPoint:
+                    break
 
             # 3 操作获取新元素[重要]，操作时若报错，则使用另一个记录
             try:
@@ -557,6 +586,10 @@ def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeigh
                 tagCount += 1
                 logging.info(msh.send_simple_push(f"源目标物位置：{tagList[0]}", f"提示：获得一组目标物,累计权重{countNow}"))
                 logging.info(f"目标物权重：{countNow}")
+            elif countNow < count + stepLen:
+                logging.info(msh.send_simple_push(f"源目标物位置：{tagList[0]}，更换源目标物", f"提示：获得目标物数量不足,累计权重{countNow}"))
+                save_current_device()
+                continue
             else:
                 # switch current deviceId to the next
                 # 舍弃现有结果
@@ -581,9 +614,15 @@ def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeigh
                 break
     logging.info(msh.send_simple_push("源列表为空","提示：完成执行"))
     logging.info("完成执行")
+    while True:
+        # if gho.verify_exit():
+        #     break
+        time.sleep(1200)
+        gho.round_all()
+        logging.info(msh.send_simple_push("结合执行","提示：完成一次结合执行"))
 
 if __name__ == "__main__":
     if getBoxFlag:
         get_general_items(refreshCount, targetStartNum)
     else:
-        get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeight)
+        get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeight, itemImg)

@@ -21,8 +21,11 @@ pos_img_dict = "./testDict.py"
 action = 1
 
 # 图片来源替换输入你的did
-# ADBHelper.screenCapture(settings.deviceList[1]["deviceId"], "screen.png")
-ADBHelper.screenCapture(settings.deviceList[0]["deviceId"], "screen.png")
+# ADBHelper.connent(settings.deviceList[0]["deviceId"])
+# ADBHelper.screenCapture(settings.deviceList[0]["deviceId"], "screen.png")
+ADBHelper.connent(settings.deviceList[1]["deviceId"])
+ADBHelper.screenCapture(settings.deviceList[1]["deviceId"], "screen.png")
+
 img_file = "./screen.png"
 
 
