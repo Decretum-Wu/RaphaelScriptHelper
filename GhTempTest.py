@@ -18,6 +18,21 @@ class Direction(Enum):
     DOWN = 1
     LEFT = 2
     RIGHT = 3
+
+class GameStatus(Enum):
+    start_game = rd.start_game
+    cloud_button = rd.cloud_button
+    into_board = rd.into_board
+    back_from_board = rd.back_from_board
+    exit_game_model = rd.exit_game_model
+
+class ErrorFlag(Enum):
+    restart = 'restart'
+    clean_model = 'clean_model'
+    clean_board = 'clean_board'
+    find_nothing = 'find_nothing'
+
+
 targetListBeike = [
     # rd.beike_2,
     rd.beike_3,
@@ -58,10 +73,10 @@ roundCount = 1
 refreshCount = 1
 tagCount = 0
 point = (0,0)
-stayFlag = False
+stayFlag = True
 switchFlag = False
-retryNum = 3
-retryNumMin = 2
+retryNum = 9
+retryNumMin = 3
 resourceAcc = 0.55
 targetAcc = 0.55
 settings.accuracy = 0.70
@@ -80,8 +95,10 @@ gho.usePower = False
 refreshCount = 0
 # card_1 = 2
 # daily_box_3 = 4
-targetStartNum = 4
-getBoxFlag = True
+targetStartNum = 0
+
+getBoxFlag = False
+
 # 体力目标
 tagAcc = 0.65
 itemImg = False
@@ -90,38 +107,34 @@ itemImg = False
 # itemPoint = ghh.get_center((1,5))
 # tagList = targetListBeike
 # stepLen = 2
-# targetWeight = 4
-# lastWeight = 511
+# targetWeight = 3
+# lastWeight = 400
 # 128为10级
 # 单次直接刷2非常难，几乎不可能
 
 # 鱼(原始)
-itemPoint = ghh.get_center((7,1))
-tagList =[rd.fish_source_3, rd.fish_resource_4, rd.fish_source_5]
-stepLen = 1
-targetWeight = 2
-lastWeight = 15
+# itemPoint = ghh.get_center((7,1))
+# tagList =[rd.fish_source_4, rd.fish_source_5]
+# stepLen = 1
+# targetWeight = 1
+# lastWeight = 6
 
 # 鱼(产物)
-# itemPoint = ()
-# itemImg = rd.fish_source_5
-# tagList = targetListFish
-# # (产物)12次，需为约数方能避免点击空格
-# stepLen = 3
-# targetWeight = 4
-# lastWeight = 300
+itemPoint = ()
+itemImg = rd.fish_source_5
+tagList = targetListFish
+# (产物)12次，需为约数方能避免点击空格
+stepLen = 3
+targetWeight = 4
+lastWeight = 300
 
 targetList = [
     {"resourceItem": rd.card_1, "resourceAcc":0.55, "targetItem": rd.stone_4, "targetAcc":0.55, "mergeRequired": False, "consumeItem": rd.stone_4},
-    # {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True, "consumeItem": rd.coin_new_5},
-    {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True},
-    {"resourceItem": rd.resource_blank, "resourceAcc":0.65, "targetItem": rd.coffee_tag_3, "targetItem2": rd.beard_tag_3,"targetAcc":0.65, "mergeRequired": True},
+    {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True, "consumeItem": rd.coin_new_5},
+    {"resourceItem": rd.resource_blank, "resourceAcc":0.65, "targetItem": rd.coffee_tag_3, "targetAcc":0.55, "mergeRequired": True},
     {"resourceItem": rd.box_1, "resourceAcc":0.6, "targetItem": rd.power_4, "targetAcc":0.75, "mergeRequired": True},
     {"resourceItem": rd.daily_box_3, "resourceAcc":0.55, "targetItem": rd.power_3,  "targetAcc":0.75,"mergeRequired": True},
 ]
-
-# "targetAcc":0.55 在无订单时容易误判，可以用0.65
-    # {"resourceItem": rd.resource_blank, "resourceAcc":0.65, "targetItem": rd.coffee_tag_3, "targetItem2": rd.beard_tag_3,"targetAcc":0.55, "mergeRequired": True},
 
 # targetList = [
 #     {"resourceItem": rd.resource_blank, "resourceAcc":0.65, "targetItem": rd.coffee_tag_3, "targetAcc":0.55, "mergeRequired": True},
@@ -144,10 +157,10 @@ def into_game(verifyIntoFlag = False):
     retryCount = 0
     gamer.home()
     while continueFlag:
-        totalList = gamer.find_pic_all_list(intoGameList)
-        totalDict = ghh.combine_lists_to_dict(intoGameList, totalList)
+        gameStatusList = gamer.find_pic_all_list(intoGameList)
+        gameStatusDict = ghh.combine_lists_to_dict(intoGameList, gameStatusList)
         for key in intoGameList:
-            if len(totalDict[key]) > 0:
+            if len(gameStatusDict[key]) > 0:
                 match key:
                     # cloud_button
                     case rd.cloud_button: 
@@ -159,7 +172,7 @@ def into_game(verifyIntoFlag = False):
                         break
                     # 进入棋盘后无需额外操作
                     case rd.into_board: 
-                        gamer.touch(totalDict[key][0])
+                        gamer.touch(gameStatusDict[key][0])
                         # 如果不需要确认已进入，则直接跳出，否则依赖back_from_board跳出
                         if not verifyIntoFlag:
                             continueFlag = False
@@ -194,7 +207,7 @@ def into_game(verifyIntoFlag = False):
                     # 其他操作，需要等待结果
                     case _:
                         # retryCount = 0
-                        gamer.touch(totalDict[key][0])
+                        gamer.touch(gameStatusDict[key][0])
                         time.sleep(5)
                         break
         # 一轮识别后的处理
@@ -217,6 +230,102 @@ def into_game(verifyIntoFlag = False):
                 msh.send_simple_push(f"retryCount 为{retryCount}","错误：卡顿未能解决，尝试重启")
                 gamer.collect_log_image()
                 raise Exception(f'错误：卡顿未能解决，尝试重启，retryCount 为{retryCount}')
+def into_game_round(): 
+    gameStatusList = gamer.find_pic_all_list([item.value for item in GameStatus])
+    gameStatusDict = ghh.combine_lists_to_dict(list(GameStatus), gameStatusList)
+    for key in list(GameStatus):
+        if len(gameStatusDict[key]) > 0:
+            match key:
+                # cloud_button
+                case GameStatus.cloud_button: 
+                    logging.info(f"切换云端数据")
+                    time.sleep(3)  # 等待云端数据可选
+                    gamer.find_pic_touch(rd.cloud_button)
+                    time.sleep(5)  # 等待云端数据可选
+                    gamer.find_pic_touch(rd.cloud_submit)
+                    time.sleep(10)
+                    # 等同于点击进入游戏
+                    return GameStatus.start_game
+                # 进入棋盘后无需额外操作
+                case GameStatus.into_board: 
+                    gamer.touch(gameStatusDict[key][0])
+                    time.sleep(3)
+                    return GameStatus.into_board
+                case GameStatus.back_from_board: 
+                    if gamer.verify_pic_strict(rd.back_from_board):
+                        return True
+                    else:
+                        # 有弹出物，需要退出后重进
+                        return ErrorFlag.clean_model
+                # 其他操作，需要等待结果
+                case GameStatus.start_game:
+                    gamer.touch(gameStatusDict[key][0])
+                    logging.info(f"进入棋盘并等待15s")
+                    time.sleep(15)
+                    return GameStatus.start_game
+                case GameStatus.exit_game_model:
+                    gamer.back()
+                    time.sleep(3)
+                    return GameStatus.exit_game_model
+                case _:
+                    return ErrorFlag.find_nothing
+    # 如果没有任何已知的key, 最终返回 find_nothing
+    time.sleep(1)
+    return ErrorFlag.find_nothing            
+    
+                
+def action_clean_model():
+    logging.info(f"触发model清理")
+    gamer.collect_log_image("触发model清理")
+    # 测试时退出四次
+    gamer.back()
+    time.sleep(3)
+    gamer.back()
+    time.sleep(3)
+    gamer.back()
+    time.sleep(3)
+    gamer.back()
+    time.sleep(3)
+    gamer.home()
+                
+def game_start_clean():
+    nothingCount = 0
+    maxCount = 10
+    lastFlag = ""
+    while True:
+        key = into_game_round()
+        match key:
+            case ErrorFlag.find_nothing:
+                nothingCount += 1
+                lastFlag = key
+            case ErrorFlag.clean_model:
+                if lastFlag == ErrorFlag.clean_model:
+                    logging.info(f"检测到棋盘异常，尝试清理")
+                    # 尝试清理
+                    action_clean_model()
+                    nothingCount += 10
+                    continue
+            # 进入游戏本身是试图脱离错误的一步，不能重置尝试次数
+            # case GameStatus.start_game:
+            #     nothingCount = 0
+            case GameStatus.exit_game_model:
+                nothingCount = 0
+            case True:
+                return True
+            case _:
+                nothingCount += 1
+        
+        # 假如多次未能找到任何目标, 尝试清理
+        if nothingCount > maxCount and lastFlag != ErrorFlag.clean_model:
+            action_clean_model()
+            continue
+        # 假如以上尝试不能帮助脱离错误状况
+        if nothingCount > maxCount + 5:
+            gamer.collect_log_image("触发重启清理")
+            raise Exception(f'进入游戏失败，无法脱离卡顿，尝试重启')
+        # 循环最后记录lastFlag
+        lastFlag = key
+
 
 def switch_device():
     if(gamer.deviceID == deviceID2): gamer.deviceID = deviceID
@@ -460,12 +569,12 @@ def get_general_items(refreshCount, targetStartNum, targetCount = 5):
                 break
     logging.info(msh.send_simple_push("源列表为空","提示：完成执行"))
     logging.info("完成执行")
-    # while True:
-    #     if gho.verify_exit():
-    #         break
-    #     time.sleep(1200)
-    #     gho.round_all()
-    #     logging.info(msh.send_simple_push("结合执行","提示：完成一次结合执行"))
+    while True:
+        if gho.verify_exit():
+            break
+        time.sleep(1200)
+        gho.round_all()
+        logging.info(msh.send_simple_push("结合执行","提示：完成一次结合执行"))
 # [脚本从这里开始运行]
 
 def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeight = 256, itemImg = rd.fish_source_5):
@@ -498,10 +607,10 @@ def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeigh
                     restart_all()
                     msh.send_simple_push(f"完成重启,错误次数{errorCount}",f"提示：执行{roundCount}次卡死，完成重启")
                     pass
-                    continue
                 else:
                     msh.send_simple_push(f"错误内容:{e}",f"提示：执行{roundCount}次跳出,未知错误")
                     break
+                break
 
             # 检测到1级橘子才收橘子
             if len(ghh.stable_find_board_items(rd.orange_1_stable)) > 0:
@@ -572,8 +681,8 @@ def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeigh
                     # break
                     for i in range(7):
                         gamer.delay(300)
-                        if gho.verify_exit():
-                            break
+                        # if gho.verify_exit():
+                        #     break
                     if i > 5:
                         continue
                     else:
@@ -613,18 +722,17 @@ def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeigh
                 restart_all()
                 msh.send_simple_push(f"完成重启,错误次数{errorCount}",f"提示：执行{roundCount}次卡死，完成重启")
                 pass
-                continue
             else:
                 msh.send_simple_push(f"错误内容:{e}",f"提示：执行{roundCount}次跳出,未知错误")
                 break
     logging.info(msh.send_simple_push("源列表为空","提示：完成执行"))
     logging.info("完成执行")
-    # while True:
-    #     # if gho.verify_exit():
-    #     #     break
-    #     time.sleep(1200)
-    #     gho.round_all()
-    #     logging.info(msh.send_simple_push("结合执行","提示：完成一次结合执行"))
+    while True:
+        # if gho.verify_exit():
+        #     break
+        time.sleep(1200)
+        gho.round_all()
+        logging.info(msh.send_simple_push("结合执行","提示：完成一次结合执行"))
 
 if __name__ == "__main__":
     if getBoxFlag:

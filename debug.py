@@ -13,6 +13,7 @@ import GhEventHelper as gheh
 import GhEventHelper_2 as gheh2
 import subprocess
 from enum import Enum
+import GhTempTest as gtest
 
 class Direction(Enum):
     UP = 0
@@ -23,8 +24,8 @@ class Direction(Enum):
 windowID = "BlueStacks App Main"
 windowID2 = "BlueStacks App Player 2"
 windowID3 = "BlueStacks Multi"
-deviceID = "emulator-5554"
-deviceID2 = "emulator-5574"
+deviceID = settings.deviceList[0]["deviceId"]
+deviceID2 = settings.deviceList[1]["deviceId"]
 
 manager_pos_1 = (900, 225)
 manager_pos_2 = (900, 330)
@@ -313,6 +314,9 @@ targetListTag = [
     rd.event_2_tag_2,
 ]
 
+ADBHelper.connent(settings.deviceList[0]["deviceId"])
+ADBHelper.connent(settings.deviceList[1]["deviceId"])
+
 # targetListPower = [
 #     rd.power_1_new,
 #     rd.power_2_new,
@@ -344,11 +348,24 @@ targetListTag = [
 # temp = gheh2.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListPower, 0.775))
 # temp = gamer.find_pic_all_list([rd.event_tag_1_1], 0.75)
 
+targetListTemp = settings.eventTagList
+
 # temp = ghh.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListBeike, 0.65))
+temp = gheh.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListTemp, 0.75))
 # temp = ghh.calculate_total_weight(temp)
 
-ADBHelper.connent(settings.deviceList[0]["deviceId"])
-ADBHelper.connent(settings.deviceList[1]["deviceId"])
 
-temp = ghh.get_center((1,5))
+
+# temp = ghh.get_center((1,5))
+# temp = ghh.get_all_center()
+# temp = gamer.find_all_empty(ghh.get_all_center())
+# temp = gamer.find_all_color([ghh.get_center((8,3))])
+# i = 0
+# for i in range(1,997):
+#     gamer.touch((891, 795))
+#     gamer.delay(0.1)
+
+# # temp = i
+
+# temp = gtest.game_start_clean()
 print("temp:{0}".format(temp))

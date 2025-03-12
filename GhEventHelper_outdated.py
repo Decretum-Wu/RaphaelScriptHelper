@@ -6,27 +6,27 @@ def get_center(grid_pos):
     if grid_pos is None:
         return None
     row, col = grid_pos
-    x = st.event_x_start_pos + (col - 1) * (st.event_block_size * 2) + st.event_block_size  # 计算x坐标：起点64 + (列数-1)*格子宽度 + 半宽
-    y = st.event_y_start_pos + (row - 1) * (st.event_block_size * 2) + st.event_block_size  # 计算y坐标：起点508 + (行数-1)*格子高度 + 半高
+    x = 136 + (col - 1) * 136 + 68  # 计算x坐标：起点64 + (列数-1)*格子宽度 + 半宽
+    y = 668 + (row - 1) * 136 + 68  # 计算y坐标：起点508 + (行数-1)*格子高度 + 半高
     return (x, y)
 
 def get_all_center():
     resultList = []
-    for col in range(1,st.event_x_line+1):
-        for row in range(1,st.event_y_line+1):
-            x = st.event_x_start_pos + (col - 1) * (st.event_block_size * 2) + st.event_block_size  # 计算x坐标：起点64 + (列数-1)*格子宽度 + 半宽
-            y = st.event_y_start_pos + (row - 1) * (st.event_block_size * 2) + st.event_block_size  # 计算y坐标：起点508 + (行数-1)*格子高度 + 半高
+    for col in range(1,7):
+        for row in range(1,9):
+            x = 136 + (col - 1) * 136 + 68  # 计算x坐标：起点64 + (列数-1)*格子宽度 + 半宽
+            y = 668 + (row - 1) * 136 + 68  # 计算y坐标：起点508 + (行数-1)*格子高度 + 半高
             resultList.append((x,y))
     return resultList
 
 def get_grid_pos(screen_pos):
     x, y = screen_pos
     # 计算列号（横向格子）
-    col = (x - st.event_x_start_pos) // (st.event_block_size * 2) + 1
+    col = (x - 136) // 136 + 1
     # 计算行号（纵向格子）
-    row = (y - st.event_y_start_pos) // (st.event_block_size * 2) + 1
+    row = (y - 668) // 136 + 1
     # 检查是否在棋盘有效范围内
-    if 1 <= col <= st.event_x_line and 1 <= row <= st.event_y_line:
+    if 1 <= col <= 6 and 1 <= row <= 8:
         return (row, col)
     else:
         return None  # 坐标不在棋盘格子上

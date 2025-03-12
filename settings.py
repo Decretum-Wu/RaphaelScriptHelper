@@ -1,7 +1,7 @@
 import testDict as rd
 deviceList = [
     {"deviceId": '127.0.0.1:5645', "window_title": 'BlueStacks App Main', "instance_title": 'Pie64_9'},
-    {"deviceId": '127.0.0.1:5635', "window_title": 'BlueStacks App Save2', "instance_title": 'Pie64_8'},
+    {"deviceId": '127.0.0.1:5655', "window_title": 'BlueStacks App Save2', "instance_title": 'Pie64_10'},
 ]
 
 
@@ -32,7 +32,7 @@ touchDelayRange = 10
 slideMinVer = 200
 slideMaxVer = 300
 
-# blue
+# blue 142-184-241
 # empty_color_1 = (241, 184, 142)
 # empty_color_2 = (237, 179, 135)
 
@@ -47,9 +47,6 @@ empty_color_2 = (184, 182, 86)
 empty_colors = [empty_color_1, empty_color_2]
 empty_block = (132,576)
 
-# event_first_block 玫瑰 (204,736)
-event_first_block = (685, 1755)
-
 intoGameList = [
     rd.start_game,
     rd.cloud_button,
@@ -57,5 +54,45 @@ intoGameList = [
     rd.back_from_board
     ]
 usePower = False
+
+# event_first_block 玫瑰 (204,736)
 # event_first_block = (685, 1755)
 
+# event_first_block 挖矿 沙滩
+event_first_block = (600, 1670)
+event_empty_color_1 = (145, 186, 218)
+event_empty_color_2 = (134, 172, 207)
+# event_empty_block = (132,576)
+
+event_x_start_pos = 136
+event_y_start_pos = 668
+event_block_size = 68
+event_x_line = 6
+event_y_line = 8
+
+eventItemList = [
+    rd.event_3_item_1,
+    rd.event_3_item_2,
+    rd.event_3_item_3,
+    rd.event_3_item_4,
+    rd.event_3_item_5,
+    rd.event_3_item_6,
+    rd.event_3_item_7,
+    rd.event_3_item_8,
+]
+
+eventTagList = [
+    rd.event_3_tag_1,
+    rd.event_3_tag_2,
+    rd.event_3_tag_3,
+    rd.event_3_tag_4,
+]
+
+eventIntoGameList = [
+    rd.start_game,
+    rd.cloud_button,
+    rd.event_3_into,
+    rd.event_3_at
+]
+
+event_empty_colors = [event_empty_color_1, event_empty_color_2]

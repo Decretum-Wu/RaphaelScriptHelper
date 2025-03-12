@@ -149,12 +149,15 @@ def verify_empty():
     else:
         return False
 
-def verify_clean(minNum = 0):
+def verify_clean(minNum = 1):
     count = len(gamer.find_all_empty(ghh.get_all_center()))
-    if not (count > minNum):
-        clean_up(1)
-        count = len(gamer.find_all_empty(ghh.get_all_center()))
-        logging.info(msh.send_simple_push(f"检测到棋盘满,剩余空格数{count}",f"提示：一级清理,剩余空格数{count}"))
+    # 一个格子时，空格数大于0
+    minNum = minNum - 1
+    clean_up(1)
+    # if not (count > minNum):
+    #     clean_up(1)
+    #     count = len(gamer.find_all_empty(ghh.get_all_center()))
+    #     logging.info(msh.send_simple_push(f"检测到棋盘满,剩余空格数{count}",f"提示：一级清理,剩余空格数{count}"))
     if not (count > minNum):
         if useCoin:
             clean_up(2)
@@ -178,7 +181,7 @@ def verify_clean(minNum = 0):
 def verify_exit():
     # return False
     nowTime = datetime.datetime.now().time()
-    if nowTime > datetime.time(7, 55) and nowTime < datetime.time(8, 55): 
+    if nowTime > datetime.time(7, 54) and nowTime < datetime.time(8, 55): 
         gamer.collect_log_image()
         time.sleep(3)
         gamer.home()
