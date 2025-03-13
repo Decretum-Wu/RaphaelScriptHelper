@@ -72,7 +72,7 @@ settings.accuracy = 0.70
 # targetItem = rd.power_3
 # mergeRequired = True
 # 重要
-gho.useCoin = True
+gho.useCoin = False
 gho.usePower = False
 # gho.useCoin = True
 # gho.usePower = True
@@ -80,27 +80,27 @@ gho.usePower = False
 refreshCount = 0
 # card_1 = 2
 # daily_box_3 = 4
-targetStartNum = 4
+targetStartNum = 3
 getBoxFlag = True
 # 体力目标
 tagAcc = 0.65
 itemImg = False
 
 # 贝壳
-# itemPoint = ghh.get_center((1,5))
-# tagList = targetListBeike
-# stepLen = 2
-# targetWeight = 4
-# lastWeight = 511
+itemPoint = ghh.get_center((1,6))
+tagList = targetListBeike
+stepLen = 2
+targetWeight = 3
+lastWeight = 511
 # 128为10级
 # 单次直接刷2非常难，几乎不可能
 
 # 鱼(原始)
-itemPoint = ghh.get_center((7,1))
-tagList =[rd.fish_source_3, rd.fish_resource_4, rd.fish_source_5]
-stepLen = 1
-targetWeight = 2
-lastWeight = 15
+# itemPoint = ghh.get_center((7,1))
+# tagList =[rd.fish_source_3, rd.fish_resource_4, rd.fish_source_5]
+# stepLen = 1
+# targetWeight = 2
+# lastWeight = 15
 
 # 鱼(产物)
 # itemPoint = ()
@@ -230,7 +230,7 @@ def restart_all():
     # 首次点击容易失败，重复点击更安全
     gamer.stop_process_by_window_title(settings.deviceList[0]["window_title"])
     gamer.stop_process_by_window_title(settings.deviceList[1]["window_title"])
-    gamer.delay(10)
+    gamer.delay(25)
     gamer.run_bluestacks_instance(settings.deviceList[0]["instance_title"])
     gamer.run_bluestacks_instance(settings.deviceList[1]["instance_title"])
     gamer.delay(35)
@@ -405,6 +405,9 @@ def get_general_items(refreshCount, targetStartNum, targetCount = 5):
             except Exception as e:
                 logging.error(f"错误内容:{e}")
                 msh.send_simple_push(f"错误内容:{e}",f"提示：执行{roundCount}次跳出,捕捉错误")
+                # 安全设置，当刷取中途报错时切换
+                if errorCount == 0:
+                    switch_device()
                 errorCount += 1
                 if errorCount < 10:
                     msh.send_simple_push(f"开始重启,错误次数{errorCount}",f"提示：执行{roundCount}次卡死，开始重启")

@@ -58,7 +58,7 @@ refreshCount = 1
 # card_1 = 2
 # daily_box_3 = 4
 targetStartNum = 0
-totalCount = 10
+totalCount = 110
 
 targetList = [
     {"targetItem": settings.eventTagList[0], "targetAcc":0.75, "mergeRequired": True},
@@ -214,7 +214,7 @@ def restart_all():
     # 首次点击容易失败，重复点击更安全
     gamer.stop_process_by_window_title(settings.deviceList[0]["window_title"])
     gamer.stop_process_by_window_title(settings.deviceList[1]["window_title"])
-    gamer.delay(10)
+    gamer.delay(25)
     gamer.run_bluestacks_instance(settings.deviceList[0]["instance_title"])
     gamer.run_bluestacks_instance(settings.deviceList[1]["instance_title"])
     gamer.delay(35)

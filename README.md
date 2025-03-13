@@ -36,9 +36,27 @@ Python 3.7
 使用到的Python库
 
 ```
-numpy=1.19.5
-opencv-python=4.5.1.48
+numpy==1.19.5
+opencv-python==4.5.1.48
 ```
+
+##目前使用 python 3.12, 需要直接安装最新版包
+
+deviceID2 = "127.0.0.1:5575"
+
+useCoin = False
+# useCoin = True
+usePower = False
+# usePower = True
+
+# targetListOrangeTree = rd.orange_tree_list1
+targetListOrangeTree = rd.orange_tree_list2
+
+
+deviceList = [
+    {"deviceId": 'emulator-5554', "window_title": 'BlueStacks App Main', "instance_title": 'Pie64'},
+    {"deviceId": '127.0.0.1:5595', "window_title": 'BlueStacks App Save2', "instance_title": 'Pie64_4'},
+]
 
 ADB套件请在[这里](https://pan.baidu.com/s/15dpjviyIHezaT56knux2xQ?pwd=mr5p)下载并解压放置到脚本框架根目录
 

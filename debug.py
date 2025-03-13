@@ -351,7 +351,7 @@ ADBHelper.connent(settings.deviceList[1]["deviceId"])
 targetListTemp = settings.eventTagList
 
 # temp = ghh.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListBeike, 0.65))
-temp = gheh.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListTemp, 0.75))
+
 # temp = ghh.calculate_total_weight(temp)
 
 
@@ -368,4 +368,8 @@ temp = gheh.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(ta
 # # temp = i
 
 # temp = gtest.game_start_clean()
-print("temp:{0}".format(temp))
+
+# temp = gheh.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListTemp, 0.75))
+# print("temp:{0}".format(temp))
+
+restart_all()
