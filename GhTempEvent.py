@@ -58,7 +58,8 @@ refreshCount = 1
 # card_1 = 2
 # daily_box_3 = 4
 targetStartNum = 0
-totalCount = 110
+totalCount = 219
+failedCount = 0
 
 targetList = [
     {"targetItem": settings.eventTagList[0], "targetAcc":0.75, "mergeRequired": True},
@@ -80,6 +81,12 @@ targetListPower = [
     rd.power_4
 ]
 
+targetListStone = [
+    rd.stone_0,
+    rd.stone_1,
+    rd.stone_2,
+    rd.stone_3
+]
 targetListItem = settings.eventItemList
 
 targetListTag = settings.eventTagList
@@ -104,12 +111,17 @@ def process_existed(targetList, acc, cacheFlag = False):
 def clean_event():
     gamer.screenCap()
     process_existed(targetListItem, 0.75, True)
+    process_existed(targetListCoin, 0.60)
     gamer.screenCap()
     process_existed(targetListTag, 0.75, True)
-    process_existed(targetListCoin, 0.50, True)
+    process_existed(targetListCoin, 0.60, True)
     # process_existed(targetListPower, 0.775, True)
     process_existed(targetListPower, 0.775, True)
-    # gamer.find_pic_double_touch(rd.coin_new_5)
+    process_existed(targetListStone, 0.60, True)
+    # gamer.find_pic_touch(rd.coin_new_5)
+    gamer.find_pic_double_touch(rd.stone_4, 0.6)
+    gamer.find_pic_double_touch(rd.coin_new_5, 0.6)
+    gamer.find_pic_double_touch(rd.power_5, 0.6)
 
 def into_game(verifyIntoFlag = False):
     global intoGameList
@@ -356,6 +368,14 @@ if __name__ == "__main__":
                     break
                 break
 
+            # 清理
+            # clean_event()
+            # save_current_device()
+
+            if failedCount > 30:
+                msh.send_simple_push(f"错误,等待20分钟",f"提示：执行{failedCount}次跳出,未知错误")
+                gamer.delay(1200)
+
             count = len(gheh.stable_find_board_items(currentTarget["targetItem"], retryNumMin))
 
             # 1 初始目标物数量
@@ -378,9 +398,10 @@ if __name__ == "__main__":
                 # gamer.delay(1)
                 # gamer.touch(resourcePoint)
 
-                if tagCount > 70:
-                    logging.info(f"轮数{tagCount}较多，提前清理")
-                    clean_event()
+                # if tagCount > 70:
+                #     logging.info(f"轮数{tagCount}较多，提前清理")
+                #     clean_event()
+
 
                 # 获取目前数量
                 time.sleep(3)
@@ -409,6 +430,7 @@ if __name__ == "__main__":
             # if countNow >= count:
             # 暂时，更新单个物品
             # if True:
+                failedCount = 0
                 logging.info(f"countNow:{countNow}, count:{count}")
                 count = countNow
                 # 成功，若需要则合成，并更新count
@@ -435,6 +457,7 @@ if __name__ == "__main__":
                 # 舍弃现有结果
                 gamer.home()
                 refreshCount += 1
+                failedCount += 1
                 stayFlag = False
                 # 次设备重置结果
                 switch_device()

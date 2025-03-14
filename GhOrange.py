@@ -174,6 +174,7 @@ def verify_clean(minNum = 1):
             logging.info(msh.send_simple_push(f"检测到棋盘满,剩余空格数{count}",f"提示：三级清理,不能使用金币，暂停"))
     if not (count > minNum):
         gamer.collect_log_image("清理棋盘失败")
+        gamer.delay(1200)
         return False
     else:
         return True

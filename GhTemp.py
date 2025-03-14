@@ -72,7 +72,7 @@ settings.accuracy = 0.70
 # targetItem = rd.power_3
 # mergeRequired = True
 # 重要
-gho.useCoin = False
+gho.useCoin = True
 gho.usePower = False
 # gho.useCoin = True
 # gho.usePower = True
@@ -80,18 +80,18 @@ gho.usePower = False
 refreshCount = 0
 # card_1 = 2
 # daily_box_3 = 4
-targetStartNum = 3
+targetStartNum = 2
 getBoxFlag = True
 # 体力目标
 tagAcc = 0.65
 itemImg = False
 
 # 贝壳
-itemPoint = ghh.get_center((1,6))
+itemPoint = ghh.get_center((1,5))
 tagList = targetListBeike
 stepLen = 2
 targetWeight = 3
-lastWeight = 511
+lastWeight = 512
 # 128为10级
 # 单次直接刷2非常难，几乎不可能
 
@@ -113,8 +113,8 @@ lastWeight = 511
 
 targetList = [
     {"resourceItem": rd.card_1, "resourceAcc":0.55, "targetItem": rd.stone_4, "targetAcc":0.55, "mergeRequired": False, "consumeItem": rd.stone_4},
-    # {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True, "consumeItem": rd.coin_new_5},
-    {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True},
+    {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True, "consumeItem": rd.coin_new_5},
+    # {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True},
     {"resourceItem": rd.resource_blank, "resourceAcc":0.65, "targetItem": rd.coffee_tag_3, "targetItem2": rd.beard_tag_3,"targetAcc":0.65, "mergeRequired": True},
     {"resourceItem": rd.box_1, "resourceAcc":0.6, "targetItem": rd.power_4, "targetAcc":0.75, "mergeRequired": True},
     {"resourceItem": rd.daily_box_3, "resourceAcc":0.55, "targetItem": rd.power_3,  "targetAcc":0.75,"mergeRequired": True},
