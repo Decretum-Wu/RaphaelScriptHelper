@@ -58,7 +58,7 @@ refreshCount = 1
 # card_1 = 2
 # daily_box_3 = 4
 targetStartNum = 0
-totalCount = 219
+totalCount = 212
 failedCount = 0
 
 targetList = [
@@ -119,9 +119,9 @@ def clean_event():
     process_existed(targetListPower, 0.775, True)
     process_existed(targetListStone, 0.60, True)
     # gamer.find_pic_touch(rd.coin_new_5)
-    gamer.find_pic_double_touch(rd.stone_4, 0.6)
-    gamer.find_pic_double_touch(rd.coin_new_5, 0.6)
-    gamer.find_pic_double_touch(rd.power_5, 0.6)
+    gamer.find_pic_double_touch(rd.stone_4, 0.6, True)
+    gamer.find_pic_double_touch(rd.coin_new_5, 0.6, True)
+    gamer.find_pic_double_touch(rd.power_5, 0.6, True)
 
 def into_game(verifyIntoFlag = False):
     global intoGameList
@@ -147,18 +147,12 @@ def into_game(verifyIntoFlag = False):
                     # 进入棋盘后无需额外操作
                     case IntoGameEnum.INTO.value: 
                         gamer.touch(totalDict[key][0])
-                        # 如果不需要确认已进入，则直接跳出，否则依赖back_from_board跳出
-                        # if not verifyIntoFlag:
-                        #     continueFlag = False
-                        # else:
-                        #     #防止截图过快导致的后续问题
-                        #     doneIntoFlag = True
-                        #     time.sleep(2)
-                        # break
-                        time.sleep(2)
+                        # time.sleep(1)
                     # back_from_board
                     case IntoGameEnum.AT.value: 
-                        time.sleep(5)
+                        # time.sleep(5)
+                        if retryCount < 5:
+                            time.sleep(5)
                         if not gamer.verify_pic(IntoGameEnum.AT.value):
                             logging.info("重试进入活动")
                             msh.send_simple_push(f"错误内容",f"提示：跳出,重试进入活动")
@@ -198,21 +192,34 @@ def into_game(verifyIntoFlag = False):
         if retryCount % 30 == 0 and continueFlag:
             # 30次尝试一次解决卡顿
             msh.send_simple_push(f"retryCount 为{retryCount}","错误：已经卡死,试图解决卡顿")
-            gamer.touch(rd.first_screen_close_1)
+            gamer.back()
             time.sleep(1)
-            gamer.touch(rd.first_screen_close_2)
-            time.sleep(5)
-            if gamer.verify_pic(rd.into_board):
+            # gamer.touch(rd.first_screen_close_1)
+            # time.sleep(1)
+            # gamer.touch(rd.first_screen_close_2)
+            # time.sleep(5)
+
+            if gamer.verify_pic(IntoGameEnum.INTO.value):
                 msh.send_simple_push(f"retryCount 为{retryCount}","成功：成功解决卡顿")
                 # 首屏问题一般为礼包，关闭后需要保存
                 gamer.home()
                 time.sleep(3)  # 等待窗口激活
-                gamer.find_pic_touch(rd.start_game)
+                gamer.find_pic_touch(IntoGameEnum.START.value)
                 time.sleep(5)  # 等待窗口激活
             else:
-                msh.send_simple_push(f"retryCount 为{retryCount}","错误：卡顿未能解决，尝试重启")
-                gamer.collect_log_image()
-                raise Exception(f'错误：卡顿未能解决，尝试重启，retryCount 为{retryCount}')
+                gamer.back()
+                time.sleep(1)
+                if gamer.verify_pic(IntoGameEnum.INTO.value):
+                    msh.send_simple_push(f"retryCount 为{retryCount}","成功：成功解决卡顿")
+                    # 首屏问题一般为礼包，关闭后需要保存
+                    gamer.home()
+                    time.sleep(3)  # 等待窗口激活
+                    gamer.find_pic_touch(IntoGameEnum.START.value)
+                    time.sleep(5)  # 等待窗口激活
+                else:
+                    msh.send_simple_push(f"retryCount 为{retryCount}","错误：卡顿未能解决，尝试重启")
+                    gamer.collect_log_image()
+                    raise Exception(f'错误：卡顿未能解决，尝试重启，retryCount 为{retryCount}')
 
 def switch_device():
     if(gamer.deviceID == deviceID2): gamer.deviceID = deviceID
@@ -455,6 +462,8 @@ if __name__ == "__main__":
             else:
                 # switch current deviceId to the next
                 # 舍弃现有结果
+                # gamer.back()
+                # gamer.delay(0.2)
                 gamer.home()
                 refreshCount += 1
                 failedCount += 1

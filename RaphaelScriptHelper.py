@@ -70,8 +70,9 @@ def slide(startPos, stopPos):
     return stopPos
 
 # 截屏，识图，返回坐标
-def find_pic(target, returnCenter = False, accuracy = st.accuracy):
-    ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")
+def find_pic(target, returnCenter = False, accuracy = st.accuracy, cacheFlag = False):
+    if not cacheFlag:
+        ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")
     time.sleep(0.1)
     if returnCenter == True:
         leftTopPos = ImageProc.locate(st.cache_path + "screenCap.png", target, accuracy)
@@ -181,8 +182,8 @@ def find_pic_touch(target):
     touch((x, y))
     return True
 
-def find_pic_double_touch(target, accuracy = st.accuracy):
-    leftTopPos = find_pic(target, True, accuracy)
+def find_pic_double_touch(target, accuracy = st.accuracy, cacheFlag = False):
+    leftTopPos = find_pic(target, True, accuracy, cacheFlag)
     if leftTopPos is None:
         print("【识图】识别 {0} 失败".format(target))
         return False
