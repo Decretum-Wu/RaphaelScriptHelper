@@ -80,8 +80,13 @@ gho.usePower = False
 refreshCount = 0
 # card_1 = 2
 # daily_box_3 = 4
-targetStartNum = 2
-getBoxFlag = True
+targetStartNum = 3
+targetCount = 5
+getBoxFlag = False
+# 刷新完物品后继续刷体力
+roundFlag = True
+# 物品未获取时保留图片
+collectImg = True
 # 体力目标
 tagAcc = 0.65
 itemImg = False
@@ -112,7 +117,7 @@ lastWeight = 512
 # lastWeight = 300
 
 targetList = [
-    {"resourceItem": rd.card_1, "resourceAcc":0.55, "targetItem": rd.stone_4, "targetAcc":0.55, "mergeRequired": False, "consumeItem": rd.stone_4},
+    {"resourceItem": rd.card_1, "resourceAcc":0.55, "targetItem": rd.stone_4, "targetAcc":0.50, "mergeRequired": False, "consumeItem": rd.stone_4},
     {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True, "consumeItem": rd.coin_new_5},
     # {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True},
     {"resourceItem": rd.resource_blank, "resourceAcc":0.65, "targetItem": rd.coffee_tag_3, "targetItem2": rd.beard_tag_3,"targetAcc":0.65, "mergeRequired": True},
@@ -292,7 +297,7 @@ def set_acc_by_item(currentTarget):
     if currentTarget.get("resourceAcc"): resourceAcc = currentTarget.get("resourceAcc")
     if currentTarget.get("targetAcc"): targetAcc = currentTarget.get("targetAcc")
 
-def get_general_items(refreshCount, targetStartNum, targetCount = 5):
+def get_general_items(refreshCount, targetStartNum, targetCount = 25, collectImg = False):
     global stayFlag, switchFlag, currentTarget, targetList
     tagCount = 0
     roundCount = 1
@@ -306,6 +311,8 @@ def get_general_items(refreshCount, targetStartNum, targetCount = 5):
     if gho.verify_empty():
         logging.info("测试：目前有空位")
     while True:
+        if tagCount >= targetCount:
+            break
         if gho.verify_exit():
             break
         try:
@@ -433,6 +440,8 @@ def get_general_items(refreshCount, targetStartNum, targetCount = 5):
                 if currentTarget.get("targetItem2"): 
                     count += len(ghh.stable_find_board_items(currentTarget.get("targetItem2"), retryNumMin, targetAcc))
                 # 后续处理
+                if collectImg:
+                    gamer.collect_log_image(f"第{roundCount}次-成功")
                 save_current_device()
                 stayFlag = True
                 tagCount += 1
@@ -441,6 +450,8 @@ def get_general_items(refreshCount, targetStartNum, targetCount = 5):
             else:
                 # switch current deviceId to the next
                 # 舍弃现有结果
+                if collectImg:
+                    gamer.collect_log_image(f"第{roundCount}次-失败")
                 gamer.home()
                 refreshCount += 1
                 stayFlag = False
@@ -630,7 +641,10 @@ def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeigh
     #     logging.info(msh.send_simple_push("结合执行","提示：完成一次结合执行"))
 
 if __name__ == "__main__":
-    if getBoxFlag:
+    if roundFlag:
+        get_general_items(refreshCount, targetStartNum, targetCount, collectImg)
+        get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeight, itemImg)
+    elif getBoxFlag:
         get_general_items(refreshCount, targetStartNum)
     else:
         get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeight, itemImg)
