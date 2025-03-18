@@ -4,7 +4,7 @@ deviceList = [
     {"deviceId": '127.0.0.1:5655', "window_title": 'BlueStacks App Save2', "instance_title": 'Pie64_10'},
 ]
 
-
+targetListOrangeTree = rd.orange_tree_list1
 
 #图片匹配置信度，0-1之间，默认0.93，如果匹配出错误目标则提高置信度，如果要模糊匹配或高置信度无法匹配则降低置信度
 # accuracy = 0.70
