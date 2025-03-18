@@ -41,8 +41,13 @@ slideMaxVer = 300
 # empty_color_2 = (55, 123, 191)
 
 # green
-empty_color_1 =  (185, 183, 88)
-empty_color_2 = (184, 182, 86)
+# empty_color_1 =  (185, 183, 88)
+# empty_color_2 = (184, 182, 86)
+
+# deep green
+empty_color_1 =  (114, 139, 66)
+empty_color_2 = (120, 146, 74)
+
 
 empty_colors = [empty_color_1, empty_color_2]
 empty_block = (132,576)
@@ -79,6 +84,7 @@ eventItemList = [
     rd.event_3_item_6,
     rd.event_3_item_7,
     rd.event_3_item_8,
+    # rd.event_3_item_9,
 ]
 
 eventTagList = [
