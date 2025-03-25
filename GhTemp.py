@@ -122,7 +122,8 @@ targetList = [
     {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True, "consumeItem": rd.coin_new_5},
     {"resourceItem": rd.resource_blank, "resourceAcc":0.65, "targetItem": rd.coffee_tag_3, "targetItem2": rd.beard_tag_3,"targetAcc":0.65, "mergeRequired": True},
     {"resourceItem": rd.box_1, "resourceAcc":0.6, "targetItem": rd.power_4, "targetAcc":0.75, "mergeRequired": True},
-    {"resourceItem": rd.daily_box_3, "resourceAcc":0.55, "targetItem": rd.power_3,  "targetAcc":0.75,"mergeRequired": True},
+    # {"resourceItem": rd.daily_box_3, "resourceAcc":0.55, "targetItem": rd.power_3, "targetItem2": rd.coin_new_3, "targetAcc":0.75,"mergeRequired": True},
+    {"resourceItem": rd.daily_box_3, "resourceAcc":0.55, "targetItem": rd.power_3, "targetAcc":0.75,"mergeRequired": True},
 ]
 # "targetAcc":0.55 在无订单时容易误判，可以用0.65
     # {"resourceItem": rd.resource_blank, "resourceAcc":0.65, "targetItem": rd.coffee_tag_3, "targetItem2": rd.beard_tag_3,"targetAcc":0.55, "mergeRequired": True},
@@ -234,10 +235,11 @@ def restart_all():
     # 首次点击容易失败，重复点击更安全
     gamer.stop_process_by_window_title(settings.deviceList[0]["window_title"])
     gamer.stop_process_by_window_title(settings.deviceList[1]["window_title"])
-    gamer.delay(25)
+    gamer.delay(15)
     gamer.run_bluestacks_instance(settings.deviceList[0]["instance_title"])
+    gamer.delay(15)
     gamer.run_bluestacks_instance(settings.deviceList[1]["instance_title"])
-    gamer.delay(35)
+    gamer.delay(20)
     ADBHelper.connent(settings.deviceList[0]["deviceId"])
     ADBHelper.connent(settings.deviceList[1]["deviceId"])
     gamer.delay(5)
@@ -332,7 +334,7 @@ def get_general_items(refreshCount, targetStartNum, targetCount = 25, collectImg
                 else:
                     msh.send_simple_push(f"错误内容:{e}",f"提示：执行{roundCount}次跳出,未知错误")
                     break
-                break
+                continue
 
             # 检测到1级橘子才收橘子
             if len(ghh.stable_find_board_items(rd.orange_1_stable)) > 0:
@@ -428,6 +430,7 @@ def get_general_items(refreshCount, targetStartNum, targetCount = 25, collectImg
                 else:
                     msh.send_simple_push(f"错误内容:{e}",f"提示：执行{roundCount}次跳出,未知错误")
                     break
+                continue
 
             # 4 处理产物或刷新
             if countNow > count:
@@ -476,6 +479,7 @@ def get_general_items(refreshCount, targetStartNum, targetCount = 25, collectImg
             else:
                 msh.send_simple_push(f"错误内容:{e}",f"提示：执行{roundCount}次跳出,未知错误")
                 break
+            continue
     logging.info(msh.send_simple_push("源列表为空","提示：完成执行"))
     logging.info("完成执行")
 

@@ -34,8 +34,7 @@ useCoin = True
 usePower = False
 # usePower = True
 
-targetListOrangeTree = rd.orange_tree_list1
-# targetListOrangeTree = rd.orange_tree_list2
+targetListOrangeTree = settings.targetListOrangeTree
 
 gamer.deviceID = deviceID
 targetListBeike = [
