@@ -159,8 +159,9 @@ def verify_pic(target):
     if (leftTopPos): return True
     else: return False
 
-def verify_pic_strict(target):
-    ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")
+def verify_pic_strict(target, cacheFlag = False):
+    if not cacheFlag:
+        ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")
     time.sleep(0.1)
     leftTopPos = ImageProc.locate(st.cache_path + "screenCap.png", target, 0.9999)
     if (leftTopPos): return True

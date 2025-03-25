@@ -80,11 +80,12 @@ gho.usePower = False
 refreshCount = 0
 # card_1 = 2
 # daily_box_3 = 4
-targetStartNum = 3
-targetCount = 5
-getBoxFlag = False
+targetStartNum = 4
+targetCount = 4
+getBoxFlag = True
 # 刷新完物品后继续刷体力
 roundFlag = True
+exitFlag = False
 # 物品未获取时保留图片
 collectImg = True
 # 体力目标
@@ -95,7 +96,7 @@ itemImg = False
 itemPoint = ghh.get_center((1,5))
 tagList = targetListBeike
 stepLen = 2
-targetWeight = 3
+targetWeight = 4
 lastWeight = 512
 # 128为10级
 # 单次直接刷2非常难，几乎不可能
@@ -119,12 +120,10 @@ lastWeight = 512
 targetList = [
     {"resourceItem": rd.card_1, "resourceAcc":0.55, "targetItem": rd.stone_4, "targetAcc":0.50, "mergeRequired": False, "consumeItem": rd.stone_4},
     {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True, "consumeItem": rd.coin_new_5},
-    # {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True},
     {"resourceItem": rd.resource_blank, "resourceAcc":0.65, "targetItem": rd.coffee_tag_3, "targetItem2": rd.beard_tag_3,"targetAcc":0.65, "mergeRequired": True},
     {"resourceItem": rd.box_1, "resourceAcc":0.6, "targetItem": rd.power_4, "targetAcc":0.75, "mergeRequired": True},
     {"resourceItem": rd.daily_box_3, "resourceAcc":0.55, "targetItem": rd.power_3,  "targetAcc":0.75,"mergeRequired": True},
 ]
-
 # "targetAcc":0.55 在无订单时容易误判，可以用0.65
     # {"resourceItem": rd.resource_blank, "resourceAcc":0.65, "targetItem": rd.coffee_tag_3, "targetItem2": rd.beard_tag_3,"targetAcc":0.55, "mergeRequired": True},
 
@@ -298,7 +297,7 @@ def set_acc_by_item(currentTarget):
     if currentTarget.get("targetAcc"): targetAcc = currentTarget.get("targetAcc")
 
 def get_general_items(refreshCount, targetStartNum, targetCount = 25, collectImg = False):
-    global stayFlag, switchFlag, currentTarget, targetList
+    global stayFlag, switchFlag, currentTarget, targetList, exitFlag, roundFlag
     tagCount = 0
     roundCount = 1
     errorCount = 0
@@ -314,6 +313,7 @@ def get_general_items(refreshCount, targetStartNum, targetCount = 25, collectImg
         if tagCount >= targetCount:
             break
         if gho.verify_exit():
+            exitFlag = True
             break
         try:
             if not stayFlag:
@@ -381,6 +381,10 @@ def get_general_items(refreshCount, targetStartNum, targetCount = 25, collectImg
                         count = len(ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNum, targetAcc))
                         continue
                     else:
+                        # 如果没有获取到物品，则进入挂机逻辑
+                        if tagCount == 0: 
+                            # exitFlag = True
+                            roundFlag = False
                         break
                 else:
                     switchFlag = True
@@ -474,16 +478,9 @@ def get_general_items(refreshCount, targetStartNum, targetCount = 25, collectImg
                 break
     logging.info(msh.send_simple_push("源列表为空","提示：完成执行"))
     logging.info("完成执行")
-    # while True:
-    #     if gho.verify_exit():
-    #         break
-    #     time.sleep(1200)
-    #     gho.round_all()
-    #     logging.info(msh.send_simple_push("结合执行","提示：完成一次结合执行"))
-# [脚本从这里开始运行]
 
 def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeight = 256, itemImg = rd.fish_source_5):
-    global stayFlag, switchFlag, currentTarget, targetList
+    global stayFlag, switchFlag, currentTarget, targetList, exitFlag, roundFlag
     tagCount = 0
     roundCount = 1
     errorCount = 0
@@ -497,6 +494,7 @@ def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeigh
         logging.info("测试：目前有空位")
     while True:
         if gho.verify_exit():
+            exitFlag = True
             break
         try:
             if not stayFlag:
@@ -533,6 +531,7 @@ def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeigh
             logging.info("在第{0}次执行中，初始目标物权重: {1}".format(roundCount, count))
             # 完成后退出
             if count > lastWeight:
+                exitFlag = True
                 break
 
             if itemImg:
@@ -583,15 +582,22 @@ def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeigh
                     # 未知错误
                     gamer.collect_log_image("无可用体力导致退出")
                     logging.info(msh.send_simple_push("在第{0}次执行中，无可用体力导致退出，当前计数：{1}, 目标物 {2}".format(roundCount, count, tagList),f"错误：第{roundCount}次执行因卡顿退出"))
-                    # break
-                    for i in range(7):
-                        gamer.delay(300)
-                        if gho.verify_exit():
-                            break
-                    if i > 5:
-                        continue
-                    else:
+                    if roundFlag:
+                        # 体力正常用完时退出
                         break
+                    else:
+                        # 循环执行时正常等待
+                        for i in range(7):
+                            gamer.delay(300)
+                            if gho.verify_exit():
+                                exitFlag = True
+                                break
+                        if i > 5:
+                            # 体力正常用完时重试
+                            continue
+                        else:
+                            break
+                        
 
             # 4 处理产物或刷新
             if countNow >= count + targetWeight:
@@ -642,8 +648,9 @@ def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeigh
 
 if __name__ == "__main__":
     if roundFlag:
-        get_general_items(refreshCount, targetStartNum, targetCount, collectImg)
-        get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeight, itemImg)
+        while not exitFlag:
+            get_general_items(refreshCount, targetStartNum, targetCount, collectImg)
+            get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeight, itemImg)
     elif getBoxFlag:
         get_general_items(refreshCount, targetStartNum)
     else:

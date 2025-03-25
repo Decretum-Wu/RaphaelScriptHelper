@@ -1,7 +1,7 @@
 import testDict as rd
 deviceList = [
     {"deviceId": '127.0.0.1:5645', "window_title": 'BlueStacks App Main', "instance_title": 'Pie64_9'},
-    {"deviceId": '127.0.0.1:5655', "window_title": 'BlueStacks App Save2', "instance_title": 'Pie64_10'},
+    {"deviceId": '127.0.0.1:5675', "window_title": 'BlueStacks App Save2', "instance_title": 'Pie64_12'},
 ]
 
 
@@ -58,7 +58,8 @@ intoGameList = [
     rd.into_board,
     rd.back_from_board
     ]
-usePower = False
+usePower = True
+# usePower = False
 
 # event_first_block 玫瑰 (204,736)
 # event_first_block = (685, 1755)

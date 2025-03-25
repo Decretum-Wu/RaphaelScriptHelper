@@ -127,12 +127,14 @@ def process_existed_orange():
 
 def process_existed(targetList, cacheFlag = False, accuracy = settings.accuracy):
     slideCount = 1
+    totalCount = 0
     if cacheFlag:
         powerCol = gamer.find_pic_all_list_cache(targetList, accuracy)
         powerCol = ghh.get_collection_unique_grid_positions(powerCol)
         print("在设备{0}中，获取目标个数: {1}".format(gamer.deviceID, powerCol))
         slideCount = ghh.process_collection(powerCol, gamer.slide)
         print("在设备{0}中，获取滑动次数: {1}".format(gamer.deviceID, slideCount))
+        return slideCount
     else:
         while slideCount > 0:
             # gamer.delay(1)
@@ -140,7 +142,9 @@ def process_existed(targetList, cacheFlag = False, accuracy = settings.accuracy)
             powerCol = ghh.get_collection_unique_grid_positions(powerCol)
             print("在设备{0}中，获取目标个数: {1}".format(gamer.deviceID, powerCol))
             slideCount = ghh.process_collection(powerCol, gamer.slide)
+            totalCount += slideCount
             print("在设备{0}中，获取滑动次数: {1}".format(gamer.deviceID, slideCount))
+        return totalCount
 
 def verify_empty():
     time.sleep(1)
@@ -150,10 +154,16 @@ def verify_empty():
         return False
 
 def verify_clean(minNum = 1):
+    if not gamer.verify_pic_strict(rd.back_from_board, True):
+        gamer.collect_log_image("清理前不正常")
+        raise Exception(f'错误：进入棋盘不成功')
     count = len(gamer.find_all_empty(ghh.get_all_center()))
+    initCount = count
     # 一个格子时，空格数大于0
     minNum = minNum - 1
     clean_up(1)
+    gamer.delay(0.5)
+    count = len(gamer.find_all_empty(ghh.get_all_center()))
     # if not (count > minNum):
     #     clean_up(1)
     #     count = len(gamer.find_all_empty(ghh.get_all_center()))
@@ -161,6 +171,7 @@ def verify_clean(minNum = 1):
     if not (count > minNum):
         if useCoin:
             clean_up(2)
+            gamer.delay(0.5)
             count = len(gamer.find_all_empty(ghh.get_all_center()))
             logging.info(msh.send_simple_push(f"检测到棋盘满,剩余空格数{count}",f"提示：二级清理,剩余空格数{count}"))
         else:
@@ -168,6 +179,8 @@ def verify_clean(minNum = 1):
     if not (count > minNum):
         if useCoin:
             clean_up(3)
+            process_existed_orange()
+            gamer.delay(0.5)
             count = len(gamer.find_all_empty(ghh.get_all_center()))
             logging.info(msh.send_simple_push(f"检测到棋盘满,剩余空格数{count}",f"提示：三级清理,剩余空格数{count}"))
         else:
@@ -177,6 +190,11 @@ def verify_clean(minNum = 1):
         gamer.delay(1200)
         return False
     else:
+        # 如果清理过 save
+        if count > initCount:
+            gamer.home()
+            time.sleep(3)
+            gamer.find_pic_touch(rd.start_game)
         return True
 
 def verify_exit():
@@ -191,6 +209,9 @@ def verify_exit():
         return True
     else:
         return False
+
+# def verify_exit():
+#     return False
 
 # temp = ImageProc.get_color(rd.empty_blue_2,(64,64))
 # print("在设备{0}中，获取目标个数: {1}".format(gamer.deviceID, powerCol[0]))
