@@ -128,14 +128,15 @@ def process_collection(collection, merge_func):
 def find_item_counts(targetPic):
     return len(get_collection_unique_grid_positions(gamer.find_pic_all_list([targetPic]))[0])
 
-def find_board_items(targetPic, accuracy = st.accuracy):
+# TODO, find_pic_all_list需要支持cache
+def find_board_items(targetPic, accuracy = st.accuracy, cacheFlag = False):
     return get_collection_unique_grid_positions(gamer.find_pic_all_list([targetPic], accuracy))[0]
 
-def stable_find_board_items(targetPic, retryCount = 1, accuracy = st.accuracy):
+def stable_find_board_items(targetPic, retryCount = 1, accuracy = st.accuracy, cacheFlag = False):
     # gamer.delay(1.5)
     resourceList = []
     for i in range(retryCount):
-        resourceList = find_board_items(targetPic, accuracy)
+        resourceList = find_board_items(targetPic, accuracy, cacheFlag)
         # gamer.delay(1)
         if len(resourceList) > 0:
             break
@@ -167,4 +168,125 @@ def calculate_total_weight(collection):
 
 def get_total_weight(collection, accuracy = st.accuracy):
     return calculate_total_weight(get_collection_unique_grid_positions(gamer.find_pic_all_list(collection, accuracy)))
+
+
+
+# TODO: 新的清理棋盘逻辑
+# 对每个待处理LIST的第一个元素进行扫描，如果发现长度大于2则合成
+# 返回合成的index位置，用于进一步对整个list进行清理
+# 如果有orange因此被合成，进行完整orange逻辑
+
+
+# def process_collection(collection, merge_func):
+#     """
+#     处理嵌套列表集合，按新规则合并并传递元素
+#     :param collection: 顺序排列的列表集合（原地修改）
+#     :param merge_func: 合并函数，返回两个元素中的前者
+#     :return: 总合并操作次数
+#     """
+#     logging.basicConfig(level=logging.INFO,
+#                        format='%(asctime)s - %(levelname)s: %(message)s')
+#     total_merges = 0
+
+#     for list_idx in range(len(collection)):
+#         current_list = collection[list_idx]
+        
+#         # 跳过无效列表记录
+#         if len(current_list) < 2:
+#             status = "empty" if not current_list else "single-element"
+#             logging.info(f"List {list_idx} ({status}) skipped")
+#             continue
+
+#         merged_results = []
+#         # 持续处理直到剩余元素不足两个
+#         while len(current_list) >= 2:
+#             # 总是取出前两个元素
+#             a = current_list.pop(0)
+#             b = current_list.pop(0)
+#             merged_results.append(merge_func(a, b))
+#             total_merges += 1
+#             gamer.delay(0.1)
+#             # 实时日志
+#             logging.debug(f"Merged ({a}, {b}) in list {list_idx}")
+
+#         # 将结果传递到下一层（如果有）
+#         if list_idx < len(collection) - 1:
+#             next_list = collection[list_idx+1]
+#             next_list.extend(merged_results)
+#             logging.info(f"Added {len(merged_results)} elements to list {list_idx+1}")
+
+#     # 最终统计输出
+#     logging.info(f"TOTAL MERGE OPERATIONS: {total_merges}")
+#     return total_merges
+
+# def clean_up(type):
+#     if type == 1:
+#         morning_clean()
+#         process_existed(targetListCoin, True)
+#         #temp
+#         process_existed(targetListPower, True)
+#         process_existed_orange()
+#         # process_existed(targetListStone)
+#         # gamer.find_pic_double_touch(rd.stone_4)
+
+#         # process_existed(targetListBlue)
+#         gamer.delay(1)
+#     elif type == 2: 
+#         clean_up(1)
+#         # process_existed(targetListFloat)
+#         gamer.delay(1)
+#         gamer.find_pic_double_touch(rd.coin_new_5)
+#         gamer.find_pic_double_touch(rd.coin_new_4)
+#         # gamer.find_pic_double_touch(rd.float_4)
+#     else:
+#         clean_up(2)
+#         # gamer.find_pic_double_touch(rd.icon_4)
+#         gamer.find_pic_double_touch(rd.coin_new_3)
+#         gamer.find_pic_double_touch(rd.coin_new_2)
+#         gamer.find_pic_double_touch(rd.coin_new_1)
+
+# def verify_clean(minNum = 1):
+#     count = len(gamer.find_all_empty(ghh.get_all_center()))
+#     initCount = count
+#     # 一个格子时，空格数大于0
+#     minNum = minNum - 1
+#     clean_up(1)
+#     gamer.delay(0.5)
+#     count = len(gamer.find_all_empty(ghh.get_all_center()))
+#     # if not (count > minNum):
+#     #     clean_up(1)
+#     #     count = len(gamer.find_all_empty(ghh.get_all_center()))
+#     #     logging.info(msh.send_simple_push(f"检测到棋盘满,剩余空格数{count}",f"提示：一级清理,剩余空格数{count}"))
+#     if not (count > minNum):
+#         if useCoin:
+#             clean_up(2)
+#             gamer.delay(0.5)
+#             count = len(gamer.find_all_empty(ghh.get_all_center()))
+#             logging.info(msh.send_simple_push(f"检测到棋盘满,剩余空格数{count}",f"提示：二级清理,剩余空格数{count}"))
+#         else:
+#             logging.info(msh.send_simple_push(f"检测到棋盘满,剩余空格数{count}",f"提示：二级清理,不能使用金币，暂停"))
+#     if not (count > minNum):
+#         if useCoin:
+#             clean_up(3)
+#             process_existed_orange()
+#             # process_existed_orange()
+#             # process_existed_orange()
+#             # process_existed_orange()
+#             # process_existed_orange()
+#             gamer.delay(0.5)
+#             count = len(gamer.find_all_empty(ghh.get_all_center()))
+#             logging.info(msh.send_simple_push(f"检测到棋盘满,剩余空格数{count}",f"提示：三级清理,剩余空格数{count}"))
+#         else:
+#             logging.info(msh.send_simple_push(f"检测到棋盘满,剩余空格数{count}",f"提示：三级清理,不能使用金币，暂停"))
+#     if not (count > minNum):
+#         gamer.collect_log_image("清理棋盘失败")
+#         gamer.delay(1200)
+#         return False
+#     else:
+#         # 如果清理过 save
+#         if count > initCount:
+#             gamer.home()
+#             time.sleep(3)
+#             gamer.find_pic_touch(rd.start_game)
+#         return True
     

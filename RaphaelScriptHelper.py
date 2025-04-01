@@ -139,8 +139,9 @@ def find_pic_all_list_cache(*args):
     leftTopPos = ImageProc.locate_all_center_list(st.cache_path + "screenCap.png", args[0], st.accuracy)
     return leftTopPos
 
-def find_all_empty(pointList):
-    ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")
+def find_all_empty(pointList, cacheFlag = False):
+    if not cacheFlag:
+        ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")
     time.sleep(0.1)
     resultPointList = ImageProc.find_matching_coordinates(st.cache_path + "screenCap.png", pointList, st.empty_colors)
     return resultPointList
@@ -319,6 +320,14 @@ def run_bluestacks_instance(instance_name):
             print("错误信息:", result.stderr)
     except Exception as e:
         print(f"运行命令时发生异常: {e}")
+
+# def verify_pic_strict(target, cacheFlag = False, accuracy = st.accuracy):
+#     if not cacheFlag:
+#         ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")
+#     time.sleep(0.1)
+#     leftTopPos = ImageProc.locate(st.cache_path + "screenCap.png", target, accuracy)
+#     if (leftTopPos): return True
+#     else: return False
 
 # try_screen_capture() as ADBHelper.screenCapture(deviceID, st.cache_path + "screenCap.png")
 # def try_screen_capture():

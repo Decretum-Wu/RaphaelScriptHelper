@@ -156,17 +156,15 @@ def verify_clean(minNum = 1):
     if not gamer.verify_pic_strict(rd.back_from_board, True):
         gamer.collect_log_image("清理前不正常")
         raise Exception(f'错误：进入棋盘不成功')
-    count = len(gamer.find_all_empty(ghh.get_all_center()))
+    count = len(gamer.find_all_empty(ghh.get_all_center(), True))
     initCount = count
     # 一个格子时，空格数大于0
     minNum = minNum - 1
-    clean_up(1)
-    gamer.delay(0.5)
-    count = len(gamer.find_all_empty(ghh.get_all_center()))
-    # if not (count > minNum):
-    #     clean_up(1)
-    #     count = len(gamer.find_all_empty(ghh.get_all_center()))
-    #     logging.info(msh.send_simple_push(f"检测到棋盘满,剩余空格数{count}",f"提示：一级清理,剩余空格数{count}"))
+    if not (count > minNum):
+        clean_up(1)
+        gamer.delay(0.5)
+        count = len(gamer.find_all_empty(ghh.get_all_center()))
+        logging.info(msh.send_simple_push(f"检测到棋盘满,剩余空格数{count}",f"提示：一级清理,剩余空格数{count}"))
     if not (count > minNum):
         if useCoin:
             clean_up(2)
@@ -185,8 +183,11 @@ def verify_clean(minNum = 1):
         else:
             logging.info(msh.send_simple_push(f"检测到棋盘满,剩余空格数{count}",f"提示：三级清理,不能使用金币，暂停"))
     if not (count > minNum):
+        if not gamer.verify_pic_strict(rd.back_from_board, True):
+            gamer.collect_log_image("清理时不正常")
+            raise Exception(f'错误：进入棋盘不成功')
         gamer.collect_log_image("清理棋盘失败")
-        gamer.delay(1200)
+        gamer.delay(600)
         return False
     else:
         # 如果清理过 save

@@ -81,23 +81,33 @@ refreshCount = 0
 # card_1 = 2
 # daily_box_3 = 4
 targetStartNum = 4
-targetCount = 4
+targetCount = 2
+
+# 1 刷卡片
+cardFlag = False
+bagStep = 2
+bagTop = rd.card_4_bag
+# bagTagList = [rd.card_star_4, rd.card_star_5]
+bagTagList = []
+
+# 2 刷新完物品后继续刷体力
+roundFlag = False
+
+# 3 刷箱子
 getBoxFlag = True
-# 刷新完物品后继续刷体力
-roundFlag = True
 exitFlag = False
 # 物品未获取时保留图片
 collectImg = True
 # 体力目标
-tagAcc = 0.65
+tagAcc = 0.60
 itemImg = False
 
 # 贝壳
 itemPoint = ghh.get_center((1,5))
 tagList = targetListBeike
 stepLen = 2
-targetWeight = 4
-lastWeight = 512
+targetWeight = 3
+lastWeight = 2512
 # 128为10级
 # 单次直接刷2非常难，几乎不可能
 
@@ -119,7 +129,7 @@ lastWeight = 512
 
 targetList = [
     {"resourceItem": rd.card_1, "resourceAcc":0.55, "targetItem": rd.stone_4, "targetAcc":0.50, "mergeRequired": False, "consumeItem": rd.stone_4},
-    {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True, "consumeItem": rd.coin_new_5},
+    {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True},#, "consumeItem": rd.coin_new_5},
     {"resourceItem": rd.resource_blank, "resourceAcc":0.65, "targetItem": rd.coffee_tag_3, "targetItem2": rd.beard_tag_3,"targetAcc":0.65, "mergeRequired": True},
     {"resourceItem": rd.box_1, "resourceAcc":0.6, "targetItem": rd.power_4, "targetAcc":0.75, "mergeRequired": True},
     # {"resourceItem": rd.daily_box_3, "resourceAcc":0.55, "targetItem": rd.power_3, "targetItem2": rd.coin_new_3, "targetAcc":0.75,"mergeRequired": True},
@@ -180,9 +190,9 @@ def into_game(verifyIntoFlag = False):
                             continueFlag = False
                             break
                         elif verifyIntoFlag:
-                            time.sleep(10)
+                            time.sleep(15)
                         else:
-                            time.sleep(10)
+                            time.sleep(15)
                         # 始终未刷新，可能已经自动保存，则不做处理
                         if(gamer.verify_pic(rd.back_from_board)):
                             logging.info(f"正常刷新，5秒后依旧在棋盘内")
@@ -298,6 +308,180 @@ def set_acc_by_item(currentTarget):
     if currentTarget.get("resourceAcc"): resourceAcc = currentTarget.get("resourceAcc")
     if currentTarget.get("targetAcc"): targetAcc = currentTarget.get("targetAcc")
 
+def check_card_result(bagTagList = [rd.card_star_4, rd.card_star_5]):
+    # 验证新卡
+    doneFlag = False
+    countCard = 0
+    tagLen = len(bagTagList)
+    tagPointList = []
+    bagTagList.append(rd.card_new)
+    if gamer.verify_pic(rd.card_new):
+        # tagLen == 0，即接受任意新卡
+        if tagLen == 0:
+            doneFlag = True
+            print(f"提示：成功获取新卡, 任意")
+        else:
+            cardCollection = gamer.find_pic_all_list(bagTagList, 0.8)
+            for i in range(0,tagLen):
+                countCard += len(cardCollection[i])
+                if len(cardCollection[i]) > 0:
+                    tagPointList.append(cardCollection[i][0])
+            if countCard == 0:
+                print(f'错误：未能获取高级卡包位置')
+                raise Exception(f'错误：未能获取高级卡包位置')
+            
+            # if len(cardCollection[0]) == 0:
+            #     print(f"提示：未能获取新卡")
+
+            # topCardPoint = cardCollection[0][0]
+
+            for topCardPoint in tagPointList:
+                x, y = topCardPoint
+                for point in cardCollection[tagLen]:
+                    ex, ey = point
+                    if ex-x > 0 and ex-x < settings.cardMaxX and ey-y > 0 and ey-y < settings.cardMaxY:
+                        doneFlag = True
+                        print(f"提示：成功获取新卡")
+
+        # 若未成功
+        if not doneFlag:
+            print(f"提示：未能获取新卡")
+            # break and resume
+        else:
+            print(f"提示：成功获取新卡,待保存")
+            # save and coutinue
+    else:
+        print(f"提示：未能获取新卡")
+        doneFlag = False
+    return doneFlag
+
+def get_card(bagStep = 1, bagTop = rd.card_5, bagTagList = [rd.card_star_4, rd.card_star_5]):
+    point = ()
+    doneFlag = False
+    pos1, pos2 = rd.slide_to_card
+    gamer.slide(pos1, pos2)
+    gamer.delay(1.5)
+    point = gamer.find_pic(bagTop, True, 0.7, False)
+    if not point:
+        gamer.slide(pos1, pos2)
+        gamer.delay(1.5)
+    point = gamer.find_pic(bagTop, True, 0.6, False)
+    if point:
+        for i in range(0, bagStep):
+            gamer.touch(point)
+            gamer.delay(1)
+            gamer.touch(settings.empty_block)
+            gamer.delay(3)
+            # 验证新卡
+            if check_card_result(bagTagList):
+                doneFlag = True
+                print(f"提示：成功获取新卡")
+                break
+            elif i < bagStep -1:
+                # 如果失败且还有卡包，重新点击下个卡包
+                gamer.touch(settings.empty_block)
+                gamer.delay(3)
+    else:
+        logging.error(f"出现问题,找不到卡包")
+        # gamer.delay(3600)
+        msh.send_simple_push(f"错误内容",f"提示：出现问题,找不到卡包")
+        raise Exception(f'出现问题,找不到卡包')
+    return doneFlag
+
+def get_cards(targetCount = 1, collectImg = True):
+    global stayFlag, switchFlag, currentTarget, targetList, exitFlag, roundFlag
+    global bagStep, bagTop, bagTagList
+    tagCount = 0
+    roundCount = 1
+    errorCount = 0
+    refreshCount = 0
+    ADBHelper.connent(deviceID)
+    ADBHelper.connent(deviceID2)
+
+    if gho.verify_empty():
+        logging.info("测试：目前有空位")
+    while True:
+        if tagCount >= targetCount:
+            break
+        if gho.verify_exit():
+            exitFlag = True
+            break
+        try:
+            if not stayFlag:
+                into_game(True)
+            else:
+                stayFlag = False
+
+            if len(ADBHelper.getDevicesList()) < 2:
+                logging.info(msh.send_simple_push("目标列表为空","提示：重启出现问题，尝试恢复"))
+                errorCount += 1
+                if errorCount < 3:
+                    msh.send_simple_push(f"开始重启,错误次数{errorCount}",f"提示：执行{roundCount}次卡死，开始重启")
+                    restart_all()
+                    msh.send_simple_push(f"完成重启,错误次数{errorCount}",f"提示：执行{roundCount}次卡死，完成重启")
+                    pass
+                else:
+                    msh.send_simple_push(f"错误内容:{e}",f"提示：执行{roundCount}次跳出,未知错误")
+                    break
+                continue
+
+            if roundCount % 10 == 1:
+                logging.info(msh.send_simple_push("目标列表数量","提示：卡包运行第{0}轮开始".format(roundCount)))
+            # 核心获取逻辑
+            try:
+                gotFlag = get_card(bagStep, bagTop, bagTagList)
+            except Exception as e:
+                logging.error(f"错误内容:{e}")
+                msh.send_simple_push(f"错误内容:{e}",f"提示：执行{roundCount}次跳出,捕捉错误")
+                # 安全设置，当刷取中途报错时切换
+                if errorCount == 0:
+                    switch_device()
+                errorCount += 1
+                if errorCount < 10:
+                    msh.send_simple_push(f"开始重启,错误次数{errorCount}",f"提示：执行{roundCount}次卡死，开始重启")
+                    restart_all()
+                    msh.send_simple_push(f"完成重启,错误次数{errorCount}",f"提示：执行{roundCount}次卡死，完成重启")
+                    pass
+                else:
+                    msh.send_simple_push(f"错误内容:{e}",f"提示：执行{roundCount}次跳出,未知错误")
+                    break
+                continue
+            if gotFlag:
+                if collectImg:
+                    gamer.collect_log_image(f"第{roundCount}次-成功")
+                logging.info(msh.send_simple_push(f"卡包", f"提示：获得一个卡包,累计{tagCount}个"))
+                gamer.delay(3600)
+                save_current_device()
+                stayFlag = True
+                tagCount += 1
+            else:
+                # 舍弃现有结果
+                if collectImg:
+                    gamer.collect_log_image(f"第{roundCount}次-失败")
+                gamer.home()
+                refreshCount += 1
+                stayFlag = False
+                # 次设备重置结果
+                switch_device()
+                # 重置错误次数
+                errorCount = 0
+            roundCount += 1
+        except Exception as e:
+            logging.error(f"错误内容:{e}")
+            msh.send_simple_push(f"错误内容:{e}",f"提示：执行{roundCount}次跳出,捕捉错误")
+            errorCount += 1
+            if errorCount < 10:
+                msh.send_simple_push(f"开始重启,错误次数{errorCount}",f"提示：执行{roundCount}次卡死，开始重启")
+                restart_all()
+                msh.send_simple_push(f"完成重启,错误次数{errorCount}",f"提示：执行{roundCount}次卡死，完成重启")
+                pass
+            else:
+                msh.send_simple_push(f"错误内容:{e}",f"提示：执行{roundCount}次跳出,未知错误")
+                break
+            continue
+    logging.info(msh.send_simple_push("源列表为空","提示：完成执行"))
+    logging.info("完成执行")
+
 def get_general_items(refreshCount, targetStartNum, targetCount = 25, collectImg = False):
     global stayFlag, switchFlag, currentTarget, targetList, exitFlag, roundFlag
     tagCount = 0
@@ -348,6 +532,8 @@ def get_general_items(refreshCount, targetStartNum, targetCount = 25, collectImg
             
             # 0 初始清理
             if not gho.verify_clean(stepLen):
+                if gho.verify_exit():
+                    break
                 raise Exception(f'清理棋盘失败，未能使空格数量到达: {stepLen}')
             # 1 初始目标物数量
             if roundCount == 1:
@@ -527,7 +713,11 @@ def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeigh
             # 0 初始清理
             # 成功，若需要则合成
             gho.process_existed(tagList[:-1], True, tagAcc)
-            gho.verify_clean()
+
+            if not gho.verify_clean(stepLen):
+                if gho.verify_exit():
+                    break
+                raise Exception(f'清理棋盘失败，未能使空格数量到达: {stepLen}')
             if roundCount % 20 == 1:
                 gho.clean_up(1)
             # 1 初始目标物数量
@@ -651,7 +841,9 @@ def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeigh
     #     logging.info(msh.send_simple_push("结合执行","提示：完成一次结合执行"))
 
 if __name__ == "__main__":
-    if roundFlag:
+    if cardFlag:
+        get_cards()
+    elif roundFlag:
         while not exitFlag:
             get_general_items(refreshCount, targetStartNum, targetCount, collectImg)
             get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeight, itemImg)

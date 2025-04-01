@@ -8,6 +8,8 @@ def locate(source, wanted, accuracy=0.90):
     result = cv2.matchTemplate(screen_cv2, wanted_cv2, cv2.TM_CCOEFF_NORMED)
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
 
+    print(f"寻找目标图片{wanted}最高相似度：{max_val}")
+
     if max_val >= accuracy:
         return max_loc
     else:
@@ -101,6 +103,8 @@ def locate_all_center_list(source, wanted_list, accuracy=0.90):
         # 执行模板匹配
         result = cv2.matchTemplate(screen_cv2, wanted_cv2, cv2.TM_CCOEFF_NORMED)
         location = numpy.where(result >= accuracy)
+
+        # print(f"wanted:{wanted},location:{location}")
 
         # 记录上一个点的坐标，用于去除过于接近的重复点
         ex, ey = 0, 0

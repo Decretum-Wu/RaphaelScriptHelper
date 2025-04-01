@@ -33,8 +33,8 @@ slideMinVer = 200
 slideMaxVer = 300
 
 # blue 142-184-241
-# empty_color_1 = (241, 184, 142)
-# empty_color_2 = (237, 179, 135)
+empty_color_1 = (241, 184, 142)
+empty_color_2 = (237, 179, 135)
 
 # brown
 # empty_color_1 = (67, 135, 202)
@@ -45,8 +45,8 @@ slideMaxVer = 300
 # empty_color_2 = (184, 182, 86)
 
 # deep green
-empty_color_1 =  (114, 139, 66)
-empty_color_2 = (120, 146, 74)
+# empty_color_1 =  (114, 139, 66)
+# empty_color_2 = (120, 146, 74)
 
 
 empty_colors = [empty_color_1, empty_color_2]
@@ -103,3 +103,6 @@ eventIntoGameList = [
 ]
 
 event_empty_colors = [event_empty_color_1, event_empty_color_2]
+
+cardMaxX = 180
+cardMaxY = 70

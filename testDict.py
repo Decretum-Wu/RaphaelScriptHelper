@@ -195,3 +195,6 @@ event_3_at = "./img/event_3_at.png"
 event_3_into = "./img/event_3_into.png"
 stone_0 = "./img/stone_0.png"
 stone_1 = "./img/stone_1.png"
+slide_to_card = ((215, 155), (812, 148))
+item_list_area = ((45, 345), (140, 442))
+card_2_bag = "./img/card_2_bag.png"
