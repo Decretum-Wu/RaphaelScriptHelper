@@ -41,7 +41,7 @@ targetListBeike = [
     # rd.beike_2,
     rd.beike_3,
     rd.beike_4,
-    rd.beike_5,
+    rd.beike_5_1,
     rd.beike_6,
     rd.beike_7,
     rd.beike_8,
@@ -187,6 +187,8 @@ def verify_clean(minNum = 1):
             gamer.collect_log_image("清理时不正常")
             raise Exception(f'错误：进入棋盘不成功')
         gamer.collect_log_image("清理棋盘失败")
+        if verify_exit():
+            raise Exception(f'错误：时间需要退出')
         gamer.delay(600)
         return False
     else:
@@ -200,7 +202,8 @@ def verify_clean(minNum = 1):
 def verify_exit():
     # return False
     nowTime = datetime.datetime.now().time()
-    if nowTime > datetime.time(7, 54) and nowTime < datetime.time(8, 55): 
+    # if nowTime > datetime.time(4, 14) and nowTime < datetime.time(8, 55): 
+    if nowTime > datetime.time(7, 44) and nowTime < datetime.time(8, 55): 
         gamer.collect_log_image()
         time.sleep(3)
         gamer.home()
@@ -301,6 +304,7 @@ def clean_up(type):
     else:
         clean_up(2)
         # gamer.find_pic_double_touch(rd.icon_4)
+        process_existed(targetListBeike)
         gamer.find_pic_double_touch(rd.coin_new_3)
         gamer.find_pic_double_touch(rd.coin_new_2)
         gamer.find_pic_double_touch(rd.coin_new_1)
@@ -406,7 +410,7 @@ def solve_breaker():
 if __name__ == "__main__":
     # settings.accuracy = 0.75
     # 对多贝壳订单临时改进
-    settings.accuracy = 0.70
+    # settings.accuracy = 0.70
     # process_existed(targetListBeike)
     # round_all()
     # 设置定时任务

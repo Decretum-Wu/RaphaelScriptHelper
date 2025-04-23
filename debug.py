@@ -36,7 +36,8 @@ cardMaxX = 180
 cardMaxY = 70
 stayFlag = True
 
-settings.accuracy = 0.75
+settings.accuracy = 0.85
+targetStartNum = 0
 #正确率0.55时，bubble难以判断
 #正确率0.6时，为最佳经验值
 
@@ -314,6 +315,7 @@ targetListTag = [
     rd.event_2_tag_2,
 ]
 
+# 测试，连接
 ADBHelper.connent(settings.deviceList[0]["deviceId"])
 ADBHelper.connent(settings.deviceList[1]["deviceId"])
 
@@ -372,4 +374,20 @@ targetListTemp = settings.eventTagList
 # temp = gheh.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListTemp, 0.75))
 # print("temp:{0}".format(temp))
 
-restart_all()
+# restart_all()
+# for i in range(1,20):
+#     temp = gamer.find_pic(rd.card_5, True, 0.7, False)
+
+targetList = [
+    {"targetItem": rd.event_3_b_tag_1, "targetAcc":0.85, "mergeRequired": True},
+    # {"targetItem": settings.eventTagList[0], "targetAcc":0.85, "mergeRequired": True},
+]
+currentTarget = targetList[targetStartNum]
+
+# count = len(gheh.stable_find_board_items(currentTarget["targetItem"], 2))
+
+count = gheh.stable_find_board_items_read(currentTarget["targetItem"], 2, 0.85)
+# count = gheh.stable_find_board_items_read(currentTarget["targetItem"], 2)
+
+
+print("temp:{0}".format(count))

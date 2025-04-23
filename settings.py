@@ -1,7 +1,7 @@
 import testDict as rd
 deviceList = [
     {"deviceId": '127.0.0.1:5645', "window_title": 'BlueStacks App Main', "instance_title": 'Pie64_9'},
-    {"deviceId": '127.0.0.1:5675', "window_title": 'BlueStacks App Save2', "instance_title": 'Pie64_12'},
+    {"deviceId": '127.0.0.1:5735', "window_title": 'BlueStacks App Save2', "instance_title": 'Pie64_18'},
 ]
 
 targetListOrangeTree = rd.orange_tree_list1
@@ -33,20 +33,24 @@ slideMinVer = 200
 slideMaxVer = 300
 
 # blue 142-184-241
-empty_color_1 = (241, 184, 142)
-empty_color_2 = (237, 179, 135)
+# empty_color_1 = (241, 184, 142)
+# empty_color_2 = (237, 179, 135)
 
 # brown
 # empty_color_1 = (67, 135, 202)
 # empty_color_2 = (55, 123, 191)
 
-# green
-# empty_color_1 =  (185, 183, 88)
-# empty_color_2 = (184, 182, 86)
+# green - general Friday
+empty_color_1 =  (185, 183, 88)
+empty_color_2 = (184, 182, 86)
 
 # deep green
 # empty_color_1 =  (114, 139, 66)
 # empty_color_2 = (120, 146, 74)
+
+# Spring green
+empty_color_1 =  (96, 181, 125)
+empty_color_2 = (94, 176, 118)
 
 
 empty_colors = [empty_color_1, empty_color_2]
@@ -77,29 +81,29 @@ event_x_line = 6
 event_y_line = 8
 
 eventItemList = [
-    rd.event_3_item_1,
-    rd.event_3_item_2,
-    rd.event_3_item_3,
-    rd.event_3_item_4,
-    rd.event_3_item_5,
-    rd.event_3_item_6,
-    rd.event_3_item_7,
-    rd.event_3_item_8,
-    # rd.event_3_item_9,
+    rd.event_3_a_item_1,
+    rd.event_3_a_item_2,
+    rd.event_3_a_item_3,
+    rd.event_3_a_item_4,
+    rd.event_3_a_item_5,
+    rd.event_3_a_item_6,
+    rd.event_3_a_item_7,
+    rd.event_3_a_item_8,
+    # rd.event_3_a_item_9,
 ]
 
 eventTagList = [
-    rd.event_3_tag_1,
-    rd.event_3_tag_2,
-    rd.event_3_tag_3,
-    rd.event_3_tag_4,
+    rd.event_3_a_tag_1,
+    rd.event_3_a_tag_2,
+    rd.event_3_a_tag_3,
+    rd.event_3_a_tag_4,
 ]
 
 eventIntoGameList = [
     rd.start_game,
     rd.cloud_button,
-    rd.event_3_into,
-    rd.event_3_at
+    rd.event_3_a_into,
+    rd.event_3_a_at
 ]
 
 event_empty_colors = [event_empty_color_1, event_empty_color_2]

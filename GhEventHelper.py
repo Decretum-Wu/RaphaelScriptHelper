@@ -119,6 +119,19 @@ def find_item_counts(targetPic):
 def find_board_items(targetPic, accuracy = st.accuracy):
     return get_collection_unique_grid_positions(gamer.find_pic_all_list([targetPic], accuracy))[0]
 
+def find_board_items_read(targetPic, accuracy = st.accuracy):
+    return get_collection_unique_grid_positions_read(gamer.find_pic_all_list([targetPic], accuracy))[0]
+
+def stable_find_board_items_read(targetPic, retryCount = 1, accuracy = st.accuracy):
+    # gamer.delay(1.5)
+    resourceList = []
+    for i in range(retryCount):
+        resourceList = find_board_items_read(targetPic, accuracy)
+        # gamer.delay(1)
+        if len(resourceList) > 0:
+            break
+    return resourceList
+
 def stable_find_board_items(targetPic, retryCount = 1, accuracy = st.accuracy):
     # gamer.delay(1.5)
     resourceList = []

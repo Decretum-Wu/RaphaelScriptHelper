@@ -24,8 +24,8 @@ class Direction(Enum):
 intoGameList = [
     rd.start_game,
     rd.cloud_button,
-    rd.event_2_into,
-    rd.event_2_at
+    rd.event_2_a_into,
+    rd.event_2_a_at
     ]
 deviceID = settings.deviceList[0]["deviceId"]
 deviceID2 = settings.deviceList[1]["deviceId"]
@@ -64,11 +64,11 @@ targetList = [
 currentTarget = targetList[targetStartNum]
 
 targetListCoin = [
-    rd.coin_0,
-    rd.coin_new_1,
-    rd.coin_new_2,
-    rd.coin_new_3,
-    rd.coin_new_4
+    rd.event_2_coin_0,
+    rd.event_2_coin_1,
+    rd.event_2_coin_2,
+    rd.event_2_coin_3,
+    rd.event_2_coin_4
 ]
 
 targetListPower = [
@@ -79,20 +79,20 @@ targetListPower = [
 ]
 
 targetListItem = [
-    rd.event_2_item_1,
-    rd.event_2_item_2,
-    rd.event_2_item_3,
-    rd.event_2_item_4,
-    rd.event_2_item_5,
-    rd.event_2_item_6,
-    rd.event_2_item_7,
+    rd.event_2_a_item_1,
+    rd.event_2_a_item_2,
+    rd.event_2_a_item_3,
+    rd.event_2_a_item_4,
+    rd.event_2_a_item_5,
+    rd.event_2_a_item_6,
+    rd.event_2_a_item_7,
 ]
 
 targetListTag = [
-    rd.event_2_tag_1,
-    rd.event_2_tag_2,
-    rd.event_2_tag_3,
-    rd.event_2_tag_4,
+    rd.event_2_a_tag_1,
+    rd.event_2_a_tag_2,
+    rd.event_2_a_tag_3,
+    rd.event_2_a_tag_4,
 ]
 
 def process_existed(targetList, acc, cacheFlag = False):
@@ -143,7 +143,7 @@ def into_game(verifyIntoFlag = False):
                         time.sleep(3)
                         break
                     # 进入棋盘后无需额外操作
-                    case rd.event_2_into: 
+                    case rd.event_2_a_into: 
                         gamer.touch(totalDict[key][0])
                         # 如果不需要确认已进入，则直接跳出，否则依赖back_from_board跳出
                         # if not verifyIntoFlag:
@@ -155,9 +155,9 @@ def into_game(verifyIntoFlag = False):
                         # break
                         time.sleep(2)
                     # back_from_board
-                    case rd.event_2_at: 
+                    case rd.event_2_a_at: 
                         time.sleep(5)
-                        if not gamer.verify_pic(rd.event_2_at):
+                        if not gamer.verify_pic(rd.event_2_a_at):
                             logging.info("重试进入活动")
                             msh.send_simple_push(f"错误内容",f"提示：跳出,重试进入活动")
                             break

@@ -19,10 +19,9 @@ class Direction(Enum):
     LEFT = 2
     RIGHT = 3
 targetListBeike = [
-    # rd.beike_2,
-    rd.beike_3,
+    # rd.beike_3,
     rd.beike_4,
-    rd.beike_5,
+    rd.beike_5_1,
     rd.beike_6,
     rd.beike_7,
     rd.beike_8,
@@ -80,8 +79,8 @@ gho.usePower = False
 refreshCount = 0
 # card_1 = 2
 # daily_box_3 = 4
-targetStartNum = 4
-targetCount = 2
+targetStartNum = 2
+targetCount = 3
 
 # 1 刷卡片
 cardFlag = False
@@ -105,9 +104,10 @@ itemImg = False
 # 贝壳
 itemPoint = ghh.get_center((1,5))
 tagList = targetListBeike
+tagAcc = 0.65
 stepLen = 2
 targetWeight = 3
-lastWeight = 2512
+lastWeight = 1312
 # 128为10级
 # 单次直接刷2非常难，几乎不可能
 
@@ -116,7 +116,7 @@ lastWeight = 2512
 # tagList =[rd.fish_source_3, rd.fish_resource_4, rd.fish_source_5]
 # stepLen = 1
 # targetWeight = 2
-# lastWeight = 15
+# lastWeight = 23
 
 # 鱼(产物)
 # itemPoint = ()
@@ -129,11 +129,12 @@ lastWeight = 2512
 
 targetList = [
     {"resourceItem": rd.card_1, "resourceAcc":0.55, "targetItem": rd.stone_4, "targetAcc":0.50, "mergeRequired": False, "consumeItem": rd.stone_4},
-    {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True},#, "consumeItem": rd.coin_new_5},
-    {"resourceItem": rd.resource_blank, "resourceAcc":0.65, "targetItem": rd.coffee_tag_3, "targetItem2": rd.beard_tag_3,"targetAcc":0.65, "mergeRequired": True},
-    {"resourceItem": rd.box_1, "resourceAcc":0.6, "targetItem": rd.power_4, "targetAcc":0.75, "mergeRequired": True},
+        {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True, "consumeItem": rd.coin_new_5},
+    # {"resourceItem": rd.resource_blank, "resourceAcc":0.65, "targetItem": rd.coffee_tag_3, "targetItem2": rd.beard_tag_3,"targetAcc":0.65, "mergeRequired": True},
+    {"resourceItem": rd.box_1, "resourceAcc":0.6, "targetItem": rd.power_4, "targetAcc":0.75, "mergeRequired": True, "consumeItem": rd.power_5},
+        # {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True},#, "consumeItem": rd.coin_new_5},
     # {"resourceItem": rd.daily_box_3, "resourceAcc":0.55, "targetItem": rd.power_3, "targetItem2": rd.coin_new_3, "targetAcc":0.75,"mergeRequired": True},
-    {"resourceItem": rd.daily_box_3, "resourceAcc":0.55, "targetItem": rd.power_3, "targetAcc":0.75,"mergeRequired": True},
+    # {"resourceItem": rd.daily_box_3, "resourceAcc":0.55, "targetItem": rd.power_3, "targetAcc":0.75,"mergeRequired": True},
 ]
 # "targetAcc":0.55 在无订单时容易误判，可以用0.65
     # {"resourceItem": rd.resource_blank, "resourceAcc":0.65, "targetItem": rd.coffee_tag_3, "targetItem2": rd.beard_tag_3,"targetAcc":0.55, "mergeRequired": True},
@@ -585,6 +586,7 @@ def get_general_items(refreshCount, targetStartNum, targetCount = 25, collectImg
             count = len(ghh.stable_find_board_items(currentTarget.get("targetItem"), retryNumMin, targetAcc))
             if currentTarget.get("targetItem2"): 
                 count += len(ghh.stable_find_board_items(currentTarget.get("targetItem2"), retryNumMin, targetAcc))
+            logging.info("在第{0}次执行中，目标物起始数量: {1}".format(roundCount, count))
             # 3 操作获取新元素[重要]，操作时若报错，则使用另一个记录
             try:
                 # 双击一次
@@ -601,6 +603,7 @@ def get_general_items(refreshCount, targetStartNum, targetCount = 25, collectImg
                 if roundCount % 5 == 0:
                     logging.info(msh.send_simple_push("在第{0}次执行中，获取列表: {1}".format(roundCount, tempList),f"提示：完成第{roundCount}次执行"))
                 logging.info("在第{0}次执行中，目标物列表: {1}".format(roundCount, tempList))
+                logging.info("在第{0}次执行中，目标物执行后数量: {1}".format(roundCount, countNow))
             except Exception as e:
                 logging.error(f"错误内容:{e}")
                 msh.send_simple_push(f"错误内容:{e}",f"提示：执行{roundCount}次跳出,捕捉错误")
@@ -627,6 +630,7 @@ def get_general_items(refreshCount, targetStartNum, targetCount = 25, collectImg
                     if currentTarget.get("targetItem2"): 
                         simple_merge(currentTarget.get("targetItem2"), currentTarget.get("targetAcc"))
                 if currentTarget.get("consumeItem"):
+                    gamer.delay(1)
                     gamer.find_pic_double_touch(currentTarget.get("consumeItem"), resourceAcc)
                 gamer.delay(2)
                 count = len(ghh.find_board_items(currentTarget.get("targetItem")))
@@ -763,7 +767,7 @@ def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeigh
                 # 防止太快使用体力瓶
                 if roundCount - lastPowerCount < (30 // stepLen):
                     logging.info(msh.send_simple_push("在第{0}次执行中，反复卡顿导致退出，当前计数：{1}, 目标物 {2}".format(roundCount, count, tagList),f"错误：第{roundCount}次执行因卡顿退出"))
-                    break
+                    raise Exception(f'使用体力后太快卡顿，尝试重启解决')
                 # 简单处理 本地使用体力瓶，并保存
                 elif settings.usePower and gamer.find_pic_double_touch(rd.power_5, 0.6):
                     # 分支 成功
@@ -797,7 +801,7 @@ def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeigh
             if countNow >= count + targetWeight:
                 count = countNow
                 # 成功，若需要则合成
-                gho.process_existed(tagList[:-1], True, tagAcc)
+                gho.process_existed(tagList[:-1], False, tagAcc)
                 # 后续处理
                 save_current_device()
                 stayFlag = True
@@ -848,6 +852,6 @@ if __name__ == "__main__":
             get_general_items(refreshCount, targetStartNum, targetCount, collectImg)
             get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeight, itemImg)
     elif getBoxFlag:
-        get_general_items(refreshCount, targetStartNum)
+        get_general_items(refreshCount, targetStartNum, 99, collectImg)
     else:
         get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeight, itemImg)

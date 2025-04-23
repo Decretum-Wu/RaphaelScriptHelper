@@ -5,7 +5,7 @@ import settings
 import pyautogui
 import time
 import GhHelper as ghh
-import GhEventHelper as gheh
+import GhEventHelper_2 as gheh
 import ImageProc
 import logging
 import messageHelper as msh
@@ -15,30 +15,26 @@ import concurrent.futures
 import datetime
 from enum import Enum
 
-# 挖矿专用，只需改动settings
-
 class Direction(Enum):
     UP = 0
     DOWN = 1
     LEFT = 2
     RIGHT = 3
 
-class IntoGameEnum(Enum):
-    START = settings.eventIntoGameList[0]
-    CLOUD = settings.eventIntoGameList[1]
-    INTO = settings.eventIntoGameList[2]
-    AT = settings.eventIntoGameList[3]
-
-intoGameList = settings.eventIntoGameList
+intoGameList = [
+    rd.start_game,
+    rd.cloud_button,
+    rd.event_2_into,
+    rd.event_2_at
+    ]
 deviceID = settings.deviceList[0]["deviceId"]
 deviceID2 = settings.deviceList[1]["deviceId"]
-resourcePoint = settings.event_first_block
-
 gamer.deviceID = deviceID
 errorCount = 0
 roundCount = 1
 refreshCount = 1
 tagCount = 0
+point = settings.event_first_block
 settings.accuracy = 0.75
 stayFlag = False
 retryNum = 1
@@ -60,11 +56,10 @@ refreshCount = 1
 # card_1 = 2
 # daily_box_3 = 4
 targetStartNum = 0
-totalCount = 14
-failedCount = 0
+totalCount = 10
 
 targetList = [
-    {"targetItem": settings.eventTagList[0], "targetAcc":0.85, "mergeRequired": True},
+    {"resourceItem": rd.event_2_tag_1, "resourceAcc":0.75, "targetItem": rd.event_2_tag_1, "targetAcc":0.75, "mergeRequired": True},
 ]
 currentTarget = targetList[targetStartNum]
 
@@ -83,15 +78,22 @@ targetListPower = [
     rd.power_4
 ]
 
-targetListStone = [
-    rd.stone_0,
-    rd.stone_1,
-    rd.stone_2,
-    rd.stone_3
+targetListItem = [
+    rd.event_2_item_1,
+    rd.event_2_item_2,
+    rd.event_2_item_3,
+    rd.event_2_item_4,
+    rd.event_2_item_5,
+    rd.event_2_item_6,
+    rd.event_2_item_7,
 ]
-targetListItem = settings.eventItemList
 
-targetListTag = settings.eventTagList
+targetListTag = [
+    rd.event_2_tag_1,
+    rd.event_2_tag_2,
+    rd.event_2_tag_3,
+    rd.event_2_tag_4,
+]
 
 def process_existed(targetList, acc, cacheFlag = False):
     slideCount = 1
@@ -113,22 +115,14 @@ def process_existed(targetList, acc, cacheFlag = False):
 def clean_event():
     gamer.screenCap()
     process_existed(targetListItem, 0.75, True)
-    process_existed(targetListCoin, 0.60)
     gamer.screenCap()
-    # 需要调整目标物合成灵敏度0.85-0.75间
-    process_existed(targetListTag, 0.85, True)
-
-    process_existed(targetListCoin, 0.60, True)
+    process_existed(targetListTag, 0.75, True)
+    process_existed(targetListCoin, 0.50, True)
     # process_existed(targetListPower, 0.775, True)
     process_existed(targetListPower, 0.775, True)
-    process_existed(targetListStone, 0.60, True)
-    # gamer.find_pic_touch(rd.coin_new_5)
-    # gamer.find_pic_double_touch(rd.stone_4, 0.7, True)
-    # gamer.find_pic_double_touch(rd.coin_new_5, 0.6, True)
-    # gamer.find_pic_double_touch(rd.power_5, 0.6, True)
+    # gamer.find_pic_double_touch(rd.coin_new_5)
 
 def into_game(verifyIntoFlag = False):
-    global intoGameList
     continueFlag = True
     doneIntoFlag = False
     retryCount = 0
@@ -149,15 +143,21 @@ def into_game(verifyIntoFlag = False):
                         time.sleep(3)
                         break
                     # 进入棋盘后无需额外操作
-                    case IntoGameEnum.INTO.value: 
+                    case rd.event_2_into: 
                         gamer.touch(totalDict[key][0])
-                        # time.sleep(1)
+                        # 如果不需要确认已进入，则直接跳出，否则依赖back_from_board跳出
+                        # if not verifyIntoFlag:
+                        #     continueFlag = False
+                        # else:
+                        #     #防止截图过快导致的后续问题
+                        #     doneIntoFlag = True
+                        #     time.sleep(2)
+                        # break
+                        time.sleep(2)
                     # back_from_board
-                    case IntoGameEnum.AT.value: 
-                        # time.sleep(5)
-                        if retryCount < 5:
-                            time.sleep(5)
-                        if not gamer.verify_pic(IntoGameEnum.AT.value):
+                    case rd.event_2_at: 
+                        time.sleep(5)
+                        if not gamer.verify_pic(rd.event_2_at):
                             logging.info("重试进入活动")
                             msh.send_simple_push(f"错误内容",f"提示：跳出,重试进入活动")
                             break
@@ -196,34 +196,21 @@ def into_game(verifyIntoFlag = False):
         if retryCount % 30 == 0 and continueFlag:
             # 30次尝试一次解决卡顿
             msh.send_simple_push(f"retryCount 为{retryCount}","错误：已经卡死,试图解决卡顿")
-            gamer.back()
+            gamer.touch(rd.first_screen_close_1)
             time.sleep(1)
-            # gamer.touch(rd.first_screen_close_1)
-            # time.sleep(1)
-            # gamer.touch(rd.first_screen_close_2)
-            # time.sleep(5)
-
-            if gamer.verify_pic(IntoGameEnum.INTO.value):
+            gamer.touch(rd.first_screen_close_2)
+            time.sleep(5)
+            if gamer.verify_pic(rd.into_board):
                 msh.send_simple_push(f"retryCount 为{retryCount}","成功：成功解决卡顿")
                 # 首屏问题一般为礼包，关闭后需要保存
                 gamer.home()
                 time.sleep(3)  # 等待窗口激活
-                gamer.find_pic_touch(IntoGameEnum.START.value)
+                gamer.find_pic_touch(rd.start_game)
                 time.sleep(5)  # 等待窗口激活
             else:
-                gamer.back()
-                time.sleep(1)
-                if gamer.verify_pic(IntoGameEnum.INTO.value):
-                    msh.send_simple_push(f"retryCount 为{retryCount}","成功：成功解决卡顿")
-                    # 首屏问题一般为礼包，关闭后需要保存
-                    gamer.home()
-                    time.sleep(3)  # 等待窗口激活
-                    gamer.find_pic_touch(IntoGameEnum.START.value)
-                    time.sleep(5)  # 等待窗口激活
-                else:
-                    msh.send_simple_push(f"retryCount 为{retryCount}","错误：卡顿未能解决，尝试重启")
-                    gamer.collect_log_image()
-                    raise Exception(f'错误：卡顿未能解决，尝试重启，retryCount 为{retryCount}')
+                msh.send_simple_push(f"retryCount 为{retryCount}","错误：卡顿未能解决，尝试重启")
+                gamer.collect_log_image()
+                raise Exception(f'错误：卡顿未能解决，尝试重启，retryCount 为{retryCount}')
 
 def switch_device():
     if(gamer.deviceID == deviceID2): gamer.deviceID = deviceID
@@ -237,7 +224,7 @@ def restart_all():
     # 首次点击容易失败，重复点击更安全
     gamer.stop_process_by_window_title(settings.deviceList[0]["window_title"])
     gamer.stop_process_by_window_title(settings.deviceList[1]["window_title"])
-    gamer.delay(25)
+    gamer.delay(10)
     gamer.run_bluestacks_instance(settings.deviceList[0]["instance_title"])
     gamer.run_bluestacks_instance(settings.deviceList[1]["instance_title"])
     gamer.delay(35)
@@ -379,45 +366,41 @@ if __name__ == "__main__":
                     break
                 break
 
-            # 清理
-            # clean_event()
-            # save_current_device()
-
-            if failedCount > 30:
-                msh.send_simple_push(f"错误,等待20分钟",f"提示：执行{failedCount}次跳出,未知错误")
-                gamer.delay(1200)
-
-            count = len(gheh.stable_find_board_items(currentTarget["targetItem"], retryNumMin, currentTarget["targetAcc"]))
+            if refreshCount % 15 == 0:
+                # gho.filter_orange()
+                # gho.round_all()
+                # save_current_device()
+                #收橘子可能导致count不正确
+                count = len(gheh.stable_find_board_items(currentTarget["targetItem"], retryNumMin))
 
             # 1 初始目标物数量
             if roundCount == 1:
-                tempList = gheh.stable_find_board_items(currentTarget["targetItem"], retryNum, currentTarget["targetAcc"])
+                tempList = gheh.stable_find_board_items(currentTarget["targetItem"], retryNum)
                 logging.info(msh.send_simple_push("在第{0}次执行中，获取列表: {1}".format(roundCount, tempList),f"提示：开始第{roundCount}次执行"))
                 count = len(tempList)
             
             # 2 通用逻辑, 更新目标列表[直接为固定值]
-            # resourcePoint = settings.event_first_block
+            # point = settings.event_first_block
 
             # 3 操作获取新元素[重要]，操作时若报错，则使用另一个记录
             try:
                 # 双击一次
-                # gamer.clean_touch(resourcePoint, 2)
-                gamer.touch(resourcePoint)
+                # gamer.clean_touch(point, 2)
+                gamer.touch(point)
                 #暂时 多次点击
-                # gamer.delay(1)
-                # gamer.touch(resourcePoint)
-                # gamer.delay(1)
-                # gamer.touch(resourcePoint)
+                gamer.delay(1)
+                gamer.touch(point)
+                gamer.delay(1)
+                gamer.touch(point)
 
-                # if tagCount > 70:
-                #     logging.info(f"轮数{tagCount}较多，提前清理")
-                #     clean_event()
-
+                if tagCount > 70:
+                    logging.info(f"轮数{tagCount}较多，提前清理")
+                    clean_event()
 
                 # 获取目前数量
                 time.sleep(3)
                 # tempList = gheh.find_board_items(currentTarget["targetItem"])
-                tempList = gheh.stable_find_board_items(currentTarget["targetItem"], retryNumMin, currentTarget["targetAcc"])
+                tempList = gheh.stable_find_board_items(currentTarget["targetItem"], retryNumMin, 0.65)
                 roundCount += 1
                 countNow = len(tempList)
                 if roundCount % 5 == 0:
@@ -441,7 +424,6 @@ if __name__ == "__main__":
             # if countNow >= count:
             # 暂时，更新单个物品
             # if True:
-                failedCount = 0
                 logging.info(f"countNow:{countNow}, count:{count}")
                 count = countNow
                 # 成功，若需要则合成，并更新count
@@ -451,7 +433,7 @@ if __name__ == "__main__":
                     # gho.clean_up(1)
                     clean_event()
                 gamer.delay(2)
-                count = len(gheh.stable_find_board_items(currentTarget["targetItem"], retryNumMin, currentTarget["targetAcc"]))
+                count = len(gheh.stable_find_board_items(currentTarget["targetItem"], retryNumMin, 0.65))
                 # 暂时，允许中途退出
                 if tagCount > totalCount-1:
                     break
@@ -466,11 +448,8 @@ if __name__ == "__main__":
             else:
                 # switch current deviceId to the next
                 # 舍弃现有结果
-                # gamer.back()
-                # gamer.delay(0.2)
                 gamer.home()
                 refreshCount += 1
-                failedCount += 1
                 stayFlag = False
                 # 次设备重置结果
                 switch_device()

@@ -136,7 +136,7 @@ def find_pic_all_list_cache(*args):
         leftTopPos = ImageProc.locate_all_center_list(st.cache_path + "screenCap.png", args[0], args[1])
     else:
         print(f"Multiple arguments: {args}")
-    leftTopPos = ImageProc.locate_all_center_list(st.cache_path + "screenCap.png", args[0], st.accuracy)
+        leftTopPos = ImageProc.locate_all_center_list(st.cache_path + "screenCap.png", args[0], st.accuracy)
     return leftTopPos
 
 def find_all_empty(pointList, cacheFlag = False):

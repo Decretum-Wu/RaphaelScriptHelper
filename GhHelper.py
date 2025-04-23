@@ -71,10 +71,30 @@ def get_unique_grid_positions_read(coords_list):
     # 将集合转为有序列表（按行号、列号升序排列）
     return sorted(unique_positions, key=lambda x: (x[0], x[1]))
 
+def process_unique_positions_col(unique_positions_col):
+    seen = set()
+    processed_temp = []
+    
+    # 倒序遍历每个列表（按原索引从后往前）
+    for idx in reversed(range(len(unique_positions_col))):
+        current_list = unique_positions_col[idx]
+        new_list = []
+        for elem in current_list:
+            if elem in seen:
+                print(f"元素{elem}在后面的列表中被覆盖，已从列表{idx}中移除")
+            else:
+                new_list.append(elem)
+                seen.add(elem)
+        processed_temp.append(new_list)
+    
+    # 反转结果恢复原顺序
+    return processed_temp[::-1]
+
 def get_collection_unique_grid_positions(coords_col):
     unique_positions_col = []
     for coords_list in coords_col:
         unique_positions_col.append(get_unique_grid_positions(coords_list))
+    unique_positions_col = process_unique_positions_col(unique_positions_col)
     return unique_positions_col
 
 def get_collection_unique_grid_positions_read(coords_col):
