@@ -33,8 +33,8 @@ slideMinVer = 200
 slideMaxVer = 300
 
 # blue 142-184-241
-# empty_color_1 = (241, 184, 142)
-# empty_color_2 = (237, 179, 135)
+empty_color_1 = (241, 184, 142)
+empty_color_2 = (237, 179, 135)
 
 # brown
 # empty_color_1 = (67, 135, 202)
@@ -49,8 +49,11 @@ empty_color_2 = (184, 182, 86)
 # empty_color_2 = (120, 146, 74)
 
 # Spring green
-empty_color_1 =  (96, 181, 125)
-empty_color_2 = (94, 176, 118)
+# empty_color_1 =  (96, 181, 125)
+# empty_color_2 = (94, 176, 118)
+
+empty_color_1 =  (232, 181, 118)
+empty_color_2 = (238, 187, 124)
 
 
 empty_colors = [empty_color_1, empty_color_2]

@@ -19,7 +19,7 @@ class Direction(Enum):
     LEFT = 2
     RIGHT = 3
 targetListBeike = [
-    # rd.beike_3,
+    rd.beike_3,
     rd.beike_4,
     rd.beike_5_1,
     rd.beike_6,
@@ -38,6 +38,25 @@ targetListFish = [
     rd.fish_item_6,
     rd.fish_item_7,
     rd.fish_item_8,
+]
+
+targetListBread = [
+    rd.bread_3,
+    rd.bread_4,
+    rd.bread_5,
+    rd.bread_6,
+    rd.bread_7,
+    rd.bread_8,
+    rd.bread_9,
+    rd.bread_10
+]
+
+targetListBreadTag = [
+    rd.bread_tag_3,
+    rd.bread_tag_4,
+    rd.bread_tag_5,
+    rd.bread_tag_6,
+    # rd.bread_tag_7
 ]
 intoGameList = [
     rd.start_game,
@@ -79,12 +98,12 @@ gho.usePower = False
 refreshCount = 0
 # card_1 = 2
 # daily_box_3 = 4
-targetStartNum = 2
-targetCount = 3
+targetStartNum = 3
+targetCount = 2
 
 # 1 刷卡片
 cardFlag = False
-bagStep = 2
+bagStep = 3
 bagTop = rd.card_4_bag
 # bagTagList = [rd.card_star_4, rd.card_star_5]
 bagTagList = []
@@ -93,23 +112,33 @@ bagTagList = []
 roundFlag = False
 
 # 3 刷箱子
-getBoxFlag = True
+getBoxFlag = False
 exitFlag = False
 # 物品未获取时保留图片
 collectImg = True
 # 体力目标
-tagAcc = 0.60
+tagAcc = 0.55
 itemImg = False
 
 # 贝壳
-itemPoint = ghh.get_center((1,5))
+tagListTag = []
+itemPoint = ghh.get_center((1,6))
 tagList = targetListBeike
 tagAcc = 0.65
-stepLen = 2
-targetWeight = 3
+stepLen = 1
+targetWeight = 2
 lastWeight = 1312
 # 128为10级
 # 单次直接刷2非常难，几乎不可能
+
+# # 面包
+# tagListTag = targetListBreadTag
+# itemPoint = ghh.get_center((1,3))
+# tagList = targetListBread
+# tagAcc = 0.70
+# stepLen = 1
+# targetWeight = 2
+# lastWeight = 1300
 
 # 鱼(原始)
 # itemPoint = ghh.get_center((7,1))
@@ -131,10 +160,12 @@ targetList = [
     {"resourceItem": rd.card_1, "resourceAcc":0.55, "targetItem": rd.stone_4, "targetAcc":0.50, "mergeRequired": False, "consumeItem": rd.stone_4},
         {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True, "consumeItem": rd.coin_new_5},
     # {"resourceItem": rd.resource_blank, "resourceAcc":0.65, "targetItem": rd.coffee_tag_3, "targetItem2": rd.beard_tag_3,"targetAcc":0.65, "mergeRequired": True},
-    {"resourceItem": rd.box_1, "resourceAcc":0.6, "targetItem": rd.power_4, "targetAcc":0.75, "mergeRequired": True, "consumeItem": rd.power_5},
+        {"resourceItem": rd.licence_box_3_max, "resourceAcc":0.55, "targetItem": rd.stone_4, "targetAcc":0.55, "mergeRequired": False, "consumeItem": rd.stone_4},
+    {"resourceItem": rd.box_1, "resourceAcc":0.6, "targetItem": rd.power_4, "targetAcc":0.75, "mergeRequired": True},#, "consumeItem": rd.power_5
         # {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True},#, "consumeItem": rd.coin_new_5},
-    # {"resourceItem": rd.daily_box_3, "resourceAcc":0.55, "targetItem": rd.power_3, "targetItem2": rd.coin_new_3, "targetAcc":0.75,"mergeRequired": True},
+    {"resourceItem": rd.daily_box_3, "resourceAcc":0.55, "targetItem": rd.power_3, "targetItem2": rd.coin_new_3, "targetAcc":0.75,"mergeRequired": True},
     # {"resourceItem": rd.daily_box_3, "resourceAcc":0.55, "targetItem": rd.power_3, "targetAcc":0.75,"mergeRequired": True},
+
 ]
 # "targetAcc":0.55 在无订单时容易误判，可以用0.65
     # {"resourceItem": rd.resource_blank, "resourceAcc":0.65, "targetItem": rd.coffee_tag_3, "targetItem2": rd.beard_tag_3,"targetAcc":0.55, "mergeRequired": True},
@@ -673,7 +704,7 @@ def get_general_items(refreshCount, targetStartNum, targetCount = 25, collectImg
     logging.info(msh.send_simple_push("源列表为空","提示：完成执行"))
     logging.info("完成执行")
 
-def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeight = 256, itemImg = rd.fish_source_5):
+def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeight = 256, itemImg = rd.fish_source_5, tagListTag = []):
     global stayFlag, switchFlag, currentTarget, targetList, exitFlag, roundFlag
     tagCount = 0
     roundCount = 1
@@ -717,6 +748,8 @@ def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeigh
             # 0 初始清理
             # 成功，若需要则合成
             gho.process_existed(tagList[:-1], True, tagAcc)
+            if (len(tagListTag) > 0):
+                gho.process_existed(tagListTag[:-1], True, tagAcc)
 
             if not gho.verify_clean(stepLen):
                 if gho.verify_exit():
@@ -726,6 +759,8 @@ def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeigh
                 gho.clean_up(1)
             # 1 初始目标物数量
             count = ghh.get_total_weight(tagList, tagAcc)
+            if (len(tagListTag) > 0):
+                count += ghh.get_total_weight(tagListTag, tagAcc) * 4
             logging.info("在第{0}次执行中，初始目标物权重: {1}".format(roundCount, count))
             # 完成后退出
             if count > lastWeight:
@@ -744,13 +779,82 @@ def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeigh
                 # 获取目前数量
                 time.sleep(1)
                 countNow = ghh.get_total_weight(tagList, tagAcc)
+                if (len(tagListTag) > 0):
+                    countNow += ghh.get_total_weight(tagListTag, tagAcc) * 4
                 roundCount += 1
                 if roundCount % 5 == 0:
                     logging.info(msh.send_simple_push("在第{0}次执行中，获取列表: {1}".format(roundCount, countNow),f"提示：完成第{roundCount}次执行"))
                 logging.info("在第{0}次执行中，现有目标物权重: {1}".format(roundCount, countNow))
+
+
+                # 3.1 处理体力问题
+                # 如果弹出体力提示
+                if gho.solve_breaker():
+                    # 防止太快使用体力瓶
+                    if roundCount - lastPowerCount < (30 // stepLen):
+                        logging.info(msh.send_simple_push("在第{0}次执行中，反复卡顿导致退出，当前计数：{1}, 目标物 {2}".format(roundCount, count, tagList),f"错误：第{roundCount}次执行因卡顿退出"))
+                        raise Exception(f'使用体力后太快卡顿，尝试重启解决')
+                    # 简单处理 本地使用体力瓶，并保存
+                    elif settings.usePower and gamer.find_pic_double_touch(rd.power_5, 0.6):
+                        # 分支 成功
+                        save_current_device()
+                        logging.info(msh.send_simple_push("在第{0}次执行中，使用体力，当前计数：{1}, 目标物 {2}, 上次使用体力在{3}".format(roundCount, count, tagList, lastPowerCount),f"提示：第{roundCount}次执行使用体力"))
+                        lastPowerCount = roundCount
+                        roundCount += 1
+                        continue
+                    else:
+                        # 未知错误
+                        gamer.collect_log_image("无可用体力导致退出")
+                        logging.info(msh.send_simple_push("在第{0}次执行中，无可用体力导致退出，当前计数：{1}, 目标物 {2}".format(roundCount, count, tagList),f"错误：第{roundCount}次执行因卡顿退出"))
+                        if roundFlag:
+                            # 体力正常用完时退出
+                            break
+                        else:
+                            # 循环执行时正常等待
+                            for i in range(7):
+                                gamer.delay(300)
+                                if gho.verify_exit():
+                                    exitFlag = True
+                                    break
+                            if i > 5:
+                                # 体力正常用完时重试
+                                continue
+                            else:
+                                break
+                            
+
+                # 4 处理产物或刷新
+                if countNow >= count + targetWeight:
+                    count = countNow
+                    # 成功，若需要则合成
+                    gho.process_existed(tagList[:-1], True, tagAcc)
+                    gho.process_existed(tagListTag[:-1], True, tagAcc)
+                    # 后续处理
+                    save_current_device()
+                    stayFlag = True
+                    tagCount += 1
+                    logging.info(msh.send_simple_push(f"源目标物位置：{tagList[0]}", f"提示：获得一组目标物,累计权重{countNow}"))
+                    logging.info(f"目标物权重：{countNow}")
+                elif countNow < count + stepLen:
+                    logging.info(msh.send_simple_push(f"源目标物位置：{tagList[0]}，更换源目标物", f"提示：获得目标物数量不足,累计权重{countNow}"))
+                    save_current_device()
+                    continue
+                else:
+                    # switch current deviceId to the next
+                    # 舍弃现有结果
+                    gamer.home()
+                    refreshCount += 1
+                    stayFlag = False
+                    # 次设备重置结果
+                    switch_device()
+                    # 重置错误次数
+                    errorCount = 0
             except Exception as e:
                 logging.error(f"错误内容:{e}")
                 msh.send_simple_push(f"错误内容:{e}",f"提示：执行{roundCount}次跳出,捕捉错误")
+                # 安全设置，当刷取中途报错时切换
+                if errorCount == 0:
+                    switch_device()
                 errorCount += 1
                 if errorCount < 10:
                     msh.send_simple_push(f"开始重启,错误次数{errorCount}",f"提示：执行{roundCount}次卡死，开始重启")
@@ -760,68 +864,6 @@ def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeigh
                 else:
                     msh.send_simple_push(f"错误内容:{e}",f"提示：执行{roundCount}次跳出,未知错误")
                     break
-
-            # 3.1 处理体力问题
-            # 如果弹出体力提示
-            if gho.solve_breaker():
-                # 防止太快使用体力瓶
-                if roundCount - lastPowerCount < (30 // stepLen):
-                    logging.info(msh.send_simple_push("在第{0}次执行中，反复卡顿导致退出，当前计数：{1}, 目标物 {2}".format(roundCount, count, tagList),f"错误：第{roundCount}次执行因卡顿退出"))
-                    raise Exception(f'使用体力后太快卡顿，尝试重启解决')
-                # 简单处理 本地使用体力瓶，并保存
-                elif settings.usePower and gamer.find_pic_double_touch(rd.power_5, 0.6):
-                    # 分支 成功
-                    save_current_device()
-                    logging.info(msh.send_simple_push("在第{0}次执行中，使用体力，当前计数：{1}, 目标物 {2}, 上次使用体力在{3}".format(roundCount, count, tagList, lastPowerCount),f"提示：第{roundCount}次执行使用体力"))
-                    lastPowerCount = roundCount
-                    roundCount += 1
-                    continue
-                else:
-                    # 未知错误
-                    gamer.collect_log_image("无可用体力导致退出")
-                    logging.info(msh.send_simple_push("在第{0}次执行中，无可用体力导致退出，当前计数：{1}, 目标物 {2}".format(roundCount, count, tagList),f"错误：第{roundCount}次执行因卡顿退出"))
-                    if roundFlag:
-                        # 体力正常用完时退出
-                        break
-                    else:
-                        # 循环执行时正常等待
-                        for i in range(7):
-                            gamer.delay(300)
-                            if gho.verify_exit():
-                                exitFlag = True
-                                break
-                        if i > 5:
-                            # 体力正常用完时重试
-                            continue
-                        else:
-                            break
-                        
-
-            # 4 处理产物或刷新
-            if countNow >= count + targetWeight:
-                count = countNow
-                # 成功，若需要则合成
-                gho.process_existed(tagList[:-1], False, tagAcc)
-                # 后续处理
-                save_current_device()
-                stayFlag = True
-                tagCount += 1
-                logging.info(msh.send_simple_push(f"源目标物位置：{tagList[0]}", f"提示：获得一组目标物,累计权重{countNow}"))
-                logging.info(f"目标物权重：{countNow}")
-            elif countNow < count + stepLen:
-                logging.info(msh.send_simple_push(f"源目标物位置：{tagList[0]}，更换源目标物", f"提示：获得目标物数量不足,累计权重{countNow}"))
-                save_current_device()
-                continue
-            else:
-                # switch current deviceId to the next
-                # 舍弃现有结果
-                gamer.home()
-                refreshCount += 1
-                stayFlag = False
-                # 次设备重置结果
-                switch_device()
-                # 重置错误次数
-                errorCount = 0
         except Exception as e:
             logging.error(f"错误内容:{e}")
             msh.send_simple_push(f"错误内容:{e}",f"提示：执行{roundCount}次跳出,捕捉错误")
@@ -850,8 +892,8 @@ if __name__ == "__main__":
     elif roundFlag:
         while not exitFlag:
             get_general_items(refreshCount, targetStartNum, targetCount, collectImg)
-            get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeight, itemImg)
+            get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeight, itemImg, tagListTag)
     elif getBoxFlag:
         get_general_items(refreshCount, targetStartNum, 99, collectImg)
     else:
-        get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeight, itemImg)
+        get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeight, itemImg, tagListTag)
