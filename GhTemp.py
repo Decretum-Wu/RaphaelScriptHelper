@@ -29,6 +29,8 @@ targetListBeike = [
     rd.beike_10
 ]
 
+checkPower = 190
+
 targetListFish = [
     rd.fish_item_1,
     rd.fish_item_2,
@@ -98,7 +100,7 @@ gho.usePower = False
 refreshCount = 0
 # card_1 = 2
 # daily_box_3 = 4
-targetStartNum = 3
+targetStartNum = 2
 targetCount = 2
 
 # 1 刷卡片
@@ -112,6 +114,8 @@ bagTagList = []
 roundFlag = False
 
 # 3 刷箱子
+getBoxFlag = True
+# 4 刷物品
 getBoxFlag = False
 exitFlag = False
 # 物品未获取时保留图片
@@ -122,12 +126,15 @@ itemImg = False
 
 # 贝壳
 tagListTag = []
-itemPoint = ghh.get_center((1,6))
+itemPoint = ghh.get_center((1,4))
 tagList = targetListBeike
 tagAcc = 0.65
 stepLen = 1
 targetWeight = 2
-lastWeight = 1312
+lastWeight = 1191
+
+startPower = 126
+tagNum = 0
 # 128为10级
 # 单次直接刷2非常难，几乎不可能
 
@@ -145,7 +152,7 @@ lastWeight = 1312
 # tagList =[rd.fish_source_3, rd.fish_resource_4, rd.fish_source_5]
 # stepLen = 1
 # targetWeight = 2
-# lastWeight = 23
+# lastWeight = 27
 
 # 鱼(产物)
 # itemPoint = ()
@@ -159,13 +166,16 @@ lastWeight = 1312
 targetList = [
     {"resourceItem": rd.card_1, "resourceAcc":0.55, "targetItem": rd.stone_4, "targetAcc":0.50, "mergeRequired": False, "consumeItem": rd.stone_4},
         {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True, "consumeItem": rd.coin_new_5},
+    # {"resourceItem": rd.licence_box_3_max, "resourceAcc":0.55, "targetItem": rd.stone_4, "targetAcc":0.55, "mergeRequired": False, "consumeItem": rd.stone_4},
     # {"resourceItem": rd.resource_blank, "resourceAcc":0.65, "targetItem": rd.coffee_tag_3, "targetItem2": rd.beard_tag_3,"targetAcc":0.65, "mergeRequired": True},
-        {"resourceItem": rd.licence_box_3_max, "resourceAcc":0.55, "targetItem": rd.stone_4, "targetAcc":0.55, "mergeRequired": False, "consumeItem": rd.stone_4},
-    {"resourceItem": rd.box_1, "resourceAcc":0.6, "targetItem": rd.power_4, "targetAcc":0.75, "mergeRequired": True},#, "consumeItem": rd.power_5
+    #  {"resourceItem": rd.license_box_1, "resourceAcc":0.55, "targetItem": rd.stone_3, "targetAcc":0.55, "mergeRequired": False, "consumeItem": rd.stone_4},
+        {"resourceItem": rd.box_1, "resourceAcc":0.6, "targetItem": rd.power_4, "targetAcc":0.75, "mergeRequired": True},#, "consumeItem": rd.power_5},
+    # {"resourceItem": rd.box_1, "resourceAcc":0.6, "targetItem": rd.power_4, "targetAcc":0.75, "mergeRequired": True, "consumeItem": rd.power_5},
         # {"resourceItem": rd.coin_box, "resourceAcc":0.55, "targetItem": rd.coin_new_4, "targetAcc":0.75, "mergeRequired": True},#, "consumeItem": rd.coin_new_5},
-    {"resourceItem": rd.daily_box_3, "resourceAcc":0.55, "targetItem": rd.power_3, "targetItem2": rd.coin_new_3, "targetAcc":0.75,"mergeRequired": True},
+            # {"resourceItem": rd.license_box_2_1, "resourceAcc":0.55, "targetItem": rd.stone_3, "targetAcc":0.75, "mergeRequired": True},
+                   {"resourceItem": rd.daily_box_3, "resourceAcc":0.55, "targetItem": rd.power_3, "targetItem2": rd.coin_new_3, "targetAcc":0.75,"mergeRequired": True, "consumeItem": rd.coin_new_5},
     # {"resourceItem": rd.daily_box_3, "resourceAcc":0.55, "targetItem": rd.power_3, "targetAcc":0.75,"mergeRequired": True},
-
+    # {"resourceItem": rd.box_1, "resourceAcc":0.6, "targetItem": rd.power_4, "targetAcc":0.75, "mergeRequired": True},#, "consumeItem": rd.power_5},
 ]
 # "targetAcc":0.55 在无订单时容易误判，可以用0.65
     # {"resourceItem": rd.resource_blank, "resourceAcc":0.65, "targetItem": rd.coffee_tag_3, "targetItem2": rd.beard_tag_3,"targetAcc":0.55, "mergeRequired": True},
@@ -178,10 +188,10 @@ targetList = [
 # ]
 
 # targetList = [
-    # {"resourceItem": rd.license_box_1, "resourceAcc":0.55, "targetItem": rd.stone_3, "targetAcc":0.75, "mergeRequired": True},
-    # {"resourceItem": rd.license_box_2_1, "resourceAcc":0.55, "targetItem": rd.stone_3, "targetAcc":0.75, "mergeRequired": True},
-    # {"resourceItem": rd.license_box_3, "resourceAcc":0.55, "targetItem": rd.blue_resource_1, "targetAcc":0.55, "mergeRequired": True},
-    # {"resourceItem": rd.licence_box_3_max, "resourceAcc":0.55, "targetItem": rd.stone_4, "targetAcc":0.55, "mergeRequired": False, "consumeItem": rd.stone_4},
+#     {"resourceItem": rd.license_box_1, "resourceAcc":0.55, "targetItem": rd.stone_3, "targetAcc":0.75, "mergeRequired": True},
+#     {"resourceItem": rd.license_box_2_1, "resourceAcc":0.55, "targetItem": rd.stone_3, "targetAcc":0.75, "mergeRequired": True},
+#     {"resourceItem": rd.license_box_3, "resourceAcc":0.55, "targetItem": rd.blue_resource_1, "targetAcc":0.55, "mergeRequired": True},
+#     # {"resourceItem": rd.licence_box_3_max, "resourceAcc":0.55, "targetItem": rd.stone_4, "targetAcc":0.55, "mergeRequired": False, "consumeItem": rd.stone_4},
 # ]
 currentTarget = targetList[targetStartNum]
 
@@ -246,7 +256,7 @@ def into_game(verifyIntoFlag = False):
                         break
         # 一轮识别后的处理
         retryCount += 1
-        if retryCount % 40 == 0 and continueFlag:
+        if retryCount % 60 == 0 and continueFlag:
             # 30次尝试一次解决卡顿
             msh.send_simple_push(f"retryCount 为{retryCount}","错误：已经卡死,试图解决卡顿")
             gamer.touch(rd.first_screen_close_1)
@@ -721,6 +731,9 @@ def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeigh
         if gho.verify_exit():
             exitFlag = True
             break
+        elif tagNum > 0 and  tagCount > tagNum:
+            exitFlag = True
+            break
         try:
             if not stayFlag:
                 into_game(True)
@@ -887,6 +900,10 @@ def get_power_items(itemPoint, tagList, tagAcc, stepLen, targetWeight, lastWeigh
     #     logging.info(msh.send_simple_push("结合执行","提示：完成一次结合执行"))
 
 if __name__ == "__main__":
+    if startPower > checkPower:
+        tagNum = (startPower - checkPower) / 8 - 2
+        tagList = tagList[1:]
+
     if cardFlag:
         get_cards()
     elif roundFlag:

@@ -99,6 +99,13 @@ targetListOrange = [
     rd.orange_6_stable
 ]
 
+targetListStone = [
+    rd.stone_0,
+    rd.stone_1,
+    rd.stone_2,
+    rd.stone_3
+]
+
 def restart_all():
     # 重置跳过变量，重启后必须重新进入游戏
     global stayFlag
@@ -315,6 +322,12 @@ targetListTag = [
     rd.event_2_tag_2,
 ]
 
+targetListItem = [
+    rd.ring_item_3,
+    rd.ring_item_4,
+    rd.ring_item_6,
+]
+
 # 测试，连接
 ADBHelper.connent(settings.deviceList[0]["deviceId"])
 ADBHelper.connent(settings.deviceList[1]["deviceId"])
@@ -326,36 +339,15 @@ ADBHelper.connent(settings.deviceList[1]["deviceId"])
 #     rd.power_4
 # ]
 
-# temp = ghh.find_board_items(rd.power_4)
-# temp = ghh.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListBeike, 0.65))
-# temp = ghh.get_collection_unique_grid_positions_read(gamer.find_pic_all_list([rd.box_1,rd.daily_box_3], 0.55))
-# temp = ghh.get_collection_unique_grid_positions_read(gamer.find_pic_all_list([rd.power_4,rd.power_3], 0.75))
-# ADBHelper.keyEvent(deviceID, '3')
-# temp = ghh.get_collection_unique_grid_positions_read([[(132.0, 984.0), (540.0, 848.0)]])
+# targetListTemp = settings.eventTagList
 
-# restart_all()
-# ADBHelper.screenCapture("emulator-5554", "screen.png")
+# 测试新列表
+# targetListTemp = targetListItem
 
+# temp = ghh.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListTemp, 0.65))
 
-
-# while True:
-#     gamer.touch(rd.point_drop)
-#     gamer.delay(2)
-
-# temp = gheh2.get_collection_unique_grid_positions_read(gamer.find_pic_all_list([rd.event_2_tag_1, rd.coin_0], 0.75))
-
-# temp = gheh2.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListTag, 0.75))
-# temp = gheh2.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListItem, 0.75))
-# temp = gheh2.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListCoin, 0.6))
-# temp = gheh2.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListPower, 0.775))
-# temp = gamer.find_pic_all_list([rd.event_tag_1_1], 0.75)
-
-targetListTemp = settings.eventTagList
-
-# temp = ghh.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListBeike, 0.65))
-
-# temp = ghh.calculate_total_weight(temp)
-
+# # temp = ghh.calculate_total_weight(temp)
+# print("temp:{0}".format(temp))
 
 
 # temp = ghh.get_center((1,5))
@@ -378,16 +370,19 @@ targetListTemp = settings.eventTagList
 # for i in range(1,20):
 #     temp = gamer.find_pic(rd.card_5, True, 0.7, False)
 
+
+#活动列表
+
 targetList = [
-    {"targetItem": rd.event_3_b_tag_1, "targetAcc":0.85, "mergeRequired": True},
+    {"targetItem": rd.event_4_a_tag_1, "targetAcc":0.85, "mergeRequired": True},
     # {"targetItem": settings.eventTagList[0], "targetAcc":0.85, "mergeRequired": True},
 ]
 currentTarget = targetList[targetStartNum]
 
-# count = len(gheh.stable_find_board_items(currentTarget["targetItem"], 2))
+# count = gheh.stable_find_board_items_read(currentTarget["targetItem"], 2, 0.75)
+# print("temp:{0}".format(count))
 
-count = gheh.stable_find_board_items_read(currentTarget["targetItem"], 2, 0.85)
-# count = gheh.stable_find_board_items_read(currentTarget["targetItem"], 2)
-
-
-print("temp:{0}".format(count))
+# temp = gheh.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(settings.eventTagList, 0.75))
+# targetListStone
+temp = gheh.get_collection_unique_grid_positions_read(gamer.find_pic_all_list(targetListStone, 0.75))
+print("temp:{0}".format(temp))

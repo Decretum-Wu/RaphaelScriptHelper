@@ -1,7 +1,7 @@
 import testDict as rd
 deviceList = [
     {"deviceId": '127.0.0.1:5645', "window_title": 'BlueStacks App Main', "instance_title": 'Pie64_9'},
-    {"deviceId": '127.0.0.1:5735', "window_title": 'BlueStacks App Save2', "instance_title": 'Pie64_18'},
+    {"deviceId": '127.0.0.1:5795', "window_title": 'BlueStacks App Save2', "instance_title": 'Pie64_24'},
 ]
 
 targetListOrangeTree = rd.orange_tree_list1
@@ -40,7 +40,7 @@ empty_color_2 = (237, 179, 135)
 # empty_color_1 = (67, 135, 202)
 # empty_color_2 = (55, 123, 191)
 
-# green - general Friday
+# # green - general Friday
 empty_color_1 =  (185, 183, 88)
 empty_color_2 = (184, 182, 86)
 
@@ -52,8 +52,13 @@ empty_color_2 = (184, 182, 86)
 # empty_color_1 =  (96, 181, 125)
 # empty_color_2 = (94, 176, 118)
 
-empty_color_1 =  (232, 181, 118)
-empty_color_2 = (238, 187, 124)
+# blue 25-05
+# empty_color_1 = (232, 181, 118)
+# empty_color_2 = (238, 187, 124)
+
+# orange 25-06
+empty_color_1 = (113, 132, 194)
+empty_color_2 = (126, 144, 204)
 
 
 empty_colors = [empty_color_1, empty_color_2]
@@ -77,6 +82,11 @@ event_empty_color_1 = (145, 186, 218)
 event_empty_color_2 = (134, 172, 207)
 # event_empty_block = (132,576)
 
+# event_first_block 挖矿 森林
+event_first_block = (600, 1670)
+event_empty_color_1 = (123, 164, 161)
+event_empty_color_2 = (132, 171, 166)
+
 event_x_start_pos = 136
 event_y_start_pos = 668
 event_block_size = 68
@@ -84,29 +94,29 @@ event_x_line = 6
 event_y_line = 8
 
 eventItemList = [
-    rd.event_3_a_item_1,
-    rd.event_3_a_item_2,
-    rd.event_3_a_item_3,
-    rd.event_3_a_item_4,
-    rd.event_3_a_item_5,
-    rd.event_3_a_item_6,
-    rd.event_3_a_item_7,
-    rd.event_3_a_item_8,
-    # rd.event_3_a_item_9,
+    rd.event_4_a_item_1,
+    rd.event_4_a_item_2,
+    rd.event_4_a_item_3,
+    rd.event_4_a_item_4,
+    rd.event_4_a_item_5,
+    rd.event_4_a_item_6,
+    rd.event_4_a_item_7,
+    rd.event_4_a_item_8,
+    # rd.event_4_a_item_9,
 ]
 
 eventTagList = [
-    rd.event_3_a_tag_1,
-    rd.event_3_a_tag_2,
-    rd.event_3_a_tag_3,
-    rd.event_3_a_tag_4,
+    rd.event_4_a_tag_1,
+    rd.event_4_a_tag_2,
+    rd.event_4_a_tag_3,
+    rd.event_4_a_tag_4,
 ]
 
 eventIntoGameList = [
     rd.start_game,
     rd.cloud_button,
-    rd.event_3_a_into,
-    rd.event_3_a_at
+    rd.event_4_a_into,
+    rd.event_4_a_at
 ]
 
 event_empty_colors = [event_empty_color_1, event_empty_color_2]

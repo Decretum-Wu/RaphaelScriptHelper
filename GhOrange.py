@@ -154,8 +154,10 @@ def verify_empty():
 
 def verify_clean(minNum = 1):
     if not gamer.verify_pic_strict(rd.back_from_board, True):
-        gamer.collect_log_image("清理前不正常")
-        raise Exception(f'错误：进入棋盘不成功')
+        gamer.delay(2)
+        if not gamer.verify_pic_strict(rd.back_from_board, False):
+            gamer.collect_log_image("清理前不正常")
+            raise Exception(f'错误：进入棋盘不成功')
     count = len(gamer.find_all_empty(ghh.get_all_center(), True))
     initCount = count
     # 一个格子时，空格数大于0
@@ -266,7 +268,7 @@ def filter_orange():
         if tryCount > 29:
             gamer.collect_log_image()
         count += 1
-        if count%4 == 0:
+        if count%8 == 0:
             clean_up(1)
     process_existed_orange()
 def filter_beike(count = 6):
@@ -304,7 +306,7 @@ def clean_up(type):
     else:
         clean_up(2)
         # gamer.find_pic_double_touch(rd.icon_4)
-        process_existed(targetListBeike)
+        # process_existed(targetListBeike)
         gamer.find_pic_double_touch(rd.coin_new_3)
         gamer.find_pic_double_touch(rd.coin_new_2)
         gamer.find_pic_double_touch(rd.coin_new_1)
@@ -396,7 +398,7 @@ def solve_breaker():
         count += 1
         if count == 10:
             # 尝试解决1
-            gamer.touch((931, 1864))
+            # gamer.touch((931, 1864))
             msh.send_simple_push("解决次数大于10","提示：尝试点击解决阻塞问题")
         if count > 20:
             msh.send_simple_push("错误出现20次","错误：未能离开无体力状态")

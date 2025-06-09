@@ -1,0 +1,97 @@
+目前错误的移动了橘子等
+
+2025-04-18 01:21:56,259 - INFO: List 2 (single-element) skipped
+2025-04-18 01:21:56,259 - INFO: List 3 (empty) skipped
+2025-04-18 01:21:56,259 - INFO: List 4 (empty) skipped
+2025-04-18 01:21:56,259 - INFO: List 5 (empty) skipped
+2025-04-18 01:21:56,260 - INFO: TOTAL MERGE OPERATIONS: 0
+在设备127.0.0.1:5645中，获取滑动次数: 0
+寻找目标图片./img/back_from_board.png最高相似度：0.9999883770942688
+[100%] sdcard/adb_screenCap.png
+元素(540.0, 848.0)在后面的列表中被覆盖，已从列表4中移除
+2025-04-18 01:21:58,669 - INFO: 在第156次执行中，初始目标物权重: 70
+【模拟点击】点击坐标 (676, 576) 7 毫秒
+【模拟点击】点击坐标 (675, 577) 10 毫秒
+[100%] sdcard/adb_screenCap.png
+元素(540.0, 848.0)在后面的列表中被覆盖，已从列表4中移除
+2025-04-18 01:22:04,413 - INFO: 在第157次执行中，现有目标物权重: 71
+[100%] sdcard/adb_screenCap.png                                                                                   
+寻找目标图片./img/back_from_board.png最高相似度：0.9999883770942688
+2025-04-18 01:22:05,737 - INFO: 切换至设备127.0.0.1:5715
+[100%] sdcard/adb_screenCap.png
+【模拟点击】点击坐标 (206.5, 1104.5) 2 毫秒
+[100%] sdcard/adb_screenCap.png
+[100%] sdcard/adb_screenCap.png
+[100%] sdcard/adb_screenCap.png
+[100%] sdcard/adb_screenCap.png
+[100%] sdcard/adb_screenCap.png
+[100%] sdcard/adb_screenCap.png
+[100%] sdcard/adb_screenCap.png                                                                                   
+[100%] sdcard/adb_screenCap.png                                                                                   
+[100%] sdcard/adb_screenCap.png
+【模拟点击】点击坐标 (949.5, 1818.5) 0 毫秒
+[100%] sdcard/adb_screenCap.png
+2025-04-18 01:22:34,553 - INFO: 已点击进入棋盘，跳过额外验证
+[100%] sdcard/adb_screenCap.png
+在设备127.0.0.1:5715中，获取目标个数: [[], [(948.0, 1528.0)], [(540.0, 1392.0)], [], [], []]
+2025-04-18 01:22:37,578 - INFO: List 0 (empty) skipped
+2025-04-18 01:22:37,578 - INFO: List 1 (single-element) skipped
+2025-04-18 01:22:37,579 - INFO: List 2 (single-element) skipped
+2025-04-18 01:22:37,579 - INFO: List 3 (empty) skipped
+2025-04-18 01:22:37,579 - INFO: List 4 (empty) skipped
+2025-04-18 01:22:37,579 - INFO: List 5 (empty) skipped
+2025-04-18 01:22:37,580 - INFO: TOTAL MERGE OPERATIONS: 0
+在设备127.0.0.1:5715中，获取滑动次数: 0
+寻找目标图片./img/back_from_board.png最高相似度：0.9999883770942688
+[100%] sdcard/adb_screenCap.png
+元素(540.0, 848.0)在后面的列表中被覆盖，已从列表4中移除
+2025-04-18 01:22:40,164 - INFO: 在第157次执行中，初始目标物权重: 70
+【模拟点击】点击坐标 (677, 575) 1 毫秒
+【模拟点击】点击坐标 (676, 576) 5 毫秒
+[100%] sdcard/adb_screenCap.png                                                                                   
+元素(540.0, 848.0)在后面的列表中被覆盖，已从列表4中移除
+2025-04-18 01:22:45,964 - INFO: 在第158次执行中，现有目标物权重: 72
+[100%] sdcard/adb_screenCap.png
+寻找目标图片./img/back_from_board.png最高相似度：0.9999883770942688
+[100%] sdcard/adb_screenCap.png
+在设备127.0.0.1:5715中，获取目标个数: [[], [(268.0, 1528.0), (948.0, 1528.0)], [(540.0, 1392.0)], [], [(540.0, 848.0)], []]
+2025-04-18 01:22:49,140 - INFO: List 0 (empty) skipped
+【模拟滑屏】使用 275 毫秒从坐标 (267.0, 1529.0) 滑动到坐标 (948.0, 1529.0)
+【主动延时】延时 0.1 秒
+2025-04-18 01:22:49,756 - INFO: Added 1 elements to list 2
+【模拟滑屏】使用 253 毫秒从坐标 (540.0, 1391.0) 滑动到坐标 (948.0, 1528.0)
+【主动延时】延时 0.1 秒
+2025-04-18 01:22:50,300 - INFO: Added 1 elements to list 3
+2025-04-18 01:22:50,300 - INFO: List 3 (single-element) skipped
+2025-04-18 01:22:50,300 - INFO: List 4 (single-element) skipped
+2025-04-18 01:22:50,301 - INFO: List 5 (empty) skipped
+2025-04-18 01:22:50,301 - INFO: TOTAL MERGE OPERATIONS: 2
+在设备127.0.0.1:5715中，获取滑动次数: 2
+[100%] sdcard/adb_screenCap.png                                                                                   
+在设备127.0.0.1:5715中，获取目标个数: [[], [], [], [(812.0, 1392.0), (948.0, 1528.0)], [(540.0, 848.0)], []]
+2025-04-18 01:22:52,285 - INFO: List 0 (empty) skipped
+2025-04-18 01:22:52,285 - INFO: List 1 (empty) skipped
+2025-04-18 01:22:52,285 - INFO: List 2 (empty) skipped
+【模拟滑屏】使用 280 毫秒从坐标 (811.0, 1391.0) 滑动到坐标 (947.0, 1528.0)
+【主动延时】延时 0.1 秒
+2025-04-18 01:22:52,899 - INFO: Added 1 elements to list 4
+【模拟滑屏】使用 213 毫秒从坐标 (541.0, 847.0) 滑动到坐标 (948.0, 1527.0)
+【主动延时】延时 0.1 秒
+2025-04-18 01:22:53,553 - INFO: Added 1 elements to list 5
+2025-04-18 01:22:53,553 - INFO: List 5 (single-element) skipped
+2025-04-18 01:22:53,553 - INFO: TOTAL MERGE OPERATIONS: 2
+在设备127.0.0.1:5715中，获取滑动次数: 2
+[100%] sdcard/adb_screenCap.png
+在设备127.0.0.1:5715中，获取目标个数: [[], [], [], [(812.0, 1392.0)], [(948.0, 1528.0)], []]
+2025-04-18 01:22:55,713 - INFO: List 0 (empty) skipped
+2025-04-18 01:22:55,714 - INFO: List 1 (empty) skipped
+2025-04-18 01:22:55,714 - INFO: List 2 (empty) skipped
+2025-04-18 01:22:55,714 - INFO: List 3 (single-element) skipped
+2025-04-18 01:22:55,714 - INFO: List 4 (single-element) skipped
+2025-04-18 01:22:55,714 - INFO: List 5 (empty) skipped
+2025-04-18 01:22:55,715 - INFO: TOTAL MERGE OPERATIONS: 0
+在设备127.0.0.1:5715中，获取滑动次数: 0
+[100%] sdcard/adb_screenCap.png
+寻找目标图片./img/start_game.png最高相似度：1.0
+【识图】识别 ./img/start_game.png 成功，图块左上角坐标 (136, 1088)
+【模拟点击】点击坐标 (195, 1124) 10 毫秒

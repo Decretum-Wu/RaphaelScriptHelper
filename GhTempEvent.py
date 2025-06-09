@@ -60,11 +60,11 @@ refreshCount = 1
 # card_1 = 2
 # daily_box_3 = 4
 targetStartNum = 0
-totalCount = 14
+totalCount = 195
 failedCount = 0
 
 targetList = [
-    {"targetItem": settings.eventTagList[0], "targetAcc":0.85, "mergeRequired": True},
+    {"targetItem": settings.eventTagList[0], "targetAcc":0.75, "mergeRequired": True},
 ]
 currentTarget = targetList[targetStartNum]
 
@@ -116,15 +116,16 @@ def clean_event():
     process_existed(targetListCoin, 0.60)
     gamer.screenCap()
     # 需要调整目标物合成灵敏度0.85-0.75间
-    process_existed(targetListTag, 0.85, True)
+    process_existed(targetListTag, 0.75, True)
 
     process_existed(targetListCoin, 0.60, True)
     # process_existed(targetListPower, 0.775, True)
     process_existed(targetListPower, 0.775, True)
-    process_existed(targetListStone, 0.60, True)
-    # gamer.find_pic_touch(rd.coin_new_5)
-    # gamer.find_pic_double_touch(rd.stone_4, 0.7, True)
-    # gamer.find_pic_double_touch(rd.coin_new_5, 0.6, True)
+    # targetListStone 挖矿暂定0.75
+    process_existed(targetListStone, 0.75, True)
+    # 长期用的清理逻辑
+    # gamer.find_pic_double_touch(rd.stone_4, 0.75, True)
+    # gamer.find_pic_double_touch(rd.coin_new_5, 0.65, True)
     # gamer.find_pic_double_touch(rd.power_5, 0.6, True)
 
 def into_game(verifyIntoFlag = False):
@@ -151,7 +152,7 @@ def into_game(verifyIntoFlag = False):
                     # 进入棋盘后无需额外操作
                     case IntoGameEnum.INTO.value: 
                         gamer.touch(totalDict[key][0])
-                        # time.sleep(1)
+                        time.sleep(3)
                     # back_from_board
                     case IntoGameEnum.AT.value: 
                         # time.sleep(5)
@@ -193,7 +194,7 @@ def into_game(verifyIntoFlag = False):
                         break
         # 一轮识别后的处理
         retryCount += 1
-        if retryCount % 30 == 0 and continueFlag:
+        if retryCount % 50 == 0 and continueFlag:
             # 30次尝试一次解决卡顿
             msh.send_simple_push(f"retryCount 为{retryCount}","错误：已经卡死,试图解决卡顿")
             gamer.back()
@@ -237,10 +238,11 @@ def restart_all():
     # 首次点击容易失败，重复点击更安全
     gamer.stop_process_by_window_title(settings.deviceList[0]["window_title"])
     gamer.stop_process_by_window_title(settings.deviceList[1]["window_title"])
-    gamer.delay(25)
+    gamer.delay(15)
     gamer.run_bluestacks_instance(settings.deviceList[0]["instance_title"])
+    gamer.delay(15)
     gamer.run_bluestacks_instance(settings.deviceList[1]["instance_title"])
-    gamer.delay(35)
+    gamer.delay(20)
     ADBHelper.connent(settings.deviceList[0]["deviceId"])
     ADBHelper.connent(settings.deviceList[1]["deviceId"])
     gamer.delay(5)
@@ -327,7 +329,7 @@ def quick_merge(current_list):
 
 def reset_game_with_error_restart():
     """循环中的逻辑"""
-    max_retries = 3  # 最大重试次数
+    max_retries = 5  # 最大重试次数
     retry_count = 0  # 当前重试次数
 
     while retry_count < max_retries:

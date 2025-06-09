@@ -261,9 +261,9 @@ def bs_manager_click(windowID, pos):
     else:
         print("未找到窗口，请检查窗口标题。")
 
-def clean_touch(point, times = 1):
+def clean_touch(point, times = 1, empty_pos = st.empty_block):
     time.sleep(0.5)
-    ADBHelper.touch(deviceID, st.empty_block)
+    ADBHelper.touch(deviceID, empty_pos)
     time.sleep(0.5)
     for i in range(times):
         touch(point)
